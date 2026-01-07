@@ -53,7 +53,7 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
           />
         </div>
 
-        <nav className="hidden md:block">
+        <nav className="text-2xl hidden md:block">
           <ul className="flex items-center gap-6">
             {routes.map((route) => {
               const isActive = route.isActive
@@ -70,7 +70,7 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
                       }
                     )}
                   >
-                    {route.label}
+                    <span>{route.label}</span>
                   </Link>
                 </li>
               );
@@ -84,24 +84,24 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
         state={menuShow}
         id="mobile-nav"
       >
-        <ul className="flex flex-col gap-4 px-4 pb-4">
+        <ul className="w-full flex flex-col px-4 pb-2">
           {routes.map((route) => {
             const isActive = route.isActive
               ? route.isActive(pathName)
               : pathName.startsWith(route.url);
             return (
-              <li key={route.url}>
+              <li className="w-full" key={route.url}>
                 <Link
                   href={route.url}
                   onClick={closeMenu}
                   className={cn(
-                    `block text-base font-semibold transition-colors hover:text-(--primary)`,
+                    `w-full flex items-center justify-center p-2 font-semibold transition-colors hover:text-(--primary)`,
                     {
                       "text-(--primary)": isActive,
                     }
                   )}
                 >
-                  {route.label}
+                  <span>{route.label}</span>
                 </Link>
               </li>
             );
