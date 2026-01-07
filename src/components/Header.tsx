@@ -42,15 +42,16 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
           />
         </Link>
 
-        <Burger
-          id="header-burger"
-          className="md:hidden"
-          checked={menuShow}
-          onChange={handleMenuToggle}
-          aria-label={menuShow ? "關閉選單" : "開啟選單"}
-          aria-expanded={menuShow}
-          aria-controls="mobile-nav"
-        />
+        <div className="text-xl md:hidden">
+          <Burger
+            id="header-burger"
+            checked={menuShow}
+            onChange={handleMenuToggle}
+            aria-label={menuShow ? "關閉選單" : "開啟選單"}
+            aria-expanded={menuShow}
+            aria-controls="mobile-nav"
+          />
+        </div>
 
         <nav className="hidden md:block">
           <ul className="flex items-center gap-6">
