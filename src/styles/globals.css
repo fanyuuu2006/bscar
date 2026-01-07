@@ -5,24 +5,24 @@
     --container-max-width: 1280px;
 
     /* Base Colors */
-    --background: #121214; /* 網站主背景色 */
-    --foreground: #f5f5f7; /* 主要文字顏色 */
+    --background: #f5f5f7; /* 網站主背景色 */
+    --foreground: #121214; /* 主要文字顏色 */
 
     /* Primary - 品牌主色 (金色) */
-    --primary: #cba170; /* 用於主要按鈕、標題、強調區塊 */
-    --primary-foreground: #1c1917; /* 主色背景上的文字顏色 */
+    --primary: #b89060; /* 用於主要按鈕、標題、強調區塊 - 稍微調深增強對比 */
+    --primary-foreground: #ffffff; /* 主色背景上的文字顏色 - 改為白色 */
 
-    /* Secondary - 次要色 (深灰) */
-    --secondary: #27272a; /* 用於次要區塊、卡片背景、懸浮效果 */
-    --secondary-foreground: #ffffff; /* 次要色背景上的文字顏色 */
+    /* Secondary - 次要色 (淺灰) */
+    --secondary: #e4e4e7; /* 用於次要區塊、卡片背景、懸浮效果 - 改為淺灰 */
+    --secondary-foreground: #18181b; /* 次要色背景上的文字顏色 - 改為深色 */
 
     /* Accent - 強調色 (紅色) */
-    --accent: #dc2626; /* 用於特別強調、行動呼籲 (CTA)、價格 */
+    --accent: #ef4444; /* 用於特別強調、行動呼籲 (CTA)、價格 - 稍微明亮一點 */
     --accent-foreground: #ffffff; /* 強調色背景上的文字顏色 */
 
     /* UI Elements */
-    --muted: #a1a1aa; /* 用於次要資訊、較淡的文字 */
-    --border: #3f3f46; /* 用於邊框、分隔線 */
+    --muted: #71717a; /* 用於次要資訊、較淡的文字 - 調深 */
+    --border: #d4d4d8; /* 用於邊框、分隔線 - 淺灰 */
   }
 
   *,

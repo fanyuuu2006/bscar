@@ -6,6 +6,12 @@ import { description, title } from "@/libs/site";
 export const metadata: Metadata = {
   title,
   description,
+  icons: [
+    {
+      rel: "icon",
+      url: "/icons/favicon.ico",
+    },
+  ],
 };
 
 export default function RootLayout({
