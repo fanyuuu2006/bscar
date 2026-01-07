@@ -1,3 +1,4 @@
+import { Header } from "@/components/Header";
 import { site } from "@/libs/site";
 import type { Metadata } from "next";
 
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Header className="sticky top-0 z-50" />
+        {children}
+      </body>
     </html>
   );
 }
