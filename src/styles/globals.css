@@ -66,3 +66,12 @@
     }
   }
 }
+
+@layer utilities {
+  /* === 滑動摺疊效果 === */
+  .slide-collapse {
+    transition: height var(--transition-normal) ease-out;
+    overflow: hidden;
+    will-change: height;
+  }
+}
