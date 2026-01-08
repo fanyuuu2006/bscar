@@ -2,15 +2,14 @@ import Link from "next/link";
 
 export const Herosection = () => {
   return (
-    <section className="w-full h-screen flex">
-      <div className="m-auto">
-        <Link className="btn secondary py-2 px-4 rounded-full" href={"/booking"}>
-          前往預約
-        </Link>
-        <Link className="btn primary py-2 px-4 rounded-full" href={"/booking"}>
-          前往預約
-        </Link>
-        <Link className="btn py-2 px-4 rounded-full" href={"/booking"}>
+    <section
+      className="w-full h-screen"
+    >
+      <div className="container h-full flex items-center justify-center">
+        <Link
+          className="text-3xl btn primary py-3 px-6 rounded-full"
+          href={"/booking"}
+        >
           前往預約
         </Link>
       </div>

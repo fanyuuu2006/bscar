@@ -27,7 +27,7 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
   return (
     <header
       className={cn(
-        `border-b border-(--border) bg-(--background)/75 backdrop-blur-md`,
+        `border-b border-(--border) bg-(--background)`,
         className
       )}
       {...rest}
@@ -36,7 +36,7 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
         <Link href="/" className="flex h-12 items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/icons/banner.png"
+            src="/images/icons/banner.png"
             alt={title}
             className="h-full w-auto object-contain"
           />
