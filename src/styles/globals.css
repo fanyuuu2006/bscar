@@ -71,6 +71,7 @@
   /* === 按鈕樣式 === */
   button,
   .btn {
+    display: block;
     cursor: pointer;
     border: none;
     text-decoration: none;
@@ -99,6 +100,13 @@
     filter: grayscale(0.5);
     transform: none;
     box-shadow: none;
+  }
+
+  /* 基本按鈕樣式 */
+  .btn {
+    background-color: var(--background);
+    color: var(--foreground);
+    border: 2px solid var(--border);
   }
 
   /* Primary Button - 品牌主色 */
