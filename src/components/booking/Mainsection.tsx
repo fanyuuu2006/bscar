@@ -1,38 +1,54 @@
 import { locations } from "@/libs/locations";
+import { ArrowRightOutlined } from "@ant-design/icons";
 
 export const Mainsection = () => {
   return (
-    <section>
+    <section className="py-12 md:py-20">
       <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {locations.map((item) => {
             return (
               <div
                 key={item.id}
-                className="card flex flex-col overflow-hidden rounded-xl"
+                className="card flex flex-col overflow-hidden rounded-2xl"
               >
-                <div className="w-full aspect-video bg-(--muted) flex items-center justify-center">
+                <div className="w-full aspect-video overflow-hidden bg-black/20 flex items-center justify-center relative">
                   {item.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={item.imageUrl}
                       alt={`${item.city} ${item.branch}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-zinc-400 gap-2">
-                      <span className="text-4xl">🏙️</span>
+                    <div className="flex flex-col items-center justify-center h-full text-(--muted) gap-2">
+                      <span className="text-4xl" role="img">
+                        🏙️
+                      </span>
                       <span className="text-sm font-medium">暫無圖片</span>
                     </div>
                   )}
                 </div>
-                <div className="p-4 flex flex-col gap-2">
-                  <h2 className="text-2xl font-bold">
-                    《{item.city}》 {item.branch}
-                  </h2>
-                  <div className="mt-2">
-                    <button className="w-full btn primary px-4 rounded-full py-2">
-                      選擇
+
+                <div className="p-4 md:p-6 flex flex-col flex-1 gap-2">
+                  <div className="flex-1">
+                    <h2 className="text-xl md:text-2xl font-bold text-(--foreground) tracking-tight">
+                      <span role="img">📍</span>
+                      {item.city}{" "}
+                      <span className="text-base font-normal text-zinc-500">
+                        |
+                      </span>{" "}
+                      {item.branch}
+                    </h2>
+                    <address className="mt-2 text-sm text-(--muted) line-clamp-2">
+                      {item.address}
+                    </address>
+                  </div>
+
+                  <div className="pt-2">
+                    <button className="btn primary w-full font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2">
+                      <span>立即選擇</span>
+                      <ArrowRightOutlined />
                     </button>
                   </div>
                 </div>
