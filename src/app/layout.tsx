@@ -20,10 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="grid grid-rows-[auto_1fr]">
+    <html lang='zh-Hant'>
+      <body className="flex min-h-screen flex-col">
         <Header className="sticky top-0 z-50" />
-        <main>{children}</main>
+        <main className="flex-1 w-full">{children}</main>
       </body>
     </html>
   );

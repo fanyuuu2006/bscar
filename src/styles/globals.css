@@ -88,7 +88,7 @@
   button:hover,
   .btn:hover {
     text-decoration: none;
-    transform: translateY(0.125rem);
+    transform: translateY(-2px);
   }
 
   /* 禁用樣式 */
@@ -101,10 +101,18 @@
     box-shadow: none;
   }
 
-  .btn{
-    background-color: var(--background);
-    color: var(--foreground);
-    border: 1px solid var(--primary);
+  /* Primary Button - 品牌主色 */
+  .btn.primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border-color: var(--primary);
+  }
+
+  /* Secondary Button - 次要操作 */
+  .btn.secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    border-color: var(--secondary);
   }
 }
 
