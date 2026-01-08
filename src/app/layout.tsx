@@ -21,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="grid grid-rows-[auto_1fr]">
         <Header className="sticky top-0 z-50" />
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );
