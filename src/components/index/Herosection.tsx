@@ -7,6 +7,12 @@ export const Herosection = () => {
         <Link className="btn secondary py-2 px-4 rounded-full" href={"/booking"}>
           前往預約
         </Link>
+        <Link className="btn primary py-2 px-4 rounded-full" href={"/booking"}>
+          前往預約
+        </Link>
+        <Link className="btn py-2 px-4 rounded-full" href={"/booking"}>
+          前往預約
+        </Link>
       </div>
     </section>
   );
