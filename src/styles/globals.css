@@ -91,6 +91,7 @@
     transform: translateY(0.125rem);
   }
 
+  /* 禁用樣式 */
   button:disabled,
   .btn:disabled {
     opacity: 0.5;
@@ -98,6 +99,12 @@
     filter: grayscale(0.5);
     transform: none;
     box-shadow: none;
+  }
+
+  .btn{
+    background-color: var(--background);
+    color: var(--foreground);
+    border: 1px solid var(--primary);
   }
 }
 
