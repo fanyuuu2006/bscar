@@ -12,9 +12,9 @@
     --primary: #b89060; /* 用於主要按鈕、標題、強調區塊 - 稍微調深增強對比 */
     --primary-foreground: #ffffff; /* 主色背景上的文字顏色 - 改為白色 */
 
-    /* Secondary - 次要色 (淺灰) */
-    --secondary: #e4e4e7; /* 用於次要區塊、卡片背景、懸浮效果 - 改為淺灰 */
-    --secondary-foreground: #18181b; /* 次要色背景上的文字顏色 - 改為深色 */
+    /* Secondary - 次要色 (暖深灰) */
+    --secondary: #292524; /* 改為帶暖色調的深灰 (Stone)，與金色的暖色調更和諧，避免冷灰色的突兀感 */
+    --secondary-foreground: #fafafa; /* 深色背景上的文字顏色 */
 
     /* Accent - 強調色 (紅色) */
     --accent: #ef4444; /* 用於特別強調、行動呼籲 (CTA)、價格 - 稍微明亮一點 */
@@ -105,9 +105,9 @@
 
   /* 基本按鈕樣式 */
   .btn {
-    background-color: var(--background);
+    background-color: var(--background); /* 透明背景讓它更靈活，或者var(--background) */
     color: var(--foreground);
-    border: 2px solid var(--border);
+    border: 1px solid var(--muted); /* 改用稍深的 muted 顏色做邊框，並改為 1px 更精緻 */
   }
 
   /* Primary Button - 品牌主色 */
