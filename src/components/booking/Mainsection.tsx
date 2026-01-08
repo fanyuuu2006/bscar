@@ -20,7 +20,10 @@ export const Mainsection = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-(--muted-foreground)">無圖片</span>
+                    <div className="flex flex-col items-center justify-center h-full text-zinc-400 gap-2">
+                      <span className="text-4xl">🏙️</span>
+                      <span className="text-sm font-medium">暫無圖片</span>
+                    </div>
                   )}
                 </div>
                 <div className="p-4 flex flex-col gap-2">

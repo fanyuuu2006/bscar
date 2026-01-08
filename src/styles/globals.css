@@ -105,7 +105,9 @@
 
   /* 基本按鈕樣式 */
   .btn {
-    background-color: var(--background); /* 透明背景讓它更靈活，或者var(--background) */
+    background-color: var(
+      --background
+    ); /* 透明背景讓它更靈活，或者var(--background) */
     color: var(--foreground);
     border: 1px solid var(--muted); /* 改用稍深的 muted 顏色做邊框，並改為 1px 更精緻 */
   }
@@ -122,6 +124,23 @@
     background-color: var(--secondary);
     color: var(--secondary-foreground);
     border-color: var(--secondary);
+  }
+
+  /* === 卡片樣式 === */
+  .card {
+    background-color: #ffffff;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    border-color: var(--primary);
+  }
+
+  a.card:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
   }
 }
 
