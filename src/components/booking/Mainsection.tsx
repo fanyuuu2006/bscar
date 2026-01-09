@@ -2,9 +2,25 @@
 import { bookingSteps, useBooking } from "@/contexts/BookingContext";
 import { LocationsDiv } from "./LocationsDiv";
 import { cn } from "@/utils/className";
+import { useMemo } from "react";
 
 export const Mainsection = () => {
   const booking = useBooking();
+
+  const renderStepContent = useMemo(() => {
+    switch (booking.currStep) {
+      case "location":
+        return <LocationsDiv />;
+      // case "service":
+      //     return <ServicesDiv />;
+      // case "time":
+      //     return <TimeDiv />;
+      // case "info":
+      //     return <InfoDiv />;
+      default:
+        return null;
+    }
+  }, [booking.currStep]);
 
   return (
     <section>
@@ -36,7 +52,8 @@ export const Mainsection = () => {
             );
           })}
         </div>
-        <LocationsDiv />
+        {/* 選擇區塊 */}
+        {renderStepContent}
       </div>
     </section>
   );
