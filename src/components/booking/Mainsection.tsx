@@ -25,14 +25,15 @@ export const Mainsection = () => {
         {/* 標籤切換欄 */}
         <div className="w-full flex items-center gap-6 overflow-x-auto pb-4 mb-8 border-b border-(--border)">
           {bookingSteps.map((step, index) => {
-            const data = booking.data[step.value];
+            const data =
+              step.value !== "info" ? booking.data[step.value] : undefined;
             return (
               <button
                 disabled={booking.getStepIndex(booking.currStep) < index}
                 key={step.value}
                 className={cn(
                   `w-full text-(--muted) whitespace-nowrap font-medium`,
-                  "flex flex-col justify-center items-center p-2",
+                  "flex flex-col items-center p-2",
                   {
                     "text-(--primary)": booking.currStep === step.value,
                   }
@@ -43,7 +44,7 @@ export const Mainsection = () => {
                 }}
               >
                 <span className="text-lg md:text-xl">{step.label}</span>
-                <span className="text-sm mt-1">{data ? data : "未選擇"}</span>
+                {data && <span className="text-sm mt-1">{data}</span>}
               </button>
             );
           })}
