@@ -11,11 +11,16 @@ export const bookingSteps = [
   { value: "location", label: "地點" },
   { value: "service", label: "服務" },
   { value: "time", label: "時間" },
-  { value: "info", label: "資訊" },
+  { value: "info", label: "資料" },
 ] as const;
 
 export type BookingStep = (typeof bookingSteps)[number]["value"];
-export type BookingData = Record<BookingStep, string | undefined>;
+export type BookingData = {
+  location: string | undefined;
+  service: string | undefined;
+  time: string | undefined;
+  info: string | undefined;
+};
 
 interface BookingContextType {
   // 核心狀態
