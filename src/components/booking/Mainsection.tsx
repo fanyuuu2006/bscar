@@ -2,23 +2,20 @@
 import { bookingSteps, useBooking } from "@/contexts/BookingContext";
 import { LocationsDiv } from "./LocationsDiv";
 import { cn } from "@/utils/className";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 
 export const Mainsection = () => {
   const booking = useBooking();
 
-  const renderStepContent = useMemo(() => {
+  const StepContent = useMemo(() => {
     switch (booking.currStep) {
       case "location":
-        return <LocationsDiv />;
+        return LocationsDiv;
       // case "service":
-      //     return <ServicesDiv />;
       // case "time":
-      //     return <TimeDiv />;
       // case "info":
-      //     return <InfoDiv />;
       default:
-        return null;
+        return Fragment;
     }
   }, [booking.currStep]);
 
@@ -31,6 +28,7 @@ export const Mainsection = () => {
             const data = booking.data[step.value];
             return (
               <button
+                disabled={booking.getStepIndex(booking.currStep) < index}
                 key={step.value}
                 className={cn(
                   `w-full text-(--muted) whitespace-nowrap font-medium`,
@@ -40,10 +38,8 @@ export const Mainsection = () => {
                   }
                 )}
                 onClick={() => {
-                  if (booking.getStepIndex(booking.currStep) > index) {
-                    booking.setCurrStep(step.value);
-                    booking.setBookingData(step.value, undefined);
-                  }
+                  booking.setCurrStep(step.value);
+                  booking.setBookingData(step.value, undefined);
                 }}
               >
                 <span className="text-lg md:text-xl">{step.label}</span>
@@ -53,7 +49,7 @@ export const Mainsection = () => {
           })}
         </div>
         {/* 選擇區塊 */}
-        {renderStepContent}
+        <StepContent />
       </div>
     </section>
   );
