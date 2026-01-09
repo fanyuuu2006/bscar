@@ -27,7 +27,7 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
   return (
     <header
       className={cn(
-        `border-b border-(--border) bg-(--background)`,
+        `border-b border-(--border) bg-(--background) shadow-sm`,
         className
       )}
       {...rest}

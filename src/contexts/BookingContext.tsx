@@ -1,8 +1,14 @@
-import { createContext, useMemo, useState } from "react";
+"use client";
+import { createContext, useContext, useMemo, useState } from "react";
 
-const bookingTags = ["location", "service", "time", "info"] as const;
+const bookingTags = [
+  { value: "location", label: "地點" },
+  { value: "service", label: "服務" },
+  { value: "time", label: "時間" },
+  { value: "info", label: "資訊" },
+] as const;
 
-export type BookingTag = (typeof bookingTags)[number];
+export type BookingTag = (typeof bookingTags)[number]["value"];
 
 type BookingContextType = {
   tags: typeof bookingTags;
@@ -29,7 +35,7 @@ export const BookingProvider = ({
 };
 
 export const useBooking = () => {
-  const context = createContext(bookingContext);
+  const context = useContext(bookingContext);
   if (!context) {
     throw new Error("useBooking 必須在 BookingProvider 中使用");
   }
