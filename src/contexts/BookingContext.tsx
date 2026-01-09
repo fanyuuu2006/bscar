@@ -18,18 +18,21 @@ export type BookingStep = (typeof bookingSteps)[number]["value"];
 
 export type Location = {
   id: string;
-  city: string; // 例如：台北
-  branch: string; // 例如：信義店
+  city: string;
+  branch: string;
   address: string;
-  imageUrl?: string; // 若為 undefined 則顯示預設圖標
+  imageUrl?: string;
 };
 
 export type Service = {
   id: string;
   name: string;
   description?: string;
+  price?: number | string; // 建議：通常服務會有價格
+  duration?: number; // 建議：通常服務會有時長
 };
 
+// 建議：使用 Date 有時會遇到序列化問題，但若只在 Client 端使用是 OK 的
 export type Time = Date;
 
 export type Info = {
@@ -46,22 +49,31 @@ export type BookingData = {
 };
 
 interface BookingContextType {
-  // 核心狀態
   currStep: BookingStep;
-
-  // 導航動作
-  setCurrStep: (step: BookingStep) => void;
+  toStep: (step: BookingStep) => void;
   nextStep: () => void;
   prevStep: () => void;
-
   getStepIndex: (step: BookingStep) => number;
 
-  // 資料操作
   data: BookingData;
-  setBookingData: (key: BookingStep, value: string | undefined) => void;
+
+  setBookingData: <K extends keyof BookingData>(
+    key: K,
+    value: BookingData[K]
+  ) => void;
+
+  // 新增：重置表單
+  resetBooking: () => void;
 }
 
 const BookingContext = createContext<BookingContextType | null>(null);
+
+const INITIAL_DATA: BookingData = {
+  location: undefined,
+  service: undefined,
+  time: undefined,
+  info: undefined,
+};
 
 export const BookingProvider = ({
   children,
@@ -69,12 +81,25 @@ export const BookingProvider = ({
   children: React.ReactNode;
 }>) => {
   const [currStep, setCurrStep] = useState<BookingStep>(bookingSteps[0].value);
-  const [data, setData] = useState<BookingData>({
-    location: undefined,
-    service: undefined,
-    time: undefined,
-    info: undefined,
-  });
+  const [data, setData] = useState<BookingData>(INITIAL_DATA);
+
+  const toStep = useCallback(
+    (step: BookingStep) => {
+      // 先清除此步驟與後續步驟的值
+      setData((prev) => {
+        const newData = { ...prev };
+        const targetIdx = bookingSteps.findIndex((s) => s.value === step);
+        bookingSteps.forEach((s, idx) => {
+          if (idx >= targetIdx) {
+            newData[s.value as keyof BookingData] = undefined;
+          }
+        });
+        return newData;
+      });
+      setCurrStep(step);
+    },
+    []
+  );
 
   const prevStep = useCallback(() => {
     setCurrStep((prev) => {
@@ -97,24 +122,38 @@ export const BookingProvider = ({
   }, []);
 
   const setBookingData = useCallback(
-    (key: BookingStep, value: string | undefined) => {
+    <K extends keyof BookingData>(key: K, value: BookingData[K]) => {
       setData((prev) => ({ ...prev, [key]: value }));
     },
     []
   );
 
+  const resetBooking = useCallback(() => {
+    setData(INITIAL_DATA);
+    setCurrStep(bookingSteps[0].value);
+  }, []);
+
   const value = useMemo(
     () => ({
       currStep,
-      setCurrStep,
+      toStep,
       nextStep,
       prevStep,
-
       getStepIndex,
       data,
       setBookingData,
+      resetBooking,
     }),
-    [currStep, data, getStepIndex, nextStep, prevStep, setBookingData]
+    [
+      currStep,
+      toStep,
+      nextStep,
+      prevStep,
+      getStepIndex,
+      data,
+      setBookingData,
+      resetBooking,
+    ]
   );
 
   return (

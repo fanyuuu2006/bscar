@@ -1,8 +1,32 @@
 "use client";
-import { bookingSteps, useBooking } from "@/contexts/BookingContext";
+import {
+  BookingData,
+  BookingStep,
+  bookingSteps,
+  Location,
+  Service,
+  Time,
+  useBooking,
+} from "@/contexts/BookingContext";
 import { LocationsDiv } from "./LocationsDiv";
 import { cn } from "@/utils/className";
 import { Fragment, useMemo } from "react";
+import { formatDate } from "@/utils/date";
+
+const getDisplayValue = <K extends BookingStep>(
+  stepValue: K,
+  rawData: BookingData[K]
+) => {
+  if (!rawData) return "";
+  if (stepValue === "location") {
+    return `${(rawData as Location).city}-${(rawData as Location).branch}`;
+  } else if (stepValue === "service") {
+    return (rawData as Service).name;
+  } else if (stepValue === "time") {
+    return formatDate("YYYY/MM/DD HH:MM", rawData as Time);
+  }
+  return "";
+};
 
 export const Mainsection = () => {
   const booking = useBooking();
@@ -25,26 +49,32 @@ export const Mainsection = () => {
         {/* 標籤切換欄 */}
         <div className="w-full flex items-center gap-6 overflow-x-auto pb-4 mb-8 border-b border-(--border)">
           {bookingSteps.map((step, index) => {
-            const data =
-              step.value !== "info" ? booking.data[step.value] : undefined;
+            const displayValue = getDisplayValue(
+              step.value,
+              booking.data[step.value]
+            );
+
             return (
               <button
                 disabled={booking.getStepIndex(booking.currStep) < index}
                 key={step.value}
                 className={cn(
-                  `w-full text-(--muted) whitespace-nowrap font-medium`,
-                  "flex flex-col items-center p-2",
+                  `w-full text-(--muted) whitespace-nowrap font-medium transition-colors`,
+                  "flex flex-col items-center p-2 hover:bg-black/5 rounded-lg",
                   {
                     "text-(--primary)": booking.currStep === step.value,
                   }
                 )}
                 onClick={() => {
-                  booking.setCurrStep(step.value);
-                  booking.setBookingData(step.value, undefined);
+                  booking.toStep(step.value);
                 }}
               >
                 <span className="text-lg md:text-xl">{step.label}</span>
-                {data && <span className="text-sm mt-1">{data}</span>}
+                {displayValue && (
+                  <span className="text-sm mt-1 font-normal opacity-80 truncate max-w-32">
+                    {displayValue}
+                  </span>
+                )}
               </button>
             );
           })}

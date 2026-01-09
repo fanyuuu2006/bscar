@@ -1,9 +1,11 @@
+import { useBooking } from "@/contexts/BookingContext";
 import { locations } from "@/libs/locations";
 import { cn } from "@/utils/className";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
 type LocationsDivProps = React.HTMLAttributes<HTMLDivElement>;
 export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
+  const booking = useBooking();
   return (
     <div
       className={cn(
@@ -50,7 +52,13 @@ export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
               </div>
 
               <div className="pt-2">
-                <button className="btn primary w-full font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2">
+                <button
+                  className="btn primary w-full font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2"
+                  onClick={() => {
+                    booking.setBookingData("location", item);
+                    booking.nextStep();
+                  }}
+                >
                   <span>立即選擇</span>
                   <ArrowRightOutlined />
                 </button>
