@@ -14,18 +14,23 @@ import { Fragment, useMemo } from "react";
 import { formatDate } from "@/utils/date";
 
 const getDisplayValue = <K extends BookingStep>(
-  stepValue: K,
-  rawData: BookingData[K]
+  step: K,
+  data: BookingData[K]
 ) => {
-  if (!rawData) return "";
-  if (stepValue === "location") {
-    return `${(rawData as Location).city}-${(rawData as Location).branch}`;
-  } else if (stepValue === "service") {
-    return (rawData as Service).name;
-  } else if (stepValue === "time") {
-    return formatDate("YYYY/MM/DD HH:MM", rawData as Time);
+  if (!data) return "";
+
+  switch (step) {
+    case "location": {
+      const { city, branch } = data as Location;
+      return `${city}-${branch}`;
+    }
+    case "service":
+      return (data as Service).name;
+    case "time":
+      return formatDate("YYYY/MM/DD HH:MM", data as Time);
+    default:
+      return "";
   }
-  return "";
 };
 
 export const Mainsection = () => {
@@ -71,7 +76,7 @@ export const Mainsection = () => {
               >
                 <span className="text-lg md:text-xl">{step.label}</span>
                 {displayValue && (
-                  <span className="text-sm mt-1 font-normal opacity-80 truncate max-w-32">
+                  <span className="text-xs md:text-sm mt-1 font-normal opacity-80 truncate max-w-[14ch]">
                     {displayValue}
                   </span>
                 )}
