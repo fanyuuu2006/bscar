@@ -15,11 +15,34 @@ export const bookingSteps = [
 ] as const;
 
 export type BookingStep = (typeof bookingSteps)[number]["value"];
+
+export type Location = {
+  id: string;
+  city: string; // 例如：台北
+  branch: string; // 例如：信義店
+  address: string;
+  imageUrl?: string; // 若為 undefined 則顯示預設圖標
+};
+
+export type Service = {
+  id: string;
+  name: string;
+  description?: string;
+};
+
+export type Time = Date;
+
+export type Info = {
+  name: string;
+  phone: string;
+  email: string;
+};
+
 export type BookingData = {
-  location: string | undefined;
-  service: string | undefined;
-  time: string | undefined;
-  info: string | undefined;
+  location: Location | undefined;
+  service: Service | undefined;
+  time: Time | undefined;
+  info: Info | undefined;
 };
 
 interface BookingContextType {

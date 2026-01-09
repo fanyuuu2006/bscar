@@ -1,10 +1,4 @@
-export type Location = {
-  id: string;
-  city: string; // 例如：台北
-  branch: string; // 例如：信義店
-  address: string;
-  imageUrl?: string; // 若為 undefined 則顯示預設圖標
-};
+import { Location } from "@/contexts/BookingContext";
 
 export const locations: Location[] = [
   {

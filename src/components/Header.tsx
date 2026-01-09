@@ -42,7 +42,7 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
           />
         </Link>
 
-        <div className="text-xl md:hidden">
+        <div className="text-xl hover:text-(--primary) md:hidden">
           <Burger
             id="header-burger"
             checked={menuShow}
