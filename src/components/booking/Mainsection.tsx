@@ -4,25 +4,25 @@ import { LocationsDiv } from "./LocationsDiv";
 import { cn } from "@/utils/className";
 
 export const Mainsection = () => {
-  const { currTag, setCurrTag, tags } = useBooking();
+  const { currStep, setCurrStep, steps } = useBooking();
 
   return (
     <section>
       <div className="container flex flex-col py-12 md:py-20">
         {/* 標籤切換欄 */}
         <div className="w-full flex items-center gap-6 overflow-x-auto pb-4 mb-8 border-b border-(--border)">
-          {tags.map((tag) => (
+          {steps.map((step) => (
             <button
-              key={tag.value}
+              key={step.value}
               className={cn(
                 `w-full text-(--muted) p-2 whitespace-nowrap font-medium`,
                 {
-                  "text-(--primary)": currTag === tag.value,
+                  "text-(--primary)": currStep === step.value,
                 }
               )}
-              onClick={() => setCurrTag(tag.value)}
+              onClick={() => setCurrStep(step.value)}
             >
-              {tag.label}
+              {step.label}
             </button>
           ))}
         </div>

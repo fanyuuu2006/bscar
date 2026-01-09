@@ -1,19 +1,19 @@
 "use client";
 import { createContext, useContext, useMemo, useState } from "react";
 
-const bookingTags = [
+const bookingSteps = [
   { value: "location", label: "地點" },
   { value: "service", label: "服務" },
   { value: "time", label: "時間" },
   { value: "info", label: "資訊" },
 ] as const;
 
-export type BookingTag = (typeof bookingTags)[number]["value"];
+export type BookingStep = (typeof bookingSteps)[number]["value"];
 
 type BookingContextType = {
-  tags: typeof bookingTags;
-  currTag: BookingTag;
-  setCurrTag: React.Dispatch<React.SetStateAction<BookingTag>>;
+  steps: typeof bookingSteps;
+  currStep: BookingStep;
+  setCurrStep: React.Dispatch<React.SetStateAction<BookingStep>>;
 };
 
 const bookingContext = createContext<BookingContextType | null>(null);
@@ -23,11 +23,11 @@ export const BookingProvider = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const [currTag, setCurrTag] = useState<BookingTag>("location");
+  const [currStep, setCurrStep] = useState<BookingStep>("location");
 
   const value = useMemo(
-    () => ({ tags: bookingTags, currTag, setCurrTag }),
-    [currTag, setCurrTag]
+    () => ({ steps: bookingSteps, currStep, setCurrStep }),
+    [currStep, setCurrStep]
   );
   return (
     <bookingContext.Provider value={value}>{children}</bookingContext.Provider>
