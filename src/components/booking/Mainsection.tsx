@@ -4,14 +4,14 @@ import { LocationsDiv } from "./LocationsDiv";
 import { cn } from "@/utils/className";
 
 export const Mainsection = () => {
-  const { currStep, setCurrStep } = useBooking();
+  const { currStep, setCurrStep, getStepIndex, setBookingData } = useBooking();
 
   return (
     <section>
       <div className="container flex flex-col py-12 md:py-20">
         {/* 標籤切換欄 */}
         <div className="w-full flex items-center gap-6 overflow-x-auto pb-4 mb-8 border-b border-(--border)">
-          {bookingSteps.map((step) => (
+          {bookingSteps.map((step, index) => (
             <button
               key={step.value}
               className={cn(
@@ -20,7 +20,12 @@ export const Mainsection = () => {
                   "text-(--primary)": currStep === step.value,
                 }
               )}
-              onClick={() => setCurrStep(step.value)}
+              onClick={() => {
+                if (getStepIndex(currStep) > index) {
+                  setCurrStep(step.value);
+                  setBookingData(step.value, undefined);
+                }
+              }}
             >
               {step.label}
             </button>

@@ -8,42 +8,40 @@ import {
 } from "react";
 
 export const bookingSteps = [
-  { id: 1, value: "location", label: "地點" },
-  { id: 2, value: "service", label: "服務" },
-  { id: 3, value: "time", label: "時間" },
-  { id: 4, value: "info", label: "資訊" },
+  { value: "location", label: "地點" },
+  { value: "service", label: "服務" },
+  { value: "time", label: "時間" },
+  { value: "info", label: "資訊" },
 ] as const;
 
 export type BookingStep = (typeof bookingSteps)[number]["value"];
+export type BookingData = Record<BookingStep, string | undefined>;
 
-export type Location = {
-  id: string;
-  city: string; // 例如：台北
-  branch: string; // 例如：信義店
-  address: string;
-  imageUrl?: string; // 若為 undefined 則顯示預設圖標
-};
-
-type BookingContextType = {
-  data: Record<
-    BookingStep,
-    { get: () => string | undefined; set: (value: string) => void }
-  >;
+interface BookingContextType {
+  // 核心狀態
   currStep: BookingStep;
-  setCurrStep: React.Dispatch<React.SetStateAction<BookingStep>>;
-  prevStep: () => void;
-  nextStep: () => void;
-};
 
-const bookingContext = createContext<BookingContextType | null>(null);
+  // 導航動作
+  setCurrStep: (step: BookingStep) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+
+  getStepIndex: (step: BookingStep) => number;
+
+  // 資料操作
+  data: BookingData;
+  setBookingData: (key: BookingStep, value: string | undefined) => void;
+}
+
+const BookingContext = createContext<BookingContextType | null>(null);
 
 export const BookingProvider = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const [currStep, setCurrStep] = useState<BookingStep>("location");
-  const [data, setData] = useState<Record<BookingStep, string | undefined>>({
+  const [currStep, setCurrStep] = useState<BookingStep>(bookingSteps[0].value);
+  const [data, setData] = useState<BookingData>({
     location: undefined,
     service: undefined,
     time: undefined,
@@ -52,39 +50,52 @@ export const BookingProvider = ({
 
   const prevStep = useCallback(() => {
     setCurrStep((prev) => {
-      const currentIndex = bookingSteps.findIndex(
-        (step) => step.value === prev
-      );
-      if (currentIndex > 0) {
-        return bookingSteps[currentIndex - 1].value;
-      }
+      const idx = bookingSteps.findIndex((s) => s.value === prev);
+      if (idx > 0) return bookingSteps[idx - 1].value;
       return prev;
     });
   }, []);
 
   const nextStep = useCallback(() => {
     setCurrStep((prev) => {
-      const currentIndex = bookingSteps.findIndex(
-        (step) => step.value === prev
-      );
-      if (currentIndex < bookingSteps.length - 1) {
-        return bookingSteps[currentIndex + 1].value;
-      }
+      const idx = bookingSteps.findIndex((s) => s.value === prev);
+      if (idx < bookingSteps.length - 1) return bookingSteps[idx + 1].value;
       return prev;
     });
   }, []);
 
-  const value = useMemo(
-    () => ({ currStep, setCurrStep, data, prevStep, nextStep }),
-    [currStep, data, prevStep, nextStep]
+  const getStepIndex = useCallback((step: BookingStep) => {
+    return bookingSteps.findIndex((s) => s.value === step);
+  }, []);
+
+  const setBookingData = useCallback(
+    (key: BookingStep, value: string | undefined) => {
+      setData((prev) => ({ ...prev, [key]: value }));
+    },
+    []
   );
+
+  const value = useMemo(
+    () => ({
+      currStep,
+      setCurrStep,
+      nextStep,
+      prevStep,
+
+      getStepIndex,
+      data,
+      setBookingData,
+    }),
+    [currStep, data, getStepIndex, nextStep, prevStep, setBookingData]
+  );
+
   return (
-    <bookingContext.Provider value={value}>{children}</bookingContext.Provider>
+    <BookingContext.Provider value={value}>{children}</BookingContext.Provider>
   );
 };
 
 export const useBooking = () => {
-  const context = useContext(bookingContext);
+  const context = useContext(BookingContext);
   if (!context) {
     throw new Error("useBooking 必須在 BookingProvider 中使用");
   }
