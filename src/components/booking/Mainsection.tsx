@@ -68,8 +68,8 @@ export const Mainsection = () => {
                 disabled={booking.getStepIndex(booking.currStep) < index}
                 key={step.value}
                 className={cn(
-                  `w-full text-(--muted) whitespace-nowrap font-medium`,
-                  "flex flex-col items-center p-2 hover:bg-black/5 rounded-lg",
+                  `w-full h-[3em] text-(--muted) whitespace-nowrap font-medium`,
+                  "flex flex-col justify-center items-center hover:bg-black/5 rounded-lg",
                   {
                     "text-(--primary)": booking.currStep === step.value,
                   }

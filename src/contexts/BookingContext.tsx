@@ -83,12 +83,12 @@ export const BookingProvider = ({
   const [data, setData] = useState<BookingData>(INITIAL_DATA);
 
   const toStep = useCallback((step: BookingStep) => {
-    // 先清除此步驟與後續步驟的值
+    // 先清除後續步驟的值
     setData((prev) => {
       const newData = { ...prev };
       const targetIdx = bookingSteps.findIndex((s) => s.value === step);
       bookingSteps.forEach((s, idx) => {
-        if (idx >= targetIdx) {
+        if (idx > targetIdx) {
           newData[s.value as keyof BookingData] = undefined;
         }
       });
