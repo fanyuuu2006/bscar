@@ -62,25 +62,29 @@ export const Mainsection = () => {
               step.value,
               booking.data[step.value]
             );
+            const isActive = booking.currStep === step.value;
 
             return (
               <button
                 disabled={booking.getStepIndex(booking.currStep) < index}
                 key={step.value}
                 className={cn(
-                  `w-full h-[3em] text-(--muted) whitespace-nowrap font-medium`,
-                  "flex flex-col justify-center items-center hover:bg-black/5 rounded-lg",
-                  {
-                    "text-(--primary)": booking.currStep === step.value,
-                  }
+                  `w-full h-[3em] whitespace-nowrap font-medium`,
+                  "flex flex-col justify-center items-center hover:bg-black/5 rounded-lg"
                 )}
                 onClick={() => {
                   booking.toStep(step.value);
                 }}
               >
-                <span className="text-lg md:text-xl">{step.label}</span>
+                <span
+                  className={cn("text-lg md:text-xl", {
+                    "font-bold": isActive,
+                  })}
+                >
+                  {step.label}
+                </span>
                 {displayValue && (
-                  <span className="text-xs md:text-sm mt-1 font-normal opacity-80 truncate max-w-[14ch]">
+                  <span className="text-xs md:text-sm  text-(--muted) mt-1 font-normal opacity-80 truncate max-w-[14ch]">
                     {displayValue}
                   </span>
                 )}
@@ -94,5 +98,3 @@ export const Mainsection = () => {
     </section>
   );
 };
-
-
