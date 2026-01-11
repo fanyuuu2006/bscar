@@ -6,7 +6,7 @@ type LocationsDivProps = React.HTMLAttributes<HTMLDivElement>;
 export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
   const booking = useBooking();
   return (
-    <div className={cn(className)} {...rest}>
+    <div className={cn('grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6', className)} {...rest}>
       {locations.map((item) => {
         return (
           <div

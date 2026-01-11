@@ -13,6 +13,7 @@ import { cn } from "@/utils/className";
 import { Fragment, useMemo } from "react";
 import { formatDate } from "@/utils/date";
 import { ServiceDiv } from "./ServiceDiv";
+import { TimeDiv } from "./TimeDiv";
 
 const getDisplayValue = <K extends BookingStep>(
   step: K,
@@ -43,7 +44,8 @@ export const Mainsection = () => {
         return LocationsDiv;
       case "service":
         return ServiceDiv;
-      // case "time":
+      case "time":
+        return TimeDiv;
       // case "info":
       default:
         return Fragment;
@@ -87,7 +89,7 @@ export const Mainsection = () => {
           })}
         </div>
         {/* 選擇區塊 */}
-        <StepContent className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6" />
+        <StepContent className="" />
       </div>
     </section>
   );
