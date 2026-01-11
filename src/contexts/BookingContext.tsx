@@ -30,6 +30,7 @@ export type Service = {
   description?: string;
   price?: number | string; // 建議：通常服務會有價格
   duration?: number; // 建議：通常服務會有時長
+  imageUrl?: string;
 };
 
 // 建議：使用 Date 有時會遇到序列化問題，但若只在 Client 端使用是 OK 的
@@ -83,23 +84,20 @@ export const BookingProvider = ({
   const [currStep, setCurrStep] = useState<BookingStep>(bookingSteps[0].value);
   const [data, setData] = useState<BookingData>(INITIAL_DATA);
 
-  const toStep = useCallback(
-    (step: BookingStep) => {
-      // 先清除此步驟與後續步驟的值
-      setData((prev) => {
-        const newData = { ...prev };
-        const targetIdx = bookingSteps.findIndex((s) => s.value === step);
-        bookingSteps.forEach((s, idx) => {
-          if (idx >= targetIdx) {
-            newData[s.value as keyof BookingData] = undefined;
-          }
-        });
-        return newData;
+  const toStep = useCallback((step: BookingStep) => {
+    // 先清除此步驟與後續步驟的值
+    setData((prev) => {
+      const newData = { ...prev };
+      const targetIdx = bookingSteps.findIndex((s) => s.value === step);
+      bookingSteps.forEach((s, idx) => {
+        if (idx >= targetIdx) {
+          newData[s.value as keyof BookingData] = undefined;
+        }
       });
-      setCurrStep(step);
-    },
-    []
-  );
+      return newData;
+    });
+    setCurrStep(step);
+  }, []);
 
   const prevStep = useCallback(() => {
     setCurrStep((prev) => {

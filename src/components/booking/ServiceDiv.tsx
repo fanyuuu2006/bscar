@@ -1,9 +1,13 @@
 import { useBooking } from "@/contexts/BookingContext";
-import { locations } from "@/libs/locations";
+import { services } from "@/libs/services";
 import { cn } from "@/utils/className";
+import { DistributiveOmit } from "fanyucomponents";
 
-type LocationsDivProps = React.HTMLAttributes<HTMLDivElement>;
-export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
+type ServiceDivProps = DistributiveOmit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+>;
+export const ServiceDiv = ({ className, ...rest }: ServiceDivProps) => {
   const booking = useBooking();
   return (
     <div
@@ -13,7 +17,7 @@ export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
       )}
       {...rest}
     >
-      {locations.map((item) => {
+      {services.map((item) => {
         return (
           <div
             key={item.id}
@@ -24,7 +28,7 @@ export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={item.imageUrl}
-                  alt={`${item.city} ${item.branch}`}
+                  alt={item.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
@@ -40,13 +44,10 @@ export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
             <div className="p-4 flex flex-col flex-1 gap-2">
               <div className="flex-1">
                 <h2 className="text-xl md:text-2xl font-bold text-(--foreground) tracking-tight">
-                  <span role="img">📍</span>
-                  {item.city}{" "}
-                  <span className="text-base font-normal text-zinc-500">|</span>{" "}
-                  {item.branch}
+                  {item.name}
                 </h2>
                 <address className="mt-2 text-sm text-(--muted) line-clamp-2">
-                  {item.address}
+                  {item.description}
                 </address>
               </div>
 
@@ -54,7 +55,7 @@ export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
                 <button
                   className="btn primary w-full font-semibold py-2 px-4 rounded-full flex items-center justify-center gap-2"
                   onClick={() => {
-                    booking.setBookingData("location", item);
+                    booking.setBookingData("service", item);
                     booking.nextStep();
                   }}
                 >

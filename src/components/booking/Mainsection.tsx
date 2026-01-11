@@ -12,6 +12,7 @@ import { LocationsDiv } from "./LocationsDiv";
 import { cn } from "@/utils/className";
 import { Fragment, useMemo } from "react";
 import { formatDate } from "@/utils/date";
+import { ServiceDiv } from "./ServiceDiv";
 
 const getDisplayValue = <K extends BookingStep>(
   step: K,
@@ -40,7 +41,8 @@ export const Mainsection = () => {
     switch (booking.currStep) {
       case "location":
         return LocationsDiv;
-      // case "service":
+      case "service":
+        return ServiceDiv;
       // case "time":
       // case "info":
       default:
@@ -64,7 +66,7 @@ export const Mainsection = () => {
                 disabled={booking.getStepIndex(booking.currStep) < index}
                 key={step.value}
                 className={cn(
-                  `w-full text-(--muted) whitespace-nowrap font-medium transition-colors`,
+                  `w-full text-(--muted) whitespace-nowrap font-medium`,
                   "flex flex-col items-center p-2 hover:bg-black/5 rounded-lg",
                   {
                     "text-(--primary)": booking.currStep === step.value,
