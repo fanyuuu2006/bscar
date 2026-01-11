@@ -46,9 +46,18 @@ export const ServiceDiv = ({ className, ...rest }: ServiceDivProps) => {
                 <h2 className="text-xl md:text-2xl font-bold text-(--foreground) tracking-tight">
                   {item.name}
                 </h2>
-                <address className="mt-2 text-sm text-(--muted) whitespace-pre-wrap">
-                  {item.description}
-                </address>
+                <div className="mt-2 flex flex-col gap-1.5">
+                  {item.description?.split("\n").map((line, i) => (
+                    <p
+                      key={i}
+                      className={cn(
+                        "text-sm whitespace-pre-wrap text-(--muted) leading-relaxed"
+                      )}
+                    >
+                      {line}
+                    </p>
+                  ))}
+                </div>
               </div>
 
               <div className="pt-2">
