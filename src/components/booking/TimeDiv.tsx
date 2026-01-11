@@ -49,6 +49,15 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
             <RightOutlined />
           </button>
         </div>
+
+        <div className="grid grid-cols-7 gap-2 mt-4">
+          {WEEKDAYS.map((day) => (
+            <div key={day} className="text-center font-medium text-(--muted)">
+              {day}
+            </div>
+          ))}
+          {/* 日期格子 */}
+        </div>
       </div>
     </div>
   );
