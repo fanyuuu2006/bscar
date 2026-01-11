@@ -87,8 +87,10 @@ export const Mainsection = () => {
           })}
         </div>
         {/* 選擇區塊 */}
-        <StepContent />
+        <StepContent className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6" />
       </div>
     </section>
   );
 };
+
+
