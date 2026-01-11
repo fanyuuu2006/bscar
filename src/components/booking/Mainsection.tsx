@@ -70,7 +70,7 @@ export const Mainsection = () => {
                 key={step.value}
                 className={cn(
                   `w-full h-[3em] whitespace-nowrap font-medium`,
-                  "flex flex-col justify-center items-center hover:bg-black/5 rounded-lg"
+                  "flex flex-col justify-center items-center rounded-lg"
                 )}
                 onClick={() => {
                   booking.toStep(step.value);
