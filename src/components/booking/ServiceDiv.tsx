@@ -46,7 +46,7 @@ export const ServiceDiv = ({ className, ...rest }: ServiceDivProps) => {
                 <h2 className="text-xl md:text-2xl font-bold text-(--foreground) tracking-tight">
                   {item.name}
                 </h2>
-                <address className="mt-2 text-sm text-(--muted) line-clamp-2">
+                <address className="mt-2 text-sm text-(--muted) whitespace-pre-wrap">
                   {item.description}
                 </address>
               </div>

@@ -28,8 +28,6 @@ export type Service = {
   id: string;
   name: string;
   description?: string;
-  price?: number | string; // 建議：通常服務會有價格
-  duration?: number; // 建議：通常服務會有時長
   imageUrl?: string;
 };
 
