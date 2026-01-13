@@ -46,33 +46,31 @@ export const Calender = ({
   return (
     <div
       className={cn(
-        "card flex flex-col gap-2 p-4 md:p-6 rounded-2xl shadow-sm",
+        "card flex flex-col gap-2 p-4 md:p-6 rounded-2xl",
         className
       )}
       {...rest}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
+        <button
+          type="button"
+          className="text-[1.2em] text-(--muted) flex items-center justify-center"
+          onClick={() => handleMonthChange(-1)}
+          aria-label="上個月"
+        >
+          <LeftOutlined />
+        </button>
         <h2 className="text-[1.5em] font-bold text-(--secondary) tracking-tight">
           {`${currentDate.getFullYear()} 年 ${currentDate.getMonth() + 1} 月`}
         </h2>
-        <div className="text-[1.2em] flex gap-4">
-          <button
-            type="button"
-            className="text-(--muted) flex items-center justify-center"
-            onClick={() => handleMonthChange(-1)}
-            aria-label="上個月"
-          >
-            <LeftOutlined />
-          </button>
-          <button
-            type="button"
-            className="text-(--muted) flex items-center justify-center"
-            onClick={() => handleMonthChange(1)}
-            aria-label="下個月"
-          >
-            <RightOutlined />
-          </button>
-        </div>
+        <button
+          type="button"
+          className="text-[1.2em] text-(--muted) flex items-center justify-center"
+          onClick={() => handleMonthChange(1)}
+          aria-label="下個月"
+        >
+          <RightOutlined />
+        </button>
       </div>
 
       <div className="grid grid-cols-7 border-b border-(--border) pb-2">
