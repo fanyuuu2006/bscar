@@ -84,7 +84,7 @@ export const Mainsection = () => {
                   {step.label}
                 </span>
                 {displayValue && (
-                  <span className="text-xs md:text-sm  text-(--muted) mt-1 font-normal opacity-80 truncate max-w-[14ch]">
+                  <span className="text-xs md:text-sm  text-(--muted) mt-1 font-normal opacity-80">
                     {displayValue}
                   </span>
                 )}

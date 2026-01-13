@@ -67,7 +67,7 @@ export const Calender = ({
         </button>
         <button
           type="button"
-          className="relative flex items-center justify-center gap-1"
+          className="relative flex items-center justify-center gap-1 text-nowrap"
           onClick={() => {
             inputRef.current?.showPicker();
           }}
@@ -139,7 +139,7 @@ export const Calender = ({
                 type="button"
                 disabled={isDisabled}
                 className={cn(
-                  "relative h-full p-2 aspect-square rounded-full flex flex-col items-center justify-center transition-all",
+                  "relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
                   "text-[1em] font-medium",
                   {
                     "bg-(--primary) text-white": isSelected,
@@ -157,7 +157,7 @@ export const Calender = ({
                     <span className="sr-only">（今天）</span>
                     <span
                       className={cn(
-                        "absolute bottom-1 h-1 aspect-square rounded-full bg-(--primary)",
+                        "absolute bottom-1 h-[0.25em] aspect-square rounded-full bg-(--primary)",
                         {
                           "bg-(--background)": isSelected,
                         }
