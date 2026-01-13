@@ -2,6 +2,7 @@ import { Service, useBooking } from "@/contexts/BookingContext";
 import { useModal } from "@/hooks/useModal";
 import { services } from "@/libs/services";
 import { cn } from "@/utils/className";
+import { CloseOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import React from "react";
 
@@ -91,19 +92,58 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
           </div>
         </div>
       </div>
-      <modal.Container className="flex items-center justify-center p-2 md:p-4">
-        <div className="card p-4 w-full max-w-2xl rounded-xl">
-          <div className="mt-2 flex flex-col gap-1.5">
-            {item.description?.split("\n").map((line, i) => (
-              <p
-                key={i}
-                className={cn(
-                  "text-sm whitespace-pre-wrap text-(--muted) leading-relaxed"
-                )}
-              >
-                {line}
-              </p>
-            ))}
+      {/* 服務詳情彈跳窗 */}
+      <modal.Container className="flex items-center justify-center p-4 z-50">
+        <div className="card w-full max-w-lg rounded-2xl flex flex-col max-h-[85vh]">
+          {/* 標題與關閉 */}
+          <div className="p-4 border-b border-white/10 flex items-center justify-between">
+            <h3 className="text-xl font-bold">{item.name}</h3>
+            <button onClick={modal.close}>
+              <CloseOutlined />
+            </button>
+          </div>
+
+          {/* 內容區域 */}
+          <div className="p-4 overflow-y-auto flex-1">
+            {item.imageUrl && (
+              <div className="w-full aspect-video rounded-xl overflow-hidden mb-4 bg-black/20">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div className="flex flex-col gap-2">
+              {item.description?.split("\n").map((line, i) => (
+                <p
+                  key={i}
+                  className="text-sm text-(--muted) leading-relaxed whitespace-pre-wrap"
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          {/* 底部按鈕 */}
+          <div className="p-4 border-t border-white/10 grid grid-cols-2 gap-3">
+            <button
+              className="btn font-medium py-2.5 px-4 rounded-xl flex items-center justify-center"
+              onClick={() => modal.close()}
+            >
+              關閉
+            </button>
+            <button
+              className="btn primary font-bold py-2.5 px-4 rounded-xl flex items-center justify-center"
+              onClick={() => {
+                booking.setBookingData("service", item);
+                booking.nextStep();
+              }}
+            >
+              選擇此服務
+            </button>
           </div>
         </div>
       </modal.Container>
