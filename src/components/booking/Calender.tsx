@@ -19,73 +19,104 @@ export const Calender = ({
   value,
   onChange,
   className,
-  pastDateDisabled,
+  pastDateDisabled = true,
   ...rest
 }: CalenderProps) => {
   const [currentDate, setCurrentDate] = useState<Date>(value ?? new Date());
-  const now = useMemo(() => new Date(), []);
+
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
   const days = useMemo(() => {
     return getDaysArray(currentDate.getFullYear(), currentDate.getMonth());
   }, [currentDate]);
+
+  const handleMonthChange = (offset: number) => {
+    const newDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + offset,
+      1
+    );
+    setCurrentDate(newDate);
+  };
+
   return (
-    <div className={cn("card p-6 rounded-xl", className)} {...rest}>
-      <div className="text-[1.5em] w-full flex items-center justify-between">
-        <button
-          className="p-2 rounded-full"
-          onClick={() => {
-            const newDate = new Date(currentDate);
-            newDate.setMonth(newDate.getMonth() - 1);
-            setCurrentDate(newDate);
-          }}
-        >
-          <LeftOutlined />
-        </button>
-        <h2 className="font-semibold">
+    <div
+      className={cn(
+        "card flex flex-col gap-2 p-4 md:p-6 rounded-2xl shadow-sm",
+        className
+      )}
+      {...rest}
+    >
+      <div className="flex items-center justify-between">
+        <h2 className="text-[1.5em] font-bold text-(--secondary) tracking-tight">
           {`${currentDate.getFullYear()} 年 ${currentDate.getMonth() + 1} 月`}
         </h2>
-        <button
-          className="p-2 rounded-full"
-          onClick={() => {
-            const newDate = new Date(currentDate);
-            newDate.setMonth(newDate.getMonth() + 1);
-            setCurrentDate(newDate);
-          }}
-        >
-          <RightOutlined />
-        </button>
+        <div className="text-[1.2em] flex gap-4">
+          <button
+            type="button"
+            className="text-(--muted) flex items-center justify-center"
+            onClick={() => handleMonthChange(-1)}
+            aria-label="上個月"
+          >
+            <LeftOutlined />
+          </button>
+          <button
+            type="button"
+            className="text-(--muted) flex items-center justify-center"
+            onClick={() => handleMonthChange(1)}
+            aria-label="下個月"
+          >
+            <RightOutlined />
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-2 mt-4">
+      <div className="grid grid-cols-7 border-b border-(--border) pb-2">
         {WEEKDAYS.map((day) => (
-          <div key={day} className="text-center font-medium text-(--muted)">
+          <div
+            key={day}
+            className="text-center text-[10px] sm:text-xs font-bold text-(--muted) uppercase tracking-widest"
+          >
             {day}
           </div>
         ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {days.map((date, i) => {
           if (!date) return <div key={`empty-${i}`} />;
 
-          const isInView = value ? isSameDate(date, value) : false;
-          now.setHours(0, 0, 0, 0);
-          const isDisabled = pastDateDisabled
-            ? date.getTime() < now.getTime()
-            : false;
+          const isSelected = value ? isSameDate(date, value) : false;
+          const isToday = isSameDate(date, today);
+          const isDisabled =
+            pastDateDisabled && date.getTime() < today.getTime();
+
           return (
             <div
               key={date.toISOString()}
-              className={cn("flex items-center justify-center")}
+              className="flex items-center justify-center"
             >
               <button
+                type="button"
                 disabled={isDisabled}
                 className={cn(
-                  "h-full aspect-square p-2 rounded-full flex items-center justify-center ",
-                  { "bg-(--primary) text-(--background)": isInView }
+                  "h-full p-2 aspect-square rounded-full flex flex-col items-center justify-center transition-all",
+                  "text-[1em] font-medium",
+                  {
+                    "bg-(--primary) text-white": isSelected,
+                    "font-extrabold": isToday,
+                  }
                 )}
                 onClick={() => {
                   setCurrentDate(date);
                   onChange?.(date);
                 }}
               >
-                {date.getDate()}
+                <span>{date.getDate()}</span>
               </button>
             </div>
           );
