@@ -2,15 +2,15 @@ import { cn } from "@/utils/className";
 import { getDaysArray, isSameDate } from "@/utils/date";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
 type CalenderProps = OverrideProps<
   DistributiveOmit<React.HTMLAttributes<HTMLDivElement>, "children">,
   {
-    value: Date;
-    onChange: (date: Date) => void;
+    value?: Date;
+    onChange?: (date: Date) => void;
     pastDateDisabled?: boolean;
   }
 >;
@@ -22,33 +22,35 @@ export const Calender = ({
   pastDateDisabled,
   ...rest
 }: CalenderProps) => {
+  const [currentDate, setCurrentDate] = useState<Date>(value ?? new Date());
+  const now = useMemo(() => new Date(), []);
   const days = useMemo(() => {
-    return getDaysArray(value.getFullYear(), value.getMonth());
-  }, [value]);
+    return getDaysArray(currentDate.getFullYear(), currentDate.getMonth());
+  }, [currentDate]);
   return (
     <div className={cn("card p-6 rounded-xl", className)} {...rest}>
-      <div className="w-full flex items-center justify-between">
+      <div className="text-[1.5em] w-full flex items-center justify-between">
         <button
           className="p-2 rounded-full"
           onClick={() => {
-            if (!value) return;
-            const newDate = new Date(value);
+            const newDate = new Date(currentDate);
             newDate.setMonth(newDate.getMonth() - 1);
-            onChange(newDate);
+            setCurrentDate(newDate);
+            onChange?.(newDate);
           }}
         >
           <LeftOutlined />
         </button>
-        <h2 className="text-lg font-semibold">
-          {`${value.getFullYear()} 年 ${value.getMonth() + 1} 月`}
+        <h2 className="font-semibold">
+          {`${currentDate.getFullYear()} 年 ${currentDate.getMonth() + 1} 月`}
         </h2>
         <button
           className="p-2 rounded-full"
           onClick={() => {
-            if (!value) return;
-            const newDate = new Date(value);
+            const newDate = new Date(currentDate);
             newDate.setMonth(newDate.getMonth() + 1);
-            onChange(newDate);
+            setCurrentDate(newDate);
+            onChange?.(newDate);
           }}
         >
           <RightOutlined />
@@ -65,29 +67,24 @@ export const Calender = ({
           if (!date) return <div key={`empty-${i}`} />;
 
           const isInView = value ? isSameDate(date, value) : false;
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const currentDate = new Date(date);
-          currentDate.setHours(0, 0, 0, 0);
+          now.setHours(0, 0, 0, 0);
           const isDisabled = pastDateDisabled
-            ? currentDate.getTime() < today.getTime()
+            ? date.getTime() < now.getTime()
             : false;
           return (
             <div
               key={date.toISOString()}
-              className={cn("flex items-center justify-center text-sm")}
+              className={cn("flex items-center justify-center")}
             >
               <button
                 disabled={isDisabled}
                 className={cn(
                   "h-full aspect-square p-2 rounded-full flex items-center justify-center ",
-                  { "bg-(--primary) text-(--background)": isInView },
-                  { "opacity-50 cursor-not-allowed text-(--muted)": isDisabled }
+                  { "bg-(--primary) text-(--background)": isInView }
                 )}
                 onClick={() => {
-                  if (!isDisabled) {
-                    onChange(date);
-                  }
+                  setCurrentDate(date);
+                  onChange?.(date);
                 }}
               >
                 {date.getDate()}
