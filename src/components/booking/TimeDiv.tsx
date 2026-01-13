@@ -24,9 +24,10 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
       />
       {/* 時段選擇區域 */}
       <div className="w-full">
-        <h2 className="text-lg font-medium mb-4 mt-8 text-(--foreground)">
+        <h2 className="text-lg font-medium mb-4 mt-8">
           選擇時段
         </h2>
+        <div className="text-(--muted)">時段選擇區域 (待實作)</div>
       </div>
     </div>
   );
