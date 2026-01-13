@@ -1,6 +1,10 @@
 import { cn } from "@/utils/className";
 import { getDaysArray, isSameDate } from "@/utils/date";
-import { CaretDownOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  CaretDownOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import { useMemo, useRef, useState } from "react";
 
@@ -105,7 +109,7 @@ export const Calender = ({
             <div
               key={day}
               className={cn(
-                "text-[1.2em] text-center sm:text-xs font-extrabold",
+                "text-[1.2em] flex items-center justify-center font-extrabold",
                 {
                   "text-red-700": isWeekend,
                 }
@@ -135,7 +139,7 @@ export const Calender = ({
                 type="button"
                 disabled={isDisabled}
                 className={cn(
-                  "h-full p-2 aspect-square rounded-full flex flex-col items-center justify-center transition-all",
+                  "relative h-full p-2 aspect-square rounded-full flex flex-col items-center justify-center transition-all",
                   "text-[1em] font-medium",
                   {
                     "bg-(--primary) text-white": isSelected,
@@ -148,6 +152,19 @@ export const Calender = ({
                 }}
               >
                 <span>{date.getDate()}</span>
+                {isToday && (
+                  <>
+                    <span className="sr-only">（今天）</span>
+                    <span
+                      className={cn(
+                        "absolute bottom-1 h-1 aspect-square rounded-full bg-(--primary)",
+                        {
+                          "bg-(--background)": isSelected,
+                        }
+                      )}
+                    />
+                  </>
+                )}
               </button>
             </div>
           );
