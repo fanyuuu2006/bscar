@@ -49,7 +49,7 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
             <img
               src={item.imageUrl}
               alt={item.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover transition-transform duration-500"
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-(--muted) gap-2">
@@ -86,7 +86,7 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
                 booking.nextStep();
               }}
             >
-              <span>選擇</span>
+              <span>選擇服務</span>
             </button>
           </div>
         </div>

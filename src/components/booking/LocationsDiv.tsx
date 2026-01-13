@@ -43,7 +43,7 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
           <img
             src={item.imageUrl}
             alt={`${item.city} ${item.branch}`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover transition-transform duration-500"
           />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-(--muted) gap-2">
@@ -69,15 +69,15 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
         </div>
 
         {/* 功能按鈕區 */}
-        <div className="pt-2">
+        <div className="pt-4 mt-auto">
           <button
-            className="btn primary w-full font-semibold py-2 px-4 rounded-full flex items-center justify-center gap-2"
+            className="btn primary w-full font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2"
             onClick={() => {
               booking.setBookingData("location", item);
               booking.nextStep();
             }}
           >
-            <span>選擇</span>
+            <span>選擇地點</span>
           </button>
         </div>
       </div>
