@@ -36,7 +36,6 @@ export const Calender = ({
             const newDate = new Date(currentDate);
             newDate.setMonth(newDate.getMonth() - 1);
             setCurrentDate(newDate);
-            onChange?.(newDate);
           }}
         >
           <LeftOutlined />
@@ -50,7 +49,6 @@ export const Calender = ({
             const newDate = new Date(currentDate);
             newDate.setMonth(newDate.getMonth() + 1);
             setCurrentDate(newDate);
-            onChange?.(newDate);
           }}
         >
           <RightOutlined />
