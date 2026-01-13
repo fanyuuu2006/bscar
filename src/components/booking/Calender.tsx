@@ -104,7 +104,7 @@ export const Calender = ({
             <div
               key={day}
               className={cn(
-                "text-center text-[10px] sm:text-xs font-extrabold",
+                "text-[1.2em] text-center sm:text-xs font-extrabold",
                 {
                   "text-red-700": isWeekend,
                 }
