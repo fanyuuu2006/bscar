@@ -10,7 +10,7 @@ import {
 } from "@/contexts/BookingContext";
 import { LocationsDiv } from "./LocationsDiv";
 import { cn } from "@/utils/className";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 import { formatDate } from "@/utils/date";
 import { ServiceDiv } from "./ServiceDiv";
 import { TimeDiv } from "./TimeDiv";
@@ -48,7 +48,7 @@ export const Mainsection = () => {
         return TimeDiv;
       // case "info":
       default:
-        return Fragment;
+        return 'div';
     }
   }, [booking.currStep]);
 

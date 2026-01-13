@@ -1,8 +1,9 @@
 import { useBooking } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
+import { getDaysArray, isSameDate } from "@/utils/date";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { DistributiveOmit } from "fanyucomponents";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
 
@@ -18,6 +19,11 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     booking.data.time
   );
+
+  const days = useMemo(() => {
+    return getDaysArray(viewDate.getFullYear(), viewDate.getMonth());
+  }, [viewDate]);
+
   return (
     <div className={cn("flex flex-col items-center", className)} {...rest}>
       {/* 月曆 */}
@@ -56,7 +62,31 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
               {day}
             </div>
           ))}
-          {/* 日期格子 */}
+          {days.map((date, i) => {
+            if (!date) return <div key={`empty-${i}`} />;
+
+            const isSelected = selectedDate
+              ? isSameDate(date, selectedDate)
+              : false;
+
+            return (
+              <button
+                key={date.toISOString()}
+                onClick={() => {
+                  setSelectedDate(date);
+                  booking.setBookingData("time", date);
+                }}
+                className={cn(
+                  "flex items-center justify-center text-sm",
+                  isSelected
+                    ? "bg-(--primary) text-(--primary-foreground)"
+                    : "hover:bg-gray-100 dark:hover:bg-white/10"
+                )}
+              >
+                {date.getDate()}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
