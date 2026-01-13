@@ -44,10 +44,10 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
         {...rest}
       >
         <div className="w-full aspect-video overflow-hidden bg-black/20 flex items-center justify-center relative">
-          {item.imageUrl ? (
+          {item.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={item.imageUrl}
+              src={item.image_url}
               alt={item.name}
               className="w-full h-full object-cover transition-transform duration-500"
             />
@@ -101,11 +101,11 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
 
           {/* 內容區域 */}
           <div className="p-4 overflow-y-auto flex-1">
-            {item.imageUrl && (
+            {item.image_url && (
               <div className="w-full aspect-video rounded-xl overflow-hidden mb-4 bg-black/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={item.imageUrl}
+                  src={item.image_url}
                   alt={item.name}
                   className="w-full h-full object-cover"
                 />

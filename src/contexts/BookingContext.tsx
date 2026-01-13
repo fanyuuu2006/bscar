@@ -21,14 +21,16 @@ export type Location = {
   city: string;
   branch: string;
   address: string;
-  imageUrl?: string;
+  opentime: `${number}:${number}`;
+  closetime: `${number}:${number}`;
+  image_url?: string;
 };
 
 export type Service = {
   id: string;
   name: string;
   description?: string;
-  imageUrl?: string;
+  image_url?: string;
 };
 
 // 建議：使用 Date 有時會遇到序列化問題，但若只在 Client 端使用是 OK 的

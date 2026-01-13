@@ -38,10 +38,10 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
       {...rest}
     >
       <div className="w-full aspect-video overflow-hidden bg-black/20 flex items-center justify-center relative">
-        {item.imageUrl ? (
+        {item.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={item.imageUrl}
+            src={item.image_url}
             alt={`${item.city} ${item.branch}`}
             className="w-full h-full object-cover transition-transform duration-500"
           />
