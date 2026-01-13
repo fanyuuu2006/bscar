@@ -1,9 +1,12 @@
 import { Location, useBooking } from "@/contexts/BookingContext";
 import { locations } from "@/libs/locations";
 import { cn } from "@/utils/className";
-import { OverrideProps } from "fanyucomponents";
+import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 
-type LocationsDivProps = React.HTMLAttributes<HTMLDivElement>;
+type LocationsDivProps = DistributiveOmit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+>;
 export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
   return (
     <div

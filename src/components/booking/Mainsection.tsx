@@ -14,6 +14,7 @@ import { useMemo } from "react";
 import { formatDate } from "@/utils/date";
 import { ServiceDiv } from "./ServiceDiv";
 import { TimeDiv } from "./TimeDiv";
+import { InfoDiv } from "./InfoDiv";
 
 const getDisplayValue = <K extends BookingStep>(
   step: K,
@@ -46,7 +47,8 @@ export const Mainsection = () => {
         return ServiceDiv;
       case "time":
         return TimeDiv;
-      // case "info":
+      case "info":
+        return InfoDiv;
       default:
         return "div";
     }
@@ -78,7 +80,7 @@ export const Mainsection = () => {
               >
                 <span
                   className={cn("text-lg md:text-xl", {
-                    "font-bold": isActive,
+                    "font-extrabold": isActive,
                   })}
                 >
                   {step.label}

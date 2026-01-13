@@ -11,7 +11,7 @@ export const bookingSteps = [
   { value: "location", label: "地點" },
   { value: "service", label: "服務" },
   { value: "time", label: "時間" },
-  { value: "info", label: "資料" },
+  { value: "info", label: "填寫資料" },
 ] as const;
 
 export type BookingStep = (typeof bookingSteps)[number]["value"];
@@ -33,7 +33,6 @@ export type Service = {
   image_url?: string;
 };
 
-// 建議：使用 Date 有時會遇到序列化問題，但若只在 Client 端使用是 OK 的
 export type Time = Date;
 
 export type Info = {

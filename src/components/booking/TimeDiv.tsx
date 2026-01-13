@@ -50,6 +50,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
   const handleTimeSelect = useCallback(
     (slot: Date) => {
       booking.setBookingData("time", slot);
+      booking.nextStep();
     },
     [booking]
   );
