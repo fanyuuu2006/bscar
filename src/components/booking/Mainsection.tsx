@@ -48,7 +48,7 @@ export const Mainsection = () => {
         return TimeDiv;
       // case "info":
       default:
-        return 'div';
+        return "div";
     }
   }, [booking.currStep]);
 
@@ -93,7 +93,7 @@ export const Mainsection = () => {
           })}
         </div>
         {/* 選擇區塊 */}
-        <StepContent className="" />
+        <StepContent />
       </div>
     </section>
   );

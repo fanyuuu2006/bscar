@@ -2,7 +2,6 @@ import { Service, useBooking } from "@/contexts/BookingContext";
 import { useModal } from "@/hooks/useModal";
 import { services } from "@/libs/services";
 import { cn } from "@/utils/className";
-import { CloseOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import React from "react";
 
@@ -96,11 +95,8 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
       <modal.Container className="flex items-center justify-center p-4 z-50">
         <div className="card w-full max-w-lg rounded-2xl flex flex-col max-h-[85vh]">
           {/* 標題與關閉 */}
-          <div className="p-4 border-b border-white/10 flex items-center justify-between">
-            <h3 className="text-xl font-bold">{item.name}</h3>
-            <button onClick={modal.close}>
-              <CloseOutlined />
-            </button>
+          <div className="p-4 flex items-center justify-between">
+            <h3 className="text-2xl font-bold">{item.name}</h3>
           </div>
 
           {/* 內容區域 */}
@@ -119,7 +115,7 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
               {item.description?.split("\n").map((line, i) => (
                 <p
                   key={i}
-                  className="text-sm text-(--muted) leading-relaxed whitespace-pre-wrap"
+                  className="text-sm leading-relaxed whitespace-pre-wrap"
                 >
                   {line}
                 </p>
