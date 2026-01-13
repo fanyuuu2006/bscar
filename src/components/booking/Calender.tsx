@@ -11,6 +11,7 @@ type CalenderProps = OverrideProps<
   {
     value: Date;
     onChange: (date: Date) => void;
+    pastDateDisabled?: boolean;
   }
 >;
 
@@ -18,6 +19,7 @@ export const Calender = ({
   value,
   onChange,
   className,
+  pastDateDisabled,
   ...rest
 }: CalenderProps) => {
   const days = useMemo(() => {
@@ -67,8 +69,9 @@ export const Calender = ({
           today.setHours(0, 0, 0, 0);
           const currentDate = new Date(date);
           currentDate.setHours(0, 0, 0, 0);
-          const isDisabled = currentDate.getTime() < today.getTime();
-
+          const isDisabled = pastDateDisabled
+            ? currentDate.getTime() < today.getTime()
+            : false;
           return (
             <div
               key={date.toISOString()}
