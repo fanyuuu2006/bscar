@@ -10,21 +10,50 @@ type InfoDivProps = DistributiveOmit<
 
 export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
   const booking = useBooking();
+  const { location, service, time } = booking.data;
+
   return (
-    <div className={cn("flex flex-col items-center", className)} {...rest}>
-      <h2 className="text-lg font-medium mb-4">預約資訊</h2>
-      <div className="text-center text-(--muted)">
-        服務項目: {booking.data.service ? booking.data.service.name : "未選擇"}
-        <br />
-        地點:{" "}
-        {booking.data.location
-          ? `${booking.data.location.city} ${booking.data.location.branch}`
-          : "未選擇"}
-        <br />
-        時間:{" "}
-        {booking.data.time
-          ? formatDate("YYYY/MM/DD HH:mm", booking.data.time)
-          : "未選擇"}
+    <div
+      className={cn("grid grid-cols-1 md:grid-cols-2 gap-4", className)}
+      {...rest}
+    >
+      {/* 預約資訊 */}
+      <div className="card rounded-2xl p-4 md:p-6 flex flex-col gap-6">
+        <h2 className="text-xl font-bold border-b border-gray-200 pb-4">
+          預約資訊確認
+        </h2>
+
+        {/* Location */}
+        <div className="flex gap-4 items-start">
+          <div className="flex flex-col gap-1">
+            <h3 className="font-bold text-gray-900">地點</h3>
+            <p className="text-lg font-medium">
+              {location?.city} {location?.branch}
+            </p>
+            <p className="text-sm text-(--muted)">{location?.address}</p>
+          </div>
+        </div>
+
+        {/* Service */}
+        <div className="flex gap-4 items-start">
+          <div className="flex flex-col gap-1">
+            <h3 className="font-bold text-gray-900">服務</h3>
+            <p className="text-lg font-medium">{service?.name}</p>
+            <p className="text-sm text-(--muted) line-clamp-2">
+              {service?.description}
+            </p>
+          </div>
+        </div>
+
+        {/* Time */}
+        <div className="flex gap-4 items-start">
+          <div className="flex flex-col gap-1">
+            <h3 className="font-bold text-gray-900">時間</h3>
+            <p className="text-xl font-bold text-(--primary)">
+              {time ? formatDate("YYYY/MM/DD HH:mm", time) : "尚未選擇"}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
