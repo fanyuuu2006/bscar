@@ -1,6 +1,6 @@
 import { cn } from "@/utils/className";
 import { getDaysArray, isSameDate } from "@/utils/date";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import { useMemo, useRef, useState } from "react";
 
@@ -52,7 +52,7 @@ export const Calender = ({
       )}
       {...rest}
     >
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between px-1 mb-2">
         <button
           type="button"
           className="text-[1.2em] text-(--muted) flex items-center justify-center"
@@ -63,7 +63,7 @@ export const Calender = ({
         </button>
         <button
           type="button"
-          className="group relative flex items-center justify-center"
+          className="relative flex items-center justify-center gap-1"
           onClick={() => {
             inputRef.current?.showPicker();
           }}
@@ -82,9 +82,10 @@ export const Calender = ({
               setCurrentDate(new Date(year, month - 1, 1));
             }}
           />
-          <h2 className="text-[1.5em] font-bold text-(--secondary) tracking-tight group-hover:opacity-70 transition-opacity select-none">
+          <h2 className="text-[1.5em] font-bold tracking-tight">
             {`${currentDate.getFullYear()} 年 ${currentDate.getMonth() + 1} 月`}
           </h2>
+          <CaretDownOutlined />
         </button>
 
         <button
