@@ -63,6 +63,11 @@ export const Calender = ({
           if (!date) return <div key={`empty-${i}`} />;
 
           const isInView = value ? isSameDate(date, value) : false;
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const currentDate = new Date(date);
+          currentDate.setHours(0, 0, 0, 0);
+          const isDisabled = currentDate.getTime() < today.getTime();
 
           return (
             <div
@@ -70,12 +75,16 @@ export const Calender = ({
               className={cn("flex items-center justify-center text-sm")}
             >
               <button
+                disabled={isDisabled}
                 className={cn(
                   "h-full aspect-square p-2 rounded-full flex items-center justify-center ",
-                  { "bg-(--primary) text-(--background)": isInView }
+                  { "bg-(--primary) text-(--background)": isInView },
+                  { "opacity-50 cursor-not-allowed text-(--muted)": isDisabled }
                 )}
                 onClick={() => {
-                  onChange(date);
+                  if (!isDisabled) {
+                    onChange(date);
+                  }
                 }}
               >
                 {date.getDate()}
