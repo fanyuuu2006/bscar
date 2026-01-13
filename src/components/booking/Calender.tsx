@@ -76,14 +76,22 @@ export const Calender = ({
       </div>
 
       <div className="grid grid-cols-7 border-b border-(--border) pb-2">
-        {WEEKDAYS.map((day) => (
-          <div
-            key={day}
-            className="text-center text-[10px] sm:text-xs font-bold text-(--muted) uppercase tracking-widest"
-          >
-            {day}
-          </div>
-        ))}
+        {WEEKDAYS.map((day) => {
+          const isWeekend = day === "日" || day === "六";
+          return (
+            <div
+              key={day}
+              className={cn(
+                "text-center text-[10px] sm:text-xs font-extrabold",
+                {
+                  "text-red-700": isWeekend,
+                }
+              )}
+            >
+              {day}
+            </div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-7 gap-1 sm:gap-2">
