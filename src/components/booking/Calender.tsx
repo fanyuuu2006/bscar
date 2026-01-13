@@ -2,7 +2,7 @@ import { cn } from "@/utils/className";
 import { getDaysArray, isSameDate } from "@/utils/date";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
@@ -23,6 +23,7 @@ export const Calender = ({
   ...rest
 }: CalenderProps) => {
   const [currentDate, setCurrentDate] = useState<Date>(value ?? new Date());
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const today = useMemo(() => {
     const d = new Date();
@@ -60,9 +61,32 @@ export const Calender = ({
         >
           <LeftOutlined />
         </button>
-        <h2 className="text-[1.5em] font-bold text-(--secondary) tracking-tight">
-          {`${currentDate.getFullYear()} 年 ${currentDate.getMonth() + 1} 月`}
-        </h2>
+        <button
+          type="button"
+          className="group relative flex items-center justify-center"
+          onClick={() => {
+            inputRef.current?.showPicker();
+          }}
+          aria-label="選擇月份"
+        >
+          <input
+            ref={inputRef}
+            type="month"
+            className="absolute opacity-0 pointer-events-none"
+            value={`${currentDate.getFullYear()}-${String(
+              currentDate.getMonth() + 1
+            ).padStart(2, "0")}`}
+            onChange={(e) => {
+              const value = e.target.value || today.toISOString().slice(0, 7);
+              const [year, month] = value.split("-").map(Number);
+              setCurrentDate(new Date(year, month - 1, 1));
+            }}
+          />
+          <h2 className="text-[1.5em] font-bold text-(--secondary) tracking-tight group-hover:opacity-70 transition-opacity select-none">
+            {`${currentDate.getFullYear()} 年 ${currentDate.getMonth() + 1} 月`}
+          </h2>
+        </button>
+
         <button
           type="button"
           className="text-[1.2em] text-(--muted) flex items-center justify-center"
