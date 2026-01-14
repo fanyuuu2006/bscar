@@ -22,7 +22,7 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
         icon: EnvironmentOutlined,
         label: "地點",
         value: getDisplayValue("location", booking.data.location),
-        detail: booking.data.location?.branch,
+        detail: booking.data.location?.address,
         key: "location",
       },
       {
@@ -43,9 +43,13 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
   );
 
   return (
-    <div className={cn("w-full grid grid-cols-1 md:grid-cols-2 gap-4", className)} {...rest}>
+    <div
+      className={cn("w-full grid grid-cols-1 md:grid-cols-2 gap-4", className)}
+      {...rest}
+    >
+      {/* 預約摘要卡片 */}
       <div className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl">
-        <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-4">
+        <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-2">
           預約摘要
         </h2>
 
@@ -79,6 +83,8 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
           })}
         </div>
       </div>
+      {/* 個人資料表單 */}
+      <div className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl"></div>
     </div>
   );
 };
