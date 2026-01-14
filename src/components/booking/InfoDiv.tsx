@@ -41,33 +41,28 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
   );
 
   return (
-    <div
-      className={cn(
-        "grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8",
-        className
-      )}
-      {...rest}
-    >
-      {/* 預約資訊卡片 */}
-      <div className="card p-5 md:p-6 rounded-2xl overflow-hidden flex flex-col h-full">
-        <h2 className="text-xl font-bold mb-6">預約摘要</h2>
-        <div className="flex flex-col gap-4">
+    <div className={cn("w-full max-w-xl mx-auto", className)} {...rest}>
+      <div className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl">
+        <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-4">
+          預約摘要
+        </h2>
+
+        <div className="flex flex-col gap-5">
           {items.map((item) => {
             const Icon = item.icon;
             return (
-              <div
-                key={item.key}
-                className="flex items-center gap-4 p-4 rounded-xl border border-(--border) hover:border-(--primary) transition-colors bg-(--background)/30"
-              >
-                <div className="flex justify-center items-center text-2xl text-(--background) bg-(--primary) border-2 border-(--foreground)/20 rounded-full p-2 shrink-0">
-                  <Icon />
+              <div key={item.key} className="flex items-start gap-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-(--primary) text-(--primary-foreground) shrink-0">
+                  <Icon className="text-lg" />
                 </div>
-                <div>
-                  <div className="text-sm font-medium text-(--muted) mb-1">
-                    預約{item.label}
+                <div className="flex-1 pt-0.5">
+                  <div className="text-sm font-medium text-(--muted) mb-0.5">
+                    {item.label}
                   </div>
-                  <div className="text-lg font-bold text-(--foreground) wrap-break-word line-clamp-2">
-                    {item.value || "未選擇"}
+                  <div className="text-lg font-bold text-(--foreground)">
+                    {item.value || (
+                      <span className="opacity-50 font-normal">尚未選擇</span>
+                    )}
                   </div>
                 </div>
               </div>
