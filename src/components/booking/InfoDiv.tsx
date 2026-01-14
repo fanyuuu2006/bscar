@@ -22,12 +22,14 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
         icon: EnvironmentOutlined,
         label: "地點",
         value: getDisplayValue("location", booking.data.location),
+        detail: booking.data.location?.branch,
         key: "location",
       },
       {
         icon: StarOutlined,
         label: "服務",
         value: getDisplayValue("service", booking.data.service),
+        detail: booking.data.service?.description,
         key: "service",
       },
       {
@@ -41,7 +43,7 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
   );
 
   return (
-    <div className={cn("w-full max-w-xl mx-auto", className)} {...rest}>
+    <div className={cn("w-full grid grid-cols-1 md:grid-cols-2 gap-4", className)} {...rest}>
       <div className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl">
         <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-4">
           預約摘要
@@ -64,6 +66,13 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
                       <span className="opacity-50 font-normal">尚未選擇</span>
                     )}
                   </div>
+                  {item.detail && (
+                    <div className="text-sm text-(--muted) mt-1 flex flex-col gap-1">
+                      {item.detail.split("\n").map((line, index) => (
+                        <p key={index}>{line}</p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             );
