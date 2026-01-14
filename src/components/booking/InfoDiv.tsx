@@ -5,11 +5,8 @@ import {
   EnvironmentOutlined,
   StarOutlined,
   ClockCircleOutlined,
-  UserOutlined,
-  PhoneOutlined,
-  MailOutlined,
 } from "@ant-design/icons";
-import { ChangeEvent, useMemo } from "react";
+import { useMemo } from "react";
 import { getDisplayValue } from "../../utils/booking";
 
 type InfoDivProps = DistributiveOmit<
@@ -19,17 +16,6 @@ type InfoDivProps = DistributiveOmit<
 
 export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
   const booking = useBooking();
-
-  const handleInfoChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    booking.setBookingData("info", {
-      name: booking.data.info?.name || "",
-      phone: booking.data.info?.phone || "",
-      email: booking.data.info?.email || "",
-      [name]: value,
-    });
-  };
-
   const items = useMemo(
     () => [
       {
@@ -63,20 +49,17 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
       {...rest}
     >
       {/* 預約資訊卡片 */}
-      <div className="card p-5 md:p-6 rounded-2xl overflow-hidden flex flex-col h-full bg-white">
-        <h2 className="text-xl font-bold mb-6 text-(--foreground) flex items-center gap-2">
-          <span className="text-(--primary)">▍</span>
-          預約摘要
-        </h2>
+      <div className="card p-5 md:p-6 rounded-2xl overflow-hidden flex flex-col h-full">
+        <h2 className="text-xl font-bold mb-6">預約摘要</h2>
         <div className="flex flex-col gap-4">
           {items.map((item) => {
             const Icon = item.icon;
             return (
               <div
                 key={item.key}
-                className="flex items-start p-4 rounded-xl border border-(--border) hover:border-(--primary) transition-colors bg-(--background)/30"
+                className="flex items-center gap-4 p-4 rounded-xl border border-(--border) hover:border-(--primary) transition-colors bg-(--background)/30"
               >
-                <div className="text-2xl text-(--primary) mr-4 mt-0.5">
+                <div className="flex justify-center items-center text-2xl text-(--background) bg-(--primary) border-2 border-(--foreground)/20 rounded-full p-2 shrink-0">
                   <Icon />
                 </div>
                 <div>
@@ -90,77 +73,6 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* 填寫資料卡片 */}
-      <div className="card p-5 md:p-6 rounded-2xl overflow-hidden flex flex-col h-full bg-white">
-        <h2 className="text-xl font-bold mb-6 text-(--foreground) flex items-center gap-2">
-          <span className="text-(--primary)">▍</span>
-          填寫資料
-        </h2>
-        <div className="flex flex-col gap-5 h-full">
-          <div className="space-y-1.5">
-            <label className="text-sm font-bold text-(--muted) ml-1">
-              姓名
-            </label>
-            <div className="relative group">
-              <UserOutlined className="absolute left-4 top-1/2 -translate-y-1/2 text-(--muted) group-focus-within:text-(--primary) transition-colors text-lg" />
-              <input
-                type="text"
-                name="name"
-                value={booking.data.info?.name || ""}
-                onChange={handleInfoChange}
-                placeholder="請輸入您的姓名"
-                className="w-full pl-12 pr-4 py-3 rounded-xl border border-(--border) bg-(--background)/30 focus:bg-white focus:border-(--primary) outline-none transition-all placeholder:text-gray-400"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-sm font-bold text-(--muted) ml-1">
-              電話
-            </label>
-            <div className="relative group">
-              <PhoneOutlined className="absolute left-4 top-1/2 -translate-y-1/2 text-(--muted) group-focus-within:text-(--primary) transition-colors text-lg" />
-              <input
-                type="tel"
-                name="phone"
-                value={booking.data.info?.phone || ""}
-                onChange={handleInfoChange}
-                placeholder="請輸入您的電話"
-                className="w-full pl-12 pr-4 py-3 rounded-xl border border-(--border) bg-(--background)/30 focus:bg-white focus:border-(--primary) outline-none transition-all placeholder:text-gray-400"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-sm font-bold text-(--muted) ml-1">
-              電子信箱
-            </label>
-            <div className="relative group">
-              <MailOutlined className="absolute left-4 top-1/2 -translate-y-1/2 text-(--muted) group-focus-within:text-(--primary) transition-colors text-lg" />
-              <input
-                type="email"
-                name="email"
-                value={booking.data.info?.email || ""}
-                onChange={handleInfoChange}
-                placeholder="請輸入您的電子信箱"
-                className="w-full pl-12 pr-4 py-3 rounded-xl border border-(--border) bg-(--background)/30 focus:bg-white focus:border-(--primary) outline-none transition-all placeholder:text-gray-400"
-              />
-            </div>
-          </div>
-
-          <div className="mt-auto pt-6">
-            <button
-              className="btn primary w-full font-bold py-3.5 px-6 rounded-xl text-lg shadow-lg shadow-(--primary)/20 hover:shadow-(--primary)/40 active:scale-[0.98] transition-all"
-              onClick={() => {
-                alert("預約成功！");
-              }}
-            >
-              確認預約
-            </button>
-          </div>
         </div>
       </div>
     </div>
