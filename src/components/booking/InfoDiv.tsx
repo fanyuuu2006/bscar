@@ -1,4 +1,4 @@
-import { useBooking } from "@/contexts/BookingContext";
+import { useBooking, type Info } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
 import { DistributiveOmit } from "fanyucomponents";
 import {
@@ -42,6 +42,32 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
     [booking.data]
   );
 
+  const formFields = [
+    {
+      id: "name",
+      label: "姓名",
+      type: "text",
+    },
+    {
+      id: "phone",
+      label: "電話",
+      type: "tel",
+    },
+    {
+      id: "email",
+      label: "電子郵件",
+      type: "email",
+    },
+  ] as const;
+
+  const handleInfoChange = (key: keyof Info, value: string) => {
+    const currentInfo = booking.data.info || { name: "", phone: "", email: "" };
+    booking.setBookingData("info", {
+      ...currentInfo,
+      [key]: value,
+    });
+  };
+
   return (
     <div
       className={cn("w-full grid grid-cols-1 md:grid-cols-2 gap-4", className)}
@@ -84,7 +110,35 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
         </div>
       </div>
       {/* 個人資料表單 */}
-      <div className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl"></div>
+      <div className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl">
+        <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-2">
+          填寫資料
+        </h2>
+        <div className="flex flex-col gap-4">
+          {formFields.map((field) => (
+            <div key={field.id} className="flex flex-col gap-2">
+              <label
+                htmlFor={field.id}
+                className={cn(
+                  "text-sm font-medium text-(--foreground)",
+                  "after:content-['*'] after:ml-0.5 after:text-(--accent)"
+                )}
+              >
+                {field.label}
+              </label>
+              <input
+                required
+                id={field.id}
+                type={field.type}
+                value={booking.data.info?.[field.id] || ""}
+                onChange={(e) => handleInfoChange(field.id, e.target.value)}
+                placeholder={`請輸入您的${field.label}`}
+                className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
