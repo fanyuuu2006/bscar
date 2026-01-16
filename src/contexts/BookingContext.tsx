@@ -62,8 +62,10 @@ interface BookingContextType {
     value: BookingData[K]
   ) => void;
 
-  // 新增：重置表單
-  resetBooking: () => void;
+  // 重置表單
+  reset: () => void;
+  // 送出預約
+  submit: () => void;
 }
 
 const BookingContext = createContext<BookingContextType | null>(null);
@@ -125,10 +127,12 @@ export const BookingProvider = ({
     []
   );
 
-  const resetBooking = useCallback(() => {
+  const reset = useCallback(() => {
     setData(INITIAL_DATA);
     setCurrStep(bookingSteps[0].value);
   }, []);
+
+  const submit = useCallback(() => {}, []);
 
   const value = useMemo(
     () => ({
@@ -139,7 +143,8 @@ export const BookingProvider = ({
       getStepIndex,
       data,
       setBookingData,
-      resetBooking,
+      reset,
+      submit,
     }),
     [
       currStep,
@@ -149,7 +154,8 @@ export const BookingProvider = ({
       getStepIndex,
       data,
       setBookingData,
-      resetBooking,
+      reset,
+      submit,
     ]
   );
 

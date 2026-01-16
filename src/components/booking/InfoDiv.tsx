@@ -7,7 +7,7 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import { useMemo } from "react";
-import { getDisplayValue } from "../../utils/booking";
+import { getDisplayValue } from "@/utils/booking";
 
 type InfoDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
