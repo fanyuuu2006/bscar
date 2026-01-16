@@ -26,7 +26,7 @@ export const Calender = ({
   pastDateDisabled = true,
   ...rest
 }: CalenderProps) => {
-  const [currentDate, setCurrentDate] = useState<Date>(value ?? new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(value ?? new Date());
   const inputRef = useRef<HTMLInputElement>(null);
 
   const today = useMemo(() => {
@@ -36,16 +36,16 @@ export const Calender = ({
   }, []);
 
   const days = useMemo(() => {
-    return getDaysArray(currentDate.getFullYear(), currentDate.getMonth());
-  }, [currentDate]);
+    return getDaysArray(selectedDate.getFullYear(), selectedDate.getMonth());
+  }, [selectedDate]);
 
   const handleMonthChange = (offset: number) => {
     const newDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + offset,
+      selectedDate.getFullYear(),
+      selectedDate.getMonth() + offset,
       1
     );
-    setCurrentDate(newDate);
+    setSelectedDate(newDate);
   };
 
   return (
@@ -77,17 +77,17 @@ export const Calender = ({
             ref={inputRef}
             type="month"
             className="absolute opacity-0 pointer-events-none"
-            value={`${currentDate.getFullYear()}-${String(
-              currentDate.getMonth() + 1
+            value={`${selectedDate.getFullYear()}-${String(
+              selectedDate.getMonth() + 1
             ).padStart(2, "0")}`}
             onChange={(e) => {
               const value = e.target.value || today.toISOString().slice(0, 7);
               const [year, month] = value.split("-").map(Number);
-              setCurrentDate(new Date(year, month - 1, 1));
+              setSelectedDate(new Date(year, month - 1, 1));
             }}
           />
           <h2 className="text-[1.5em] font-bold tracking-tight">
-            {`${currentDate.getFullYear()} 年 ${currentDate.getMonth() + 1} 月`}
+            {`${selectedDate.getFullYear()} 年 ${selectedDate.getMonth() + 1} 月`}
           </h2>
           <CaretDownOutlined />
         </button>
@@ -147,7 +147,7 @@ export const Calender = ({
                   }
                 )}
                 onClick={() => {
-                  setCurrentDate(date);
+                  setSelectedDate(date);
                   onChange?.(date);
                 }}
               >

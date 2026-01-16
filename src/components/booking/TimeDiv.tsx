@@ -15,6 +15,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
   const [viewDate, setViewDate] = useState<Date>(
     booking.data.time || new Date()
   );
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
 
   useEffect(() => {
     // 從開閉店時間切割每一小時為時段
@@ -47,13 +48,9 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
     setTimeout(() => setTimeSlots(slots), 0);
   }, [viewDate, booking.data.location]);
 
-  const handleTimeSelect = useCallback(
-    (slot: Date) => {
-      booking.setBookingData("time", slot);
-      booking.nextStep();
-    },
-    [booking]
-  );
+  const handleTimeSelect = useCallback((slot: Date) => {
+    setSelectedTime(slot);
+  }, []);
 
   return (
     <div className={cn("flex flex-col items-center", className)} {...rest}>
@@ -70,19 +67,15 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
         {timeSlots.length > 0 ? (
           <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-5">
             {timeSlots.map((slot) => {
-              const isSelected =
-                booking.data.time?.getTime() === slot.getTime();
+              const isSelected = selectedTime?.getTime() === slot.getTime();
               return (
                 <button
                   key={slot.toISOString()}
                   type="button"
                   onClick={() => handleTimeSelect(slot)}
-                  className={cn(
-                    "btn p-2 rounded-lg font-medium",
-                    {
-                      'primary': isSelected,
-                    }
-                  )}
+                  className={cn("btn p-2 rounded-lg font-medium", {
+                    secondary: isSelected,
+                  })}
                 >
                   {formatDate("HH:mm", slot)}
                 </button>
@@ -92,6 +85,20 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
         ) : (
           <div className="text-(--muted) text-center py-4">
             {booking.data.location ? "本日無可預約時段" : "請先選擇地點"}
+          </div>
+        )}
+        {selectedTime && (
+          <div className="mt-6 flex flex-col items-center">
+            已選擇時段: {formatDate("YYYY/MM/DD HH:mm", selectedTime)}
+            <button
+              className="btn primary mt-4 px-6 py-2 rounded-lg font-medium"
+              onClick={() => {
+                booking.setBookingData("time", selectedTime);
+                booking.nextStep();
+              }}
+            >
+              確認並前往下一步
+            </button>
           </div>
         )}
       </div>
