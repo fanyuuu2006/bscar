@@ -20,3 +20,17 @@ export const getDisplayValue = <K extends BookingStep>(
       return "";
   }
 };
+
+export const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+export const normalizePhone = (phone: string) => {
+  return phone.replace(/[^\d+]/g, "");
+};
+
+export const isValidPhone = (phone: string) => {
+  const p = normalizePhone(phone);
+  const phoneRegex = /^\+?[0-9]{7,15}$/;
+  return phoneRegex.test(p);
+}

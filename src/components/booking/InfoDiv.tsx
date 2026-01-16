@@ -7,7 +7,7 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import { useMemo } from "react";
-import { getDisplayValue } from "../../utils/booking";
+import { getDisplayValue, isValidEmail, isValidPhone } from "../../utils/booking";
 
 type InfoDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -47,20 +47,30 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
       id: "name",
       label: "姓名",
       type: "text",
+      valider: undefined,
     },
     {
       id: "phone",
       label: "電話",
       type: "tel",
+      valider : isValidPhone,
     },
     {
       id: "email",
       label: "電子郵件",
       type: "email",
+      valider : isValidEmail,
     },
   ] as const;
 
-  const handleInfoChange = (key: keyof Info, value: string) => {
+  const handleInfoChange = (
+    key: keyof Info,
+    value: string,
+    valider?: (val: string) => boolean
+  ) => {
+    if (valider && !valider(value)) {
+      return;
+    }
     const currentInfo = booking.data.info || { name: "", phone: "", email: "" };
     booking.setBookingData("info", {
       ...currentInfo,
@@ -110,7 +120,13 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
         </div>
       </div>
       {/* 個人資料表單 */}
-      <div className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl">
+      <form
+        className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl"
+        onSubmit={(e) => {
+          e.preventDefault();
+          alert("預約已送出！");
+        }}
+      >
         <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-2">
           填寫資料
         </h2>
@@ -131,14 +147,20 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
                 id={field.id}
                 type={field.type}
                 value={booking.data.info?.[field.id] || ""}
-                onChange={(e) => handleInfoChange(field.id, e.target.value)}
+                onChange={(e) => handleInfoChange(field.id, e.target.value, field.valider || undefined)}
                 placeholder={`請輸入您的${field.label}`}
                 className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all"
               />
             </div>
           ))}
+          <button
+            type="submit"
+            className="w-full py-3 rounded-lg bg-(--primary) text-(--primary-foreground) font-bold text-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+          >
+            送出預約
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
