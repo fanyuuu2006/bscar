@@ -47,19 +47,19 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
       id: "name",
       label: "姓名",
       type: "text",
-      valider: undefined,
+      // valider: undefined,
     },
     {
       id: "phone",
       label: "電話",
       type: "tel",
-      valider : isValidPhone,
+      // valider : isValidPhone,
     },
     {
       id: "email",
       label: "電子郵件",
       type: "email",
-      valider : isValidEmail,
+      // valider : isValidEmail,
     },
   ] as const;
 
@@ -147,7 +147,7 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
                 id={field.id}
                 type={field.type}
                 value={booking.data.info?.[field.id] || ""}
-                onChange={(e) => handleInfoChange(field.id, e.target.value, field.valider || undefined)}
+                onChange={(e) => handleInfoChange(field.id, e.target.value)}
                 placeholder={`請輸入您的${field.label}`}
                 className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all"
               />
