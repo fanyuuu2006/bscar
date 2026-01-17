@@ -63,7 +63,9 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
       />
       {/* 時段選擇區域 */}
       <div className="w-full">
-        <h2 className="text-lg font-medium mb-4 mt-8">可選擇時段:</h2>
+        <h2 className="text-xl font-bold mb-6 mt-8 flex items-center gap-2">
+          可選擇時段
+        </h2>
         {timeSlots.length > 0 ? (
           <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-5">
             {timeSlots.map((slot) => {
@@ -87,18 +89,26 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
             {booking.data.location ? "本日無可預約時段" : "請先選擇地點"}
           </div>
         )}
+        {/* 確認預約區域 */}
         {selectedTime && (
-          <div className="mt-6 flex flex-col items-center">
-            已選擇時段: {formatDate("YYYY/MM/DD HH:mm", selectedTime)}
-            <button
-              className="btn primary mt-4 px-6 py-2 rounded-lg font-medium"
-              onClick={() => {
-                booking.setBookingData("time", selectedTime);
-                booking.nextStep();
-              }}
-            >
-              確認並前往下一步
-            </button>
+          <div className="mt-8">
+            <div className="card p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 border-(--primary)">
+              <div className="flex flex-col items-center md:items-start text-(--foreground)">
+                <span className="text-sm text-(--muted)">已選擇時間</span>
+                <span className="text-xl md:text-2xl font-bold">
+                  {formatDate("YYYY/MM/DD HH:mm", selectedTime)}
+                </span>
+              </div>
+              <button
+                className="btn primary w-full md:w-auto px-8 py-3 rounded-xl font-bold text-lg"
+                onClick={() => {
+                  booking.setBookingData("time", selectedTime);
+                  booking.nextStep();
+                }}
+              >
+                確認預約
+              </button>
+            </div>
           </div>
         )}
       </div>

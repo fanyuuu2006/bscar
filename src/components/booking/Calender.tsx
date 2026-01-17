@@ -139,11 +139,11 @@ export const Calender = ({
                 type="button"
                 disabled={isDisabled}
                 className={cn(
-                  "relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
+                  "tabular-nums font-mono relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
                   "text-[1em] font-medium",
                   {
                     "bg-(--primary) text-white": isSelected,
-                    "font-extrabold": isToday,
+                    "font-black": isToday,
                   }
                 )}
                 onClick={() => {
