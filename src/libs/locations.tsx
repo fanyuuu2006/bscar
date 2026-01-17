@@ -7,8 +7,8 @@ export const locations: Location[] = [
     branch: "成功店",
     address: "新竹縣竹北市成功一街88號",
     image_url: "/images/locations/1.jpg",
-    opentime: "09:00",
-    closetime: "18:00",
+    open_time: "09:00",
+    close_time: "18:00",
   },
   {
     id: "2",
@@ -16,8 +16,8 @@ export const locations: Location[] = [
     branch: "頂埔店",
     address: "新竹市頂埔路338號",
     image_url: "/images/locations/2.jpg",
-    opentime: "10:00",
-    closetime: "19:00",
+    open_time: "10:00",
+    close_time: "19:00",
   },
   {
     id: "3",
@@ -25,7 +25,7 @@ export const locations: Location[] = [
     branch: "十興店",
     address: "新竹縣竹北市十興路一段616號",
     image_url: "/images/locations/3.jpg",
-    opentime: "09:30",
-    closetime: "18:30",
+    open_time: "09:30",
+    close_time: "18:30",
   },
 ];

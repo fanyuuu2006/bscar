@@ -24,11 +24,11 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
       return;
     }
 
-    const { opentime, closetime } = location;
+    const { open_time, close_time } = location;
 
     // 解析時間字串 "HH:mm"
-    const [openH, openM] = opentime.split(":").map(Number);
-    const [closeH, closeM] = closetime.split(":").map(Number);
+    const [openH, openM] = open_time.split(":").map(Number);
+    const [closeH, closeM] = close_time.split(":").map(Number);
 
     const start = new Date(viewDate);
     start.setHours(openH, openM, 0, 0);
