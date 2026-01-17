@@ -20,12 +20,13 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
   useEffect(() => {
     // 從開閉店時間切割每一小時為時段
     const location = booking.data.location;
-    if (!location) {
+    const service = booking.data.service;
+    if (!location || !service) {
       return;
     }
 
     const { open_time, close_time } = location;
-
+    const { duration } = service;
     // 解析時間字串 "HH:mm"
     const [openH, openM] = open_time.split(":").map(Number);
     const [closeH, closeM] = close_time.split(":").map(Number);
@@ -41,12 +42,18 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
 
     // 每小時產生一個時段，直到結束時間前
     while (current < end) {
-      slots.push(new Date(current));
+      // 加上服務時間判斷是否超過打烊時間
+      const serviceEnd = new Date(current);
+      serviceEnd.setMinutes(serviceEnd.getMinutes() + duration);
+
+      if (serviceEnd <= end) {
+        slots.push(new Date(current));
+      }
       current.setHours(current.getHours() + 1);
     }
 
     setTimeout(() => setTimeSlots(slots), 0);
-  }, [viewDate, booking.data.location]);
+  }, [viewDate, booking.data.location, booking.data.service]);
 
   const handleTimeSelect = useCallback((slot: Date) => {
     setSelectedTime(slot);

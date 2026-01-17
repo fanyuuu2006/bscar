@@ -64,7 +64,7 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
             <span role="img">📍</span>
             {item.city}{" "}
             <span className="text-base font-normal text-zinc-500">|</span>{" "}
-            {item.branch}
+            {item.branch}店
           </h2>
           <address className="mt-2 text-sm text-(--muted) line-clamp-2">
             {item.address}

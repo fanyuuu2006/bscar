@@ -29,6 +29,7 @@ export type Location = {
 export type Service = {
   id: string;
   name: string;
+  duration: number;
   description?: string;
   image_url?: string;
 };
