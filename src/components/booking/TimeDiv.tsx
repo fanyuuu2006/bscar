@@ -91,26 +91,22 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
         )}
         {/* 確認預約區域 */}
         {selectedTime && (
-          <div className="mt-10 flex justify-center">
-            <div className="card w-full max-w-2xl p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 bg-white border border-(--primary)">
-              <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                <span className="text-sm text-(--muted) font-medium mb-1">
-                  已選擇預約時段
-                </span>
-                <span className="text-2xl font-bold text-(--primary)">
-                  {formatDate("YYYY/MM/DD HH:mm", selectedTime)}
-                </span>
-              </div>
-              <button
-                className="btn primary w-full md:w-auto px-8 py-3 rounded-xl font-bold text-lg"
-                onClick={() => {
-                  booking.setBookingData("time", selectedTime);
-                  booking.nextStep();
-                }}
-              >
-                確認並前往下一步
-              </button>
+          <div className="mt-8 flex flex-col items-center gap-6 w-full animate-in fade-in slide-in-from-bottom-2">
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm text-(--muted)">已選擇時段</span>
+              <span className="text-2xl font-bold text-(--foreground)">
+                {formatDate("YYYY/MM/DD HH:mm", selectedTime)}
+              </span>
             </div>
+            <button
+              className="btn primary w-full max-w-md py-3 rounded-xl font-bold text-lg"
+              onClick={() => {
+                booking.setBookingData("time", selectedTime);
+                booking.nextStep();
+              }}
+            >
+              確認並前往下一步
+            </button>
           </div>
         )}
       </div>
