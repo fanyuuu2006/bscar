@@ -91,11 +91,13 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
         )}
         {/* 確認預約區域 */}
         {selectedTime && (
-          <div className="mt-8">
-            <div className="card p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 border-(--primary)">
-              <div className="flex flex-col items-center md:items-start text-(--foreground)">
-                <span className="text-sm text-(--muted)">已選擇時間</span>
-                <span className="text-xl md:text-2xl font-bold">
+          <div className="mt-10 flex justify-center">
+            <div className="card w-full max-w-2xl p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 bg-white border border-(--primary)">
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <span className="text-sm text-(--muted) font-medium mb-1">
+                  已選擇預約時段
+                </span>
+                <span className="text-2xl font-bold text-(--primary)">
                   {formatDate("YYYY/MM/DD HH:mm", selectedTime)}
                 </span>
               </div>
@@ -106,7 +108,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
                   booking.nextStep();
                 }}
               >
-                確認預約
+                確認並前往下一步
               </button>
             </div>
           </div>
