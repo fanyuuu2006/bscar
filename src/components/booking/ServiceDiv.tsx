@@ -2,6 +2,7 @@ import { Service, useBooking } from "@/contexts/BookingContext";
 import { useModal } from "@/hooks/useModal";
 import { getServices } from "@/utils/backend";
 import { cn } from "@/utils/className";
+import { LoadingOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import React, { useEffect, useState } from "react";
 
@@ -30,9 +31,15 @@ export const ServiceDiv = ({ className, ...rest }: ServiceDivProps) => {
       )}
       {...rest}
     >
-      {services.map((item) => {
-        return <ServiceCard key={item.id} item={item} />;
-      })}
+      {services.length > 0 ? (
+        services.map((item) => {
+          return <ServiceCard key={item.id} item={item} />;
+        })
+      ) : (
+        <div className="col-span-full text-center text-(--muted)">
+          <LoadingOutlined className="text-2xl" />
+        </div>
+      )}
     </div>
   );
 };

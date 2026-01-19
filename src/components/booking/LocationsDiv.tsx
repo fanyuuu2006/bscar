@@ -1,6 +1,7 @@
 import { Location, useBooking } from "@/contexts/BookingContext";
 import { getLocations } from "@/utils/backend";
 import { cn } from "@/utils/className";
+import { LoadingOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import { useEffect, useState } from "react";
 
@@ -29,9 +30,15 @@ export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
       )}
       {...rest}
     >
-      {locations.map((item) => {
-        return <LocationCard key={item.id} item={item} />;
-      })}
+      {locations.length > 0 ? (
+        locations.map((item) => {
+          return <LocationCard key={item.id} item={item} />;
+        })
+      ) : (
+        <div className="col-span-full text-center text-(--muted)">
+          <LoadingOutlined className="text-2xl" />
+        </div>
+      )}
     </div>
   );
 };
