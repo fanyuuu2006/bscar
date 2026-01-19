@@ -1,15 +1,27 @@
 import { Service, useBooking } from "@/contexts/BookingContext";
 import { useModal } from "@/hooks/useModal";
-import { services } from "@/libs/services";
+import { getServices } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type ServiceDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
   "children"
 >;
 export const ServiceDiv = ({ className, ...rest }: ServiceDivProps) => {
+  const [services, setServices] = useState<Service[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await getServices();
+        setServices(data || []);
+      } catch (error) {
+        console.error("獲取失敗", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div
       className={cn(
@@ -43,7 +55,7 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
         )}
         {...rest}
       >
-        <div className="w-full aspect-video overflow-hidden bg-black/20 flex items-center justify-center relative">
+        <div className="w-full aspect-7/5 overflow-hidden bg-black/20 flex items-center justify-center relative">
           {item.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img

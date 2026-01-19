@@ -1,13 +1,26 @@
 import { Location, useBooking } from "@/contexts/BookingContext";
-import { locations } from "@/libs/locations";
+import { getLocations } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
+import { useEffect, useState } from "react";
 
 type LocationsDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
   "children"
 >;
 export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
+  const [locations, setLocations] = useState<Location[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await getLocations();
+        setLocations(data || []);
+      } catch (error) {
+        console.error("獲取失敗", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div
       className={cn(
@@ -40,7 +53,7 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
       )}
       {...rest}
     >
-      <div className="w-full aspect-video overflow-hidden bg-black/20 flex items-center justify-center relative">
+      <div className="w-full aspect-7/5 overflow-hidden bg-black/20 flex items-center justify-center relative">
         {item.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

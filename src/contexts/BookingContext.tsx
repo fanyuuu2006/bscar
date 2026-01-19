@@ -21,17 +21,17 @@ export type Location = {
   city: string;
   branch: string;
   address: string;
-  open_time: `${number}:${number}`;
-  close_time: `${number}:${number}`;
-  image_url?: string;
+  open_time: string;
+  close_time: string;
+  image_url: string | undefined;
 };
 
 export type Service = {
   id: string;
   name: string;
   duration: number;
-  description?: string;
-  image_url?: string;
+  description: string | undefined;
+  image_url: string | undefined;
 };
 
 export type Time = Date;
