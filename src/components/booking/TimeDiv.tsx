@@ -2,9 +2,10 @@ import { TimeSlot, useBooking } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { DistributiveOmit } from "fanyucomponents";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Calender } from "./Calender";
 import { getAvailableSlots } from "@/utils/backend";
+import { LoadingOutlined } from "@ant-design/icons";
 
 type TimeDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -12,30 +13,34 @@ type TimeDivProps = DistributiveOmit<
 >;
 export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
   const booking = useBooking();
-  const [viewDate, setViewDate] = useState<Date>(
-    booking.data.time || new Date()
-  );
-  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const { location, service, time } = booking.data;
 
-  const handleTimeSelect = useCallback((slot: Date) => {
-    setSelectedTime(slot);
-  }, []);
-
+  const [viewDate, setViewDate] = useState<Date>(time || new Date());
+  const [selectedTime, setSelectedTime] = useState<Date | null>(time || null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const { location, service } = booking.data;
-    if (!location || !service) return;
+    if (!location?.id || !service?.id) return;
+
     const fetchTimeSlots = async () => {
-      const { data } = await getAvailableSlots(
-        formatDate("YYYY-MM-DD", viewDate),
-        location.id,
-        service.id
-      );
-      setTimeSlots(data || []);
+      setIsLoading(true);
+      try {
+        const { data } = await getAvailableSlots(
+          formatDate("YYYY-MM-DD", viewDate),
+          location.id,
+          service.id
+        );
+        setTimeSlots(data || []);
+      } catch (error) {
+        console.error(error);
+        setTimeSlots([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchTimeSlots();
-  }, [booking.data, viewDate]);
+  }, [location?.id, service?.id, viewDate]);
 
   return (
     <div className={cn("flex flex-col items-center", className)} {...rest}>
@@ -51,7 +56,11 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
         <h2 className="text-xl font-bold mb-6 mt-8 flex items-center gap-2">
           可選擇時段
         </h2>
-        {timeSlots.length > 0 ? (
+        {isLoading ? (
+          <div className="text-(--muted) text-center py-8">
+            <LoadingOutlined className="text-2xl" />
+          </div>
+        ) : timeSlots.length > 0 ? (
           <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-5">
             {timeSlots.map((slot) => {
               const slotDate = new Date(
@@ -62,10 +71,13 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
                 <button
                   key={slotDate.toISOString()}
                   type="button"
-                  onClick={() => handleTimeSelect(slotDate)}
-                  className={cn("btn p-2 rounded-lg font-medium", {
-                    secondary: isSelected,
-                  })}
+                  onClick={() => setSelectedTime(slotDate)}
+                  className={cn(
+                    "btn p-2 rounded-lg font-medium transition-all",
+                    {
+                      secondary: isSelected,
+                    }
+                  )}
                 >
                   {formatDate("HH:mm", slotDate)}
                 </button>
@@ -74,7 +86,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
           </div>
         ) : (
           <div className="text-(--muted) text-center py-4">
-            {booking.data.location ? "本日無可預約時段" : "請先選擇地點"}
+            {location ? "本日無可預約時段" : "請先選擇地點"}
           </div>
         )}
         {/* 確認預約區域 */}
