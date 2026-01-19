@@ -1,10 +1,10 @@
-import { useBooking } from "@/contexts/BookingContext";
+import { TimeSlot, useBooking } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { DistributiveOmit } from "fanyucomponents";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Calender } from "./Calender";
-import { generateTimeSlot } from "@/utils/booking";
+import { getAvailableSlots } from "@/utils/backend";
 
 type TimeDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -21,15 +21,20 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
     setSelectedTime(slot);
   }, []);
 
-  const timeSlots = useMemo(() => {
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+
+  useEffect(() => {
     const { location, service } = booking.data;
-    if (!location || !service) return [];
-    return generateTimeSlot(
-      viewDate,
-      location.open_time,
-      location.close_time,
-      service.duration
-    );
+    if (!location || !service) return;
+    const fetchTimeSlots = async () => {
+      const { data } = await getAvailableSlots(
+        formatDate("YYYY-MM-DD", viewDate),
+        location.id,
+        service.id
+      );
+      setTimeSlots(data || []);
+    };
+    fetchTimeSlots();
   }, [booking.data, viewDate]);
 
   return (
@@ -49,17 +54,20 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
         {timeSlots.length > 0 ? (
           <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-5">
             {timeSlots.map((slot) => {
-              const isSelected = selectedTime?.getTime() === slot.getTime();
+              const slotDate = new Date(
+                `${formatDate("YYYY-MM-DD", viewDate)}T${slot.start_time}`
+              );
+              const isSelected = selectedTime?.getTime() === slotDate.getTime();
               return (
                 <button
-                  key={slot.toISOString()}
+                  key={slotDate.toISOString()}
                   type="button"
-                  onClick={() => handleTimeSelect(slot)}
+                  onClick={() => handleTimeSelect(slotDate)}
                   className={cn("btn p-2 rounded-lg font-medium", {
                     secondary: isSelected,
                   })}
                 >
-                  {formatDate("HH:mm", slot)}
+                  {formatDate("HH:mm", slotDate)}
                 </button>
               );
             })}

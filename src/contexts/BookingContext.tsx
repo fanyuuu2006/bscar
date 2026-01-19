@@ -34,7 +34,9 @@ export type Service = {
   image_url: string | undefined;
 };
 
-export type Time = Date;
+export type TimeSlot = {
+  start_time: `${number}:${number}:${number}`;
+}
 
 export type Info = {
   name: string;
@@ -45,7 +47,7 @@ export type Info = {
 export type BookingData = {
   location: Location | undefined;
   service: Service | undefined;
-  time: Time | undefined;
+  time: Date | undefined;
   info: Info | undefined;
 };
 
