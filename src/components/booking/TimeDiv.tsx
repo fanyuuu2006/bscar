@@ -2,8 +2,9 @@ import { useBooking } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { DistributiveOmit } from "fanyucomponents";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Calender } from "./Calender";
+import { generateTimeSlot } from "@/utils/booking";
 
 type TimeDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -11,53 +12,25 @@ type TimeDivProps = DistributiveOmit<
 >;
 export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
   const booking = useBooking();
-  const [timeSlots, setTimeSlots] = useState<Date[]>([]);
   const [viewDate, setViewDate] = useState<Date>(
     booking.data.time || new Date()
   );
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
 
-  useEffect(() => {
-    // 從開閉店時間切割每一小時為時段
-    const location = booking.data.location;
-    const service = booking.data.service;
-    if (!location || !service) {
-      return;
-    }
-
-    const { open_time, close_time } = location;
-    const { duration } = service;
-    // 解析時間字串 "HH:mm"
-    const [openH, openM] = open_time.split(":").map(Number);
-    const [closeH, closeM] = close_time.split(":").map(Number);
-
-    const start = new Date(viewDate);
-    start.setHours(openH, openM, 0, 0);
-
-    const end = new Date(viewDate);
-    end.setHours(closeH, closeM, 0, 0);
-
-    const slots: Date[] = [];
-    const current = new Date(start);
-
-    // 每小時產生一個時段，直到結束時間前
-    while (current < end) {
-      // 加上服務時間判斷是否超過打烊時間
-      const serviceEnd = new Date(current);
-      serviceEnd.setMinutes(serviceEnd.getMinutes() + duration);
-
-      if (serviceEnd <= end) {
-        slots.push(new Date(current));
-      }
-      current.setHours(current.getHours() + 1);
-    }
-
-    setTimeout(() => setTimeSlots(slots), 0);
-  }, [viewDate, booking.data.location, booking.data.service]);
-
   const handleTimeSelect = useCallback((slot: Date) => {
     setSelectedTime(slot);
   }, []);
+
+  const timeSlots = useMemo(() => {
+    const { location, service } = booking.data;
+    if (!location || !service) return [];
+    return generateTimeSlot(
+      viewDate,
+      location.open_time,
+      location.close_time,
+      service.duration
+    );
+  }, [booking.data, viewDate]);
 
   return (
     <div className={cn("flex flex-col items-center", className)} {...rest}>
