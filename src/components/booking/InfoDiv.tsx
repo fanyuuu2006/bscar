@@ -124,7 +124,7 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
         className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl"
         onSubmit={(e) => {
           e.preventDefault();
-          alert("預約已送出！");
+          booking.submit();
         }}
       >
         <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-2">

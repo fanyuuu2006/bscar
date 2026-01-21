@@ -142,8 +142,8 @@ export const Calender = ({
                   "tabular-nums font-mono relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
                   "text-[1em] font-medium",
                   {
-                    "bg-(--primary) text-white": isSelected,
-                    "font-black": isToday,
+                    "border-(--primary) border-2": isSelected,
+                    "font-black text-(--primary)": isToday,
                   }
                 )}
                 onClick={() => {
@@ -152,19 +152,6 @@ export const Calender = ({
                 }}
               >
                 <span>{date.getDate()}</span>
-                {isToday && (
-                  <>
-                    <span className="sr-only">（今天）</span>
-                    <span
-                      className={cn(
-                        "absolute bottom-1 h-[0.25em] aspect-square rounded-full bg-(--primary)",
-                        {
-                          "bg-(--background)": isSelected,
-                        }
-                      )}
-                    />
-                  </>
-                )}
               </button>
             </div>
           );

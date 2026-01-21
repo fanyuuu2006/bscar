@@ -1,4 +1,6 @@
 "use client";
+import { postBooking } from "@/utils/backend";
+import { formatDate } from "@/utils/date";
 import {
   createContext,
   useCallback,
@@ -36,7 +38,7 @@ export type Service = {
 
 export type TimeSlot = {
   start_time: `${number}:${number}:${number}`;
-}
+};
 
 export type Info = {
   name: string;
@@ -135,7 +137,24 @@ export const BookingProvider = ({
     setCurrStep(bookingSteps[0].value);
   }, []);
 
-  const submit = useCallback(() => {}, []);
+  const submit = useCallback(() => {
+    const { location, service, time, info } = data;
+    if (!location || !service || !time || !info) {
+      return;
+    }
+    const location_id = location.id;
+    const service_id = service.id;
+    const booking_time = formatDate("YYYY-MM-DD HH:mm:ss", time);
+    postBooking({ location_id, service_id, time: booking_time, info })
+      .then(() => {
+        alert("預約成功！");
+        reset();
+      })
+      .catch((err) => {
+        alert("預約失敗，請稍後再試。");
+        console.error("預約失敗:", err);
+      });
+  }, [data, reset]);
 
   const value = useMemo(
     () => ({
