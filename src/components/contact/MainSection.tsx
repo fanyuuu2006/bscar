@@ -8,28 +8,28 @@ export const Mainsection = () => {
         {/* 左側：聯絡電話 */}
         <div className="flex flex-col items-center gap-6 text-center md:items-start md:text-left">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-[var(--foreground)]">
+            <h1 className="text-3xl font-bold text-(--foreground)">
               聯絡我們
             </h1>
-            <p className="text-[var(--muted)]">如果有任何問題，歡迎隨時聯繫</p>
+            <p className="text-(--muted)">如果有任何問題，歡迎隨時聯繫</p>
           </div>
 
           <a
             href="tel:0975775890"
             className="group flex flex-col items-center gap-2 transition-opacity hover:opacity-80 md:items-start"
           >
-            <span className="flex items-center gap-2 text-xl font-medium text-[var(--secondary)]">
-              <PhoneFilled className="text-[var(--primary)]" />
+            <span className="flex items-center gap-2 text-xl font-medium text-(--secondary)">
+              <PhoneFilled className="text-(--primary)" />
               聯絡電話
             </span>
-            <span className="text-4xl font-bold tracking-wider text-[var(--primary)] group-hover:underline">
+            <span className="text-4xl font-bold tracking-wider text-(--primary) group-hover:underline">
               0975-775-890
             </span>
           </a>
         </div>
 
         {/* 分隔線 (手機隱藏) */}
-        <div className="hidden h-48 w-px bg-[var(--border)] md:block"></div>
+        <div className="hidden h-48 w-px bg-(--border) md:block"></div>
 
         {/* 右側：QR Code */}
         <div className="flex flex-col items-center gap-4">
@@ -42,7 +42,7 @@ export const Mainsection = () => {
               sizes="(max-width: 768px) 192px, 224px"
             />
           </div>
-          <p className="font-medium text-[var(--secondary)]">
+          <p className="font-medium text-(--secondary)">
             掃描加入 LINE 好友
           </p>
         </div>

@@ -7,7 +7,7 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import { useMemo } from "react";
-import { getDisplayValue } from "@/utils/booking";
+import { getDisplayValue, isValidEmail, isValidPhone } from "@/utils/booking";
 
 type InfoDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -47,19 +47,19 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
       id: "name",
       label: "姓名",
       type: "text",
-      // valider: undefined,
+      valider: undefined,
     },
     {
       id: "phone",
       label: "電話",
       type: "tel",
-      // valider : isValidPhone,
+      valider : isValidPhone,
     },
     {
       id: "email",
       label: "電子郵件",
       type: "email",
-      // valider : isValidEmail,
+      valider : isValidEmail,
     },
   ] as const;
 
