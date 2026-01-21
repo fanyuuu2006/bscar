@@ -79,7 +79,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
                     }
                   )}
                 >
-                  {formatDate("HH:mm", slotDate)}
+                  {formatDate("hh:mm A", slotDate)}
                 </button>
               );
             })}
@@ -95,7 +95,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
             <div className="flex flex-col items-center gap-1">
               <span className="text-sm text-(--muted)">已選擇時段</span>
               <span className="text-2xl font-bold text-(--foreground)">
-                {formatDate("YYYY/MM/DD HH:mm", selectedTime)}
+                {formatDate("YYYY/MM/DD hh:mm A", selectedTime)}
               </span>
             </div>
             <button

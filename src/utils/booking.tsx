@@ -20,7 +20,7 @@ export const getDisplayValue = <K extends BookingStep>(
     case "service":
       return (data as Service).name;
     case "time":
-      return formatDate("YYYY/MM/DD HH:mm", data as Date);
+      return formatDate("YYYY/MM/DD hh:mm A", data as Date);
     default:
       return "";
   }
