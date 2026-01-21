@@ -146,9 +146,9 @@ export const BookingProvider = ({
     const service_id = service.id;
     const booking_time = formatDate("YYYY-MM-DD HH:mm:ss", time);
     postBooking({ location_id, service_id, time: booking_time, info })
-      .then(() => {
-        alert("預約成功！");
-        reset();
+      .then((res) => {
+        alert(res.message);
+        if (res.success) reset();
       })
       .catch((err) => {
         alert("預約失敗，請稍後再試。");

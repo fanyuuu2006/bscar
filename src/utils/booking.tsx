@@ -26,19 +26,6 @@ export const getDisplayValue = <K extends BookingStep>(
   }
 };
 
-export const isValidEmail = (email: string) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-export const normalizePhone = (phone: string) => {
-  return phone.replace(/[^\d+]/g, "");
-};
-
-export const isValidPhone = (phone: string) => {
-  const p = normalizePhone(phone);
-  const phoneRegex = /^\+?[0-9]{10}$/;
-  return phoneRegex.test(p);
-};
 
 // export const generateTimeSlot = (
 //   date: Date,

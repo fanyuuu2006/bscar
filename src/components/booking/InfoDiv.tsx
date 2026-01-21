@@ -7,7 +7,7 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import { useMemo } from "react";
-import { getDisplayValue, isValidEmail, isValidPhone } from "@/utils/booking";
+import { getDisplayValue } from "@/utils/booking";
 
 type InfoDivProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -47,30 +47,23 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
       id: "name",
       label: "姓名",
       type: "text",
-      valider: undefined,
     },
     {
       id: "phone",
       label: "電話",
       type: "tel",
-      valider : isValidPhone,
     },
     {
       id: "email",
       label: "電子郵件",
       type: "email",
-      valider : isValidEmail,
     },
   ] as const;
 
   const handleInfoChange = (
     key: keyof Info,
     value: string,
-    valider?: (val: string) => boolean
   ) => {
-    if (valider && !valider(value)) {
-      return;
-    }
     const currentInfo = booking.data.info || { name: "", phone: "", email: "" };
     booking.setBookingData("info", {
       ...currentInfo,
