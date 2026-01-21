@@ -15,4 +15,8 @@ export const routes: Route[] = [
     label: "預約",
     url: "/booking",
   },
+  {
+    label: "聯絡我們",
+    url: "/contact",
+  }
 ];

@@ -36,7 +36,7 @@ export const normalizePhone = (phone: string) => {
 
 export const isValidPhone = (phone: string) => {
   const p = normalizePhone(phone);
-  const phoneRegex = /^\+?[0-9]{7,15}$/;
+  const phoneRegex = /^\+?[0-9]{10}$/;
   return phoneRegex.test(p);
 };
 
