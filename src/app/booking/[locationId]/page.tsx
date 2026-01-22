@@ -1,7 +1,9 @@
 import { Mainsection } from "@/components/booking/Mainsection";
 
-export default async function Booking() {
+export default function Booking() {
   return (
+    <>
       <Mainsection />
+    </>
   );
 }
