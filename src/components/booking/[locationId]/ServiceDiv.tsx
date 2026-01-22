@@ -1,29 +1,17 @@
 "use client";
 import { Service, useBooking } from "@/contexts/BookingContext";
 import { useModal } from "@/hooks/useModal";
-import { getServices } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { LoadingOutlined } from "@ant-design/icons";
-import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import React, { useEffect, useState } from "react";
+import { OverrideProps } from "fanyucomponents";
 
-type ServiceDivProps = DistributiveOmit<
+type ServiceDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
-  "children"
->;
-export const ServiceDiv = ({ className, ...rest }: ServiceDivProps) => {
-  const [services, setServices] = useState<Service[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await getServices();
-        setServices(data || []);
-      } catch (error) {
-        console.error("獲取失敗", error);
-      }
-    };
-    fetchData();
-  }, []);
+  {
+    services: Service[];
+  }>;
+export const ServiceDiv = ({ services,  className, ...rest }: ServiceDivProps) => {
+ 
   return (
     <div
       className={cn(

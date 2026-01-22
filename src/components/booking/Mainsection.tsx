@@ -6,14 +6,14 @@ type MainsectionProps<T extends React.ElementType = React.ElementType> =
     React.HTMLAttributes<HTMLElement>,
     {
       ContentComponent: T;
-      propsForComponent?: React.ComponentPropsWithRef<T>;
+      propsForComponent: React.ComponentPropsWithRef<T>;
     }
   >;
-export const MainSection = ({
+export const MainSection = <T extends React.ElementType>({
   ContentComponent,
   propsForComponent,
   ...rest
-}: MainsectionProps) => {
+}: MainsectionProps<T>) => {
   return (
     <section {...rest}>
       <div className="container flex flex-col py-12 md:py-20">

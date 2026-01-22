@@ -8,7 +8,7 @@ export default async function Booking() {
     <MainSection
       ContentComponent={LocationsDiv}
       propsForComponent={{
-        locations: data,
+        locations: data || [],
       }}
     />
   );
