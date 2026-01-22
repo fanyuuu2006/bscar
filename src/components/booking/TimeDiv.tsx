@@ -1,3 +1,4 @@
+"use client";
 import { TimeSlot, useBooking } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";

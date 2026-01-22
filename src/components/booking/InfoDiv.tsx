@@ -1,3 +1,4 @@
+"use client";
 import { useBooking, type Info } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
 import { DistributiveOmit } from "fanyucomponents";

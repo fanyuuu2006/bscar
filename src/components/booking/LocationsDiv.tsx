@@ -1,27 +1,21 @@
-import { Location, useBooking } from "@/contexts/BookingContext";
-import { getLocations } from "@/utils/backend";
+"use client";
+import { Location } from "@/contexts/BookingContext";
 import { cn } from "@/utils/className";
 import { LoadingOutlined } from "@ant-design/icons";
-import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import { useEffect, useState } from "react";
+import { OverrideProps } from "fanyucomponents";
+import Link from "next/link";
 
-type LocationsDivProps = DistributiveOmit<
+type LocationsDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
-  "children"
+  {
+    locations: Location[];
+  }
 >;
-export const LocationsDiv = ({ className, ...rest }: LocationsDivProps) => {
-  const [locations, setLocations] = useState<Location[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await getLocations();
-        setLocations(data || []);
-      } catch (error) {
-        console.error("獲取失敗", error);
-      }
-    };
-    fetchData();
-  }, []);
+export const LocationsDiv = ({
+  locations,
+  className,
+  ...rest
+}: LocationsDivProps) => {
   return (
     <div
       className={cn(
@@ -51,7 +45,6 @@ type LocationCardProps = OverrideProps<
 >;
 
 const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
-  const booking = useBooking();
   return (
     <div
       className={cn(
@@ -93,15 +86,12 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
 
         {/* 功能按鈕區 */}
         <div className="pt-4 mt-auto">
-          <button
+          <Link
             className="btn primary w-full font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2"
-            onClick={() => {
-              booking.setBookingData("location", item);
-              booking.nextStep();
-            }}
+            href={`/booking/${item.id}`}
           >
             <span>選擇地點</span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

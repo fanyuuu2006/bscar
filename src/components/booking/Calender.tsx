@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/utils/className";
 import { getDaysArray, isSameDate } from "@/utils/date";
 import {

@@ -1,3 +1,4 @@
+"use client";
 import { Service, useBooking } from "@/contexts/BookingContext";
 import { useModal } from "@/hooks/useModal";
 import { getServices } from "@/utils/backend";
