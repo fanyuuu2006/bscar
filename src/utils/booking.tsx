@@ -3,7 +3,7 @@ import {
   Service,
   Location,
   Info,
-} from "@/contexts/BookingContext";
+} from "@/types";
 import { formatDate } from "./date";
 
 export const getDisplayValue = <K extends BookingStep>(

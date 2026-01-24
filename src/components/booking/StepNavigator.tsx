@@ -1,36 +1,11 @@
 "use client";
-import {
-  BookingData,
-  BookingStep,
-  bookingSteps,
-  Location,
-  Service,
-  useBooking,
-} from "@/contexts/BookingContext";
+
+import { bookingSteps } from "@/libs/booking";
 import { cn } from "@/utils/className";
-import { formatDate } from "@/utils/date";
 import { DistributiveOmit } from "fanyucomponents";
-import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 
-const getDisplayValue = <K extends BookingStep>(
-  step: K,
-  data: BookingData[K],
-) => {
-  if (!data) return "";
 
-  switch (step) {
-    case "location": {
-      const { city, branch } = data as Location;
-      return `${city}-${branch}`;
-    }
-    case "service":
-      return (data as Service).name;
-    case "time":
-      return formatDate("YYYY/MM/DD hh:mm A", data as Date);
-    default:
-      return "";
-  }
-};
 
 type StepNavigatorProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -38,32 +13,79 @@ type StepNavigatorProps = DistributiveOmit<
 >;
 
 export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
-  const booking = useBooking();
+  const router = useRouter();
+  const params = useParams();
+
+  const locationId = params?.locationId;
+  const serviceId = params?.serviceId;
+  const time = params?.time;
+
+  // 根據 URL 參數判斷目前步驟
+  const getCurrentStep = () => {
+    if (time) return "info";
+    if (serviceId) return "time";
+    if (locationId) return "service";
+    return "location";
+  };
+
+  const currentStepValue = getCurrentStep();
+
+  const getStepIndex = (step: string) => {
+    return bookingSteps.findIndex((s) => s.value === step);
+  };
+
+  // 導航邏輯
+  const handleToStep = (stepValue: string) => {
+    switch (stepValue) {
+      case "location":
+        router.push("/booking");
+        break;
+      case "service":
+        if (locationId) {
+          router.push(`/booking/${locationId}`);
+        }
+        break;
+      case "time":
+        if (locationId && serviceId) {
+          router.push(
+            `/booking/${locationId}/${serviceId}`
+          );
+        }
+        break;
+      case "info":
+        if (locationId && serviceId && time) {
+          router.push(
+            `/booking/${locationId}/${serviceId}/${time}`
+          );
+        }
+        break;
+    }
+  };
+
   return (
     <div
       className={cn(
         "flex items-center gap-6 overflow-x-auto pb-4 border-b border-(--border)",
-        className,
+        className
       )}
       {...rest}
     >
       {bookingSteps.map((step, index) => {
-        const displayValue = getDisplayValue(
-          step.value,
-          booking.data[step.value],
-        );
-        const isActive = booking.currStep === step.value;
+        const displayValue = null;
+
+        const isActive = currentStepValue === step.value;
+        const currentStepIndex = getStepIndex(currentStepValue);
 
         return (
           <button
-            disabled={booking.getStepIndex(booking.currStep) < index}
+            disabled={currentStepIndex < index}
             key={step.value}
             className={cn(
               `w-full h-[3em] whitespace-nowrap font-medium`,
-              "flex flex-col justify-center items-center rounded-lg",
+              "flex flex-col justify-center items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
             )}
             onClick={() => {
-              booking.toStep(step.value);
+              handleToStep(step.value);
             }}
           >
             <span
@@ -74,7 +96,7 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
               {step.label}
             </span>
             {displayValue && (
-              <span className="text-xs md:text-sm  text-(--muted) mt-1 font-normal opacity-80">
+              <span className="text-xs md:text-sm text-(--muted) mt-1 font-normal opacity-80">
                 {displayValue}
               </span>
             )}
@@ -84,12 +106,3 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
     </div>
   );
 };
-
-// type StepNavigatorButtonProps = DistributiveOmit<
-//   React.ButtonHTMLAttributes<HTMLButtonElement>,
-//   "children"
-// >;
-
-// const StepNavigatorButton = ({ className, ...rest }: StepNavigatorButtonProps) => {
-//   return <button className={cn(className)} {...rest}></button>;
-// };

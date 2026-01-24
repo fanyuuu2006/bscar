@@ -1,9 +1,9 @@
+import { bookingSteps } from "../libs/booking";
 export type MyResponse<T> = {
   success: boolean;
   data: T | null;
   message: string | undefined;
 };
-
 
 export type Location = {
   id: string;
@@ -32,3 +32,5 @@ export type Info = {
   phone: string;
   email: string;
 };
+
+export type BookingStep = (typeof bookingSteps)[number]["value"];

@@ -1,7 +1,7 @@
 import { NEXT_PUBLIC_BACKEND_URL } from "@/libs/env";
 import { fetcher } from "./fetcher";
 import { MyResponse } from "@/types";
-import { Info, Location, Service, TimeSlot } from "@/contexts/BookingContext";
+import { Info, Location, Service, TimeSlot } from "@/types";
 
 export const getLocations = async () =>
   fetcher<MyResponse<Location[]>>(
