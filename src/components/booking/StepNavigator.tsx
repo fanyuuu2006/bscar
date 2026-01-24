@@ -1,11 +1,10 @@
 "use client";
 
 import { bookingSteps } from "@/libs/booking";
+import { BookingStep } from "@/types";
 import { cn } from "@/utils/className";
 import { DistributiveOmit } from "fanyucomponents";
 import { useParams, useRouter } from "next/navigation";
-
-
 
 type StepNavigatorProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -15,13 +14,10 @@ type StepNavigatorProps = DistributiveOmit<
 export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
   const router = useRouter();
   const params = useParams();
-
-  const locationId = params?.locationId;
-  const serviceId = params?.serviceId;
-  const time = params?.time;
+  const { locationId, serviceId, time } = params;
 
   // 根據 URL 參數判斷目前步驟
-  const getCurrentStep = () => {
+  const getCurrentStep = (): BookingStep => {
     if (time) return "info";
     if (serviceId) return "time";
     if (locationId) return "service";
@@ -30,12 +26,12 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
 
   const currentStepValue = getCurrentStep();
 
-  const getStepIndex = (step: string) => {
+  const getStepIndex = (step: BookingStep) => {
     return bookingSteps.findIndex((s) => s.value === step);
   };
 
   // 導航邏輯
-  const handleToStep = (stepValue: string) => {
+  const handleToStep = (stepValue: BookingStep) => {
     switch (stepValue) {
       case "location":
         router.push("/booking");
@@ -47,17 +43,15 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
         break;
       case "time":
         if (locationId && serviceId) {
-          router.push(
-            `/booking/${locationId}/${serviceId}`
-          );
+          router.push(`/booking/${locationId}/${serviceId}`);
         }
         break;
       case "info":
         if (locationId && serviceId && time) {
-          router.push(
-            `/booking/${locationId}/${serviceId}/${time}`
-          );
+          router.push(`/booking/${locationId}/${serviceId}/${time}`);
         }
+        break;
+      default:
         break;
     }
   };
@@ -66,7 +60,7 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
     <div
       className={cn(
         "flex items-center gap-6 overflow-x-auto pb-4 border-b border-(--border)",
-        className
+        className,
       )}
       {...rest}
     >
@@ -82,7 +76,7 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
             key={step.value}
             className={cn(
               `w-full h-[3em] whitespace-nowrap font-medium`,
-              "flex flex-col justify-center items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              "flex flex-col justify-center items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed",
             )}
             onClick={() => {
               handleToStep(step.value);
