@@ -2,13 +2,12 @@
 
 import { bookingSteps } from "@/libs/booking";
 import { BookingStep, Location, Service } from "@/types";
+import { getLocationById, getServiceById } from "@/utils/backend";
 import { getDisplayValue } from "@/utils/booking";
 import { cn } from "@/utils/className";
 import { DistributiveOmit } from "fanyucomponents";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { Info } from "../../types/index";
-import { getLocationById, getServiceById } from "@/utils/backend";
 
 type StepNavigatorProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -18,36 +17,33 @@ type StepNavigatorProps = DistributiveOmit<
 const INITIAL_BOOKING_DATA = {
   location: undefined,
   service: undefined,
-  time: undefined,
-  info: undefined,
 };
 
 export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
   const router = useRouter();
   const params = useParams();
-  const { locationId, serviceId, time } = params;
+
+  // Explicitly cast params to string | undefined
+  const locationId = params?.locationId as string | undefined;
+  const serviceId = params?.serviceId as string | undefined;
+  const time = params?.time as string | undefined;
 
   const [data, setData] = useState<{
     location: Location | undefined;
     service: Service | undefined;
-    time: Date | undefined;
-    info: Info | undefined;
   }>(INITIAL_BOOKING_DATA);
 
-  const getCurrentStep = (): BookingStep => {
+  // Derive current step from params directly
+  const currentStepValue: BookingStep = (() => {
     if (time) return "info";
     if (serviceId) return "time";
     if (locationId) return "service";
     return "location";
-  };
+  })();
 
-  const currentStepValue = getCurrentStep();
+  const getStepIndex = (step: BookingStep) =>
+    bookingSteps.findIndex((s) => s.value === step);
 
-  const getStepIndex = useCallback((step: BookingStep) => {
-    return bookingSteps.findIndex((s) => s.value === step);
-  }, []);
-
-  // 導航邏輯
   const handleToStep = useCallback(
     (stepValue: BookingStep) => {
       switch (stepValue) {
@@ -55,19 +51,15 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
           router.push("/booking");
           break;
         case "service":
-          if (locationId) {
-            router.push(`/booking/${locationId}`);
-          }
+          if (locationId) router.push(`/booking/${locationId}`);
           break;
         case "time":
-          if (locationId && serviceId) {
+          if (locationId && serviceId)
             router.push(`/booking/${locationId}/${serviceId}`);
-          }
           break;
         case "info":
-          if (locationId && serviceId && time) {
+          if (locationId && serviceId && time)
             router.push(`/booking/${locationId}/${serviceId}/${time}`);
-          }
           break;
         default:
           break;
@@ -76,43 +68,56 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
     [locationId, serviceId, time, router],
   );
 
+  // Fetch Location
   useEffect(() => {
-    if (locationId) {
-      getLocationById(locationId as string).then((res) => {
-        if (res.success) {
-          setData((prev) => ({
-            ...prev,
-            location: res.data || undefined,
-          }));
-        } else {
-          handleToStep("location");
-        }
-      });
-    }
-    if (serviceId) {
-      getServiceById(serviceId as string).then((res) => {
-        if (res.success) {
-          setData((prev) => ({
-            ...prev,
-            service: res.data || undefined,
-          }));
-        } else {
-          handleToStep("service");
-        }
-      });
-      if (time) {
-        const timeDate = new Date(Number(time));
-        setTimeout(
-          () =>
-            setData((prev) => ({
-              ...prev,
-              time: timeDate,
-            })),
-          0,
-        );
+    if (!locationId) return;
+
+    let isMounted = true;
+    getLocationById(locationId).then((res) => {
+      if (!isMounted) return;
+      if (res.success && res.data) {
+        setData((prev) => ({ ...prev, location: res.data ?? undefined }));
+      } else {
+        router.push("/booking"); // Fallback
       }
-    }
-  }, [handleToStep, locationId, serviceId, time]);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [locationId, router]);
+
+  // Fetch Service
+  useEffect(() => {
+    if (!serviceId) return;
+
+    let isMounted = true;
+    getServiceById(serviceId).then((res) => {
+      if (!isMounted) return;
+      if (res.success && res.data) {
+        setData((prev) => ({ ...prev, service: res.data ?? undefined }));
+      } else {
+        // Fallback to location step if service not found
+        if (locationId) router.push(`/booking/${locationId}`);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [serviceId, locationId, router]);
+
+  // Derive display data directly during render
+  // This avoids "setting state in effect" for 'time' and derived clear states
+  const timeDate = time ? new Date(Number(time)) : undefined;
+  const isValidTime = timeDate && !isNaN(timeDate.getTime());
+
+  const displayData = {
+    location: locationId ? data.location : undefined,
+    service: serviceId ? data.service : undefined,
+    time: isValidTime ? timeDate : undefined,
+    info: undefined,
+  };
 
   return (
     <div
@@ -123,8 +128,8 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
       {...rest}
     >
       {bookingSteps.map((step, index) => {
-        const displayValue = data[step.value]
-          ? getDisplayValue(step.value, data[step.value]!)
+        const displayValue = displayData[step.value]
+          ? getDisplayValue(step.value, displayData[step.value]!)
           : undefined;
 
         const isActive = currentStepValue === step.value;
