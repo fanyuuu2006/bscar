@@ -47,21 +47,15 @@ export type Info = {
 };
 
 export type BookingData = {
-  location: Location | undefined;
-  service: Service | undefined;
-  time: Date | undefined;
+  location: Location["id"] | undefined;
+  service: Service["id"] | undefined;
+  time: string | undefined;
   info: Info | undefined;
 };
 
 interface BookingContextType {
   currStep: BookingStep;
-  toStep: (step: BookingStep) => void;
-  nextStep: () => void;
-  prevStep: () => void;
-  getStepIndex: (step: BookingStep) => number;
-
   data: BookingData;
-
   setBookingData: <K extends keyof BookingData>(
     key: K,
     value: BookingData[K]
@@ -90,37 +84,6 @@ export const BookingProvider = ({
   const [currStep, setCurrStep] = useState<BookingStep>(bookingSteps[0].value);
   const [data, setData] = useState<BookingData>(INITIAL_DATA);
 
-  const toStep = useCallback((step: BookingStep) => {
-    // 先清除後續步驟的值
-    setData((prev) => {
-      const newData = { ...prev };
-      const targetIdx = bookingSteps.findIndex((s) => s.value === step);
-      bookingSteps.forEach((s, idx) => {
-        if (idx > targetIdx) {
-          newData[s.value as keyof BookingData] = undefined;
-        }
-      });
-      return newData;
-    });
-    setCurrStep(step);
-  }, []);
-
-  const prevStep = useCallback(() => {
-    setCurrStep((prev) => {
-      const idx = bookingSteps.findIndex((s) => s.value === prev);
-      if (idx > 0) return bookingSteps[idx - 1].value;
-      return prev;
-    });
-  }, []);
-
-  const nextStep = useCallback(() => {
-    setCurrStep((prev) => {
-      const idx = bookingSteps.findIndex((s) => s.value === prev);
-      if (idx < bookingSteps.length - 1) return bookingSteps[idx + 1].value;
-      return prev;
-    });
-  }, []);
-
   const getStepIndex = useCallback((step: BookingStep) => {
     return bookingSteps.findIndex((s) => s.value === step);
   }, []);
@@ -142,8 +105,8 @@ export const BookingProvider = ({
     if (!location || !service || !time || !info) {
       return;
     }
-    const location_id = location.id;
-    const service_id = service.id;
+    const location_id = location;
+    const service_id = service;
     const booking_time = formatDate("YYYY-MM-DD HH:mm:ss", time);
     postBooking({ location_id, service_id, time: booking_time, info })
       .then((res) => {
@@ -159,26 +122,13 @@ export const BookingProvider = ({
   const value = useMemo(
     () => ({
       currStep,
-      toStep,
-      nextStep,
-      prevStep,
       getStepIndex,
       data,
       setBookingData,
       reset,
       submit,
     }),
-    [
-      currStep,
-      toStep,
-      nextStep,
-      prevStep,
-      getStepIndex,
-      data,
-      setBookingData,
-      reset,
-      submit,
-    ]
+    [currStep, getStepIndex, data, setBookingData, reset, submit]
   );
 
   return (

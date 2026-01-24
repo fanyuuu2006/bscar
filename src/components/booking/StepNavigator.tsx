@@ -10,10 +10,11 @@ import {
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { DistributiveOmit } from "fanyucomponents";
+import Link from "next/link";
 
 const getDisplayValue = <K extends BookingStep>(
   step: K,
-  data: BookingData[K]
+  data: BookingData[K],
 ) => {
   if (!data) return "";
 
@@ -42,14 +43,14 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
     <div
       className={cn(
         "flex items-center gap-6 overflow-x-auto pb-4 border-b border-(--border)",
-        className
+        className,
       )}
       {...rest}
     >
       {bookingSteps.map((step, index) => {
         const displayValue = getDisplayValue(
           step.value,
-          booking.data[step.value]
+          booking.data[step.value],
         );
         const isActive = booking.currStep === step.value;
 
@@ -59,7 +60,7 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
             key={step.value}
             className={cn(
               `w-full h-[3em] whitespace-nowrap font-medium`,
-              "flex flex-col justify-center items-center rounded-lg"
+              "flex flex-col justify-center items-center rounded-lg",
             )}
             onClick={() => {
               booking.toStep(step.value);
@@ -83,3 +84,12 @@ export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
     </div>
   );
 };
+
+// type StepNavigatorButtonProps = DistributiveOmit<
+//   React.ButtonHTMLAttributes<HTMLButtonElement>,
+//   "children"
+// >;
+
+// const StepNavigatorButton = ({ className, ...rest }: StepNavigatorButtonProps) => {
+//   return <button className={cn(className)} {...rest}></button>;
+// };

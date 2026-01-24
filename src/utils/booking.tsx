@@ -1,14 +1,19 @@
 import {
   BookingStep,
-  BookingData,
   Service,
   Location,
+  Info,
 } from "@/contexts/BookingContext";
 import { formatDate } from "./date";
 
 export const getDisplayValue = <K extends BookingStep>(
   step: K,
-  data: BookingData[K]
+  data: {
+    location: Location;
+    service: Service;
+    time: Date;
+    info: Info;
+  }[K]
 ) => {
   if (!data) return "";
 

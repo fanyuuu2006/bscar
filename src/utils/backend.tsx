@@ -5,16 +5,26 @@ import { Info, Location, Service, TimeSlot } from "@/contexts/BookingContext";
 
 export const getLocations = async () =>
   fetcher<MyResponse<Location[]>>(
-    `${NEXT_PUBLIC_BACKEND_URL}/v1/data/locations`
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/data/locations`,
+  );
+
+export const getLocationById = async (id: Location["id"]) =>
+  fetcher<MyResponse<Location>>(
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/data/locations/${id}`,
   );
 
 export const getServices = async () =>
   fetcher<MyResponse<Service[]>>(`${NEXT_PUBLIC_BACKEND_URL}/v1/data/services`);
 
+export const getServiceById = async (id: Service["id"]) =>
+  fetcher<MyResponse<Service>>(
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/data/services/${id}`,
+  );
+
 export const getAvailableSlots = async (
   date: string,
   location_id: Location["id"],
-  service_id: Service["id"]
+  service_id: Service["id"],
 ) => {
   const queryParams = new URLSearchParams({
     date,
@@ -22,7 +32,7 @@ export const getAvailableSlots = async (
     service_id,
   });
   return fetcher<MyResponse<TimeSlot[]>>(
-    `${NEXT_PUBLIC_BACKEND_URL}/v1/data/booking/available-slots?${queryParams.toString()}`
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/data/booking/available-slots?${queryParams.toString()}`,
   );
 };
 
@@ -40,6 +50,6 @@ export const postBooking = async (body: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-    }
+    },
   );
 };

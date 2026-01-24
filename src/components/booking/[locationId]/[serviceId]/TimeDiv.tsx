@@ -1,36 +1,45 @@
 "use client";
-import { TimeSlot, useBooking } from "@/contexts/BookingContext";
+import {
+  Location,
+  Service,
+  TimeSlot,
+} from "@/types";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
-import { DistributiveOmit } from "fanyucomponents";
+import { OverrideProps } from "fanyucomponents";
 import { useEffect, useState } from "react";
 import { Calender } from "./Calender";
 import { getAvailableSlots } from "@/utils/backend";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
-type TimeDivProps = DistributiveOmit<
+type TimeDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
-  "children"
+  {
+    locationId: Location["id"];
+    serviceId: Service["id"];
+  }
 >;
-export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
-  const booking = useBooking();
-  const { location, service, time } = booking.data;
-
-  const [viewDate, setViewDate] = useState<Date>(time || new Date());
-  const [selectedTime, setSelectedTime] = useState<Date | null>(time || null);
+export const TimeDiv = ({
+  className,
+  locationId,
+  serviceId,
+  ...rest
+}: TimeDivProps) => {
+  const [viewDate, setViewDate] = useState<Date>(new Date());
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    if (!location?.id || !service?.id) return;
-
     const fetchTimeSlots = async () => {
       setIsLoading(true);
       try {
         const { data } = await getAvailableSlots(
           formatDate("YYYY-MM-DD", viewDate),
-          location.id,
-          service.id
+          locationId,
+          serviceId,
         );
         setTimeSlots(data || []);
       } catch (error) {
@@ -41,7 +50,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
       }
     };
     fetchTimeSlots();
-  }, [location?.id, service?.id, viewDate]);
+  }, [locationId, serviceId, viewDate]);
 
   return (
     <div className={cn("flex flex-col items-center", className)} {...rest}>
@@ -65,7 +74,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
           <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-5">
             {timeSlots.map((slot) => {
               const slotDate = new Date(
-                `${formatDate("YYYY-MM-DD", viewDate)}T${slot.start_time}`
+                `${formatDate("YYYY-MM-DD", viewDate)}T${slot.start_time}`,
               );
               const isSelected = selectedTime?.getTime() === slotDate.getTime();
               return (
@@ -77,7 +86,7 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
                     "btn p-2 rounded-lg font-medium transition-all",
                     {
                       secondary: isSelected,
-                    }
+                    },
                   )}
                 >
                   {formatDate("hh:mm A", slotDate)}
@@ -102,8 +111,9 @@ export const TimeDiv = ({ className, ...rest }: TimeDivProps) => {
             <button
               className="btn primary w-full max-w-md py-3 rounded-xl font-bold text-lg"
               onClick={() => {
-                booking.setBookingData("time", selectedTime);
-                booking.nextStep();
+                router.push(
+                  `/booking/${locationId}/${serviceId}/${selectedTime.getTime()}`,
+                );
               }}
             >
               確認並前往下一步

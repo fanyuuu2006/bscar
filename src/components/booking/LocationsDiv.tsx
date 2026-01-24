@@ -1,8 +1,9 @@
 "use client";
-import { Location, useBooking } from "@/contexts/BookingContext";
+import { Location } from "@/types";
 import { cn } from "@/utils/className";
 import { LoadingOutlined } from "@ant-design/icons";
-import {OverrideProps } from "fanyucomponents";
+import { OverrideProps } from "fanyucomponents";
+import Link from "next/link";
 
 type LocationsDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -10,7 +11,11 @@ type LocationsDivProps = OverrideProps<
     locations: Location[];
   }
 >;
-export const LocationsDiv = ({ locations, className, ...rest }: LocationsDivProps) => {
+export const LocationsDiv = ({
+  locations,
+  className,
+  ...rest
+}: LocationsDivProps) => {
   return (
     <div
       className={cn(
@@ -40,7 +45,6 @@ type LocationCardProps = OverrideProps<
 >;
 
 const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
-  const booking = useBooking();
   return (
     <div
       className={cn(
@@ -82,14 +86,12 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
 
         {/* 功能按鈕區 */}
         <div className="pt-4 mt-auto">
-          <button
+          <Link
+            href={`/booking/${item.id}`}
             className="btn primary w-full font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2"
-            onClick={() => {
-              booking.setBookingData("location", item);
-            }}
           >
             <span>選擇地點</span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

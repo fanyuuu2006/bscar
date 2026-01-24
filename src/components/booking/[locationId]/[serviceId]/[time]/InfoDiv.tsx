@@ -1,46 +1,58 @@
 "use client";
-import { useBooking, type Info } from "@/contexts/BookingContext";
+import { Location, Info, Service } from "@/types";
 import { cn } from "@/utils/className";
-import { DistributiveOmit } from "fanyucomponents";
+import { OverrideProps } from "fanyucomponents";
 import {
   EnvironmentOutlined,
   StarOutlined,
   ClockCircleOutlined,
 } from "@ant-design/icons";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { getDisplayValue } from "@/utils/booking";
+import { postBooking } from "@/utils/backend";
+import { formatDate } from "@/utils/date";
 
-type InfoDivProps = DistributiveOmit<
+type InfoDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
-  "children"
+  {
+    location: Location;
+    service: Service;
+    time: Date;
+  }
 >;
 
-export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
-  const booking = useBooking();
+export const InfoDiv = ({
+  className,
+  location,
+  service,
+  time,
+  ...rest
+}: InfoDivProps) => {
+  const [data, setData] = useState<Info>({ name: "", phone: "", email: "" });
   const items = useMemo(
     () => [
       {
         icon: EnvironmentOutlined,
         label: "地點",
-        value: getDisplayValue("location", booking.data.location),
-        detail: booking.data.location?.address,
+        value: getDisplayValue("location", location),
+        detail: location?.address,
         key: "location",
       },
       {
         icon: StarOutlined,
         label: "服務",
-        value: getDisplayValue("service", booking.data.service),
-        detail: booking.data.service?.description,
+        value: getDisplayValue("service", service),
+        detail: service?.description,
         key: "service",
       },
       {
         icon: ClockCircleOutlined,
         label: "時間",
-        value: getDisplayValue("time", booking.data.time),
+        value: getDisplayValue("time", time),
         key: "time",
       },
     ],
-    [booking.data]
+    [location, service, time],
   );
 
   const formFields = [
@@ -61,16 +73,29 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
     },
   ] as const;
 
-  const handleInfoChange = (
-    key: keyof Info,
-    value: string,
-  ) => {
-    const currentInfo = booking.data.info || { name: "", phone: "", email: "" };
-    booking.setBookingData("info", {
-      ...currentInfo,
-      [key]: value,
-    });
-  };
+  const handleInfoChange = useCallback((key: keyof Info, value: string) => {
+    setData((prevData) => ({ ...prevData, [key]: value }));
+  }, []);
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      postBooking({
+        location_id: location.id,
+        service_id: service.id,
+        time: formatDate("YYYY-MM-DD HH:mm:ss", time),
+        info: data,
+      })
+        .then((res) => {
+          alert(res.message);
+        })
+        .catch((err) => {
+          alert("預約失敗，請稍後再試。");
+          console.error("預約失敗:", err);
+        });
+    },
+    [location.id, service.id, time, data],
+  );
 
   return (
     <div
@@ -116,10 +141,7 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
       {/* 個人資料表單 */}
       <form
         className="card flex flex-col gap-4 p-4 md:p-6 overflow-hidden rounded-2xl"
-        onSubmit={(e) => {
-          e.preventDefault();
-          booking.submit();
-        }}
+        onSubmit={handleSubmit}
       >
         <h2 className="text-2xl font-bold text-(--foreground) border-b border-(--border) pb-2">
           填寫資料
@@ -131,7 +153,7 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
                 htmlFor={field.id}
                 className={cn(
                   "text-sm font-medium text-(--foreground)",
-                  "after:content-['*'] after:ml-0.5 after:text-(--accent)"
+                  "after:content-['*'] after:ml-0.5 after:text-(--accent)",
                 )}
               >
                 {field.label}
@@ -140,7 +162,7 @@ export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
                 required
                 id={field.id}
                 type={field.type}
-                value={booking.data.info?.[field.id] || ""}
+                value={data[field.id]}
                 onChange={(e) => handleInfoChange(field.id, e.target.value)}
                 placeholder={`請輸入您的${field.label}`}
                 className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all"

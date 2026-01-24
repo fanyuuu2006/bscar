@@ -1,28 +1,38 @@
 "use client";
-import { Service, useBooking } from "@/contexts/BookingContext";
+import { Location, Service } from "@/types";
 import { useModal } from "@/hooks/useModal";
 import { cn } from "@/utils/className";
 import { LoadingOutlined } from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 type ServiceDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
     services: Service[];
-  }>;
-export const ServiceDiv = ({ services,  className, ...rest }: ServiceDivProps) => {
- 
+    locationId: Location["id"];
+  }
+>;
+export const ServiceDiv = ({
+  services,
+  locationId,
+  className,
+  ...rest
+}: ServiceDivProps) => {
   return (
     <div
       className={cn(
         "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6",
-        className
+        className,
       )}
       {...rest}
     >
       {services.length > 0 ? (
         services.map((item) => {
-          return <ServiceCard key={item.id} item={item} />;
+          return (
+            <ServiceCard key={item.id} item={item} locationId={locationId} />
+          );
         })
       ) : (
         <div className="col-span-full text-center text-(--muted)">
@@ -36,18 +46,29 @@ export const ServiceDiv = ({ services,  className, ...rest }: ServiceDivProps) =
 type ServiceCardProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
+    locationId: Location["id"];
     item: Service;
   }
 >;
-const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
-  const booking = useBooking();
+const ServiceCard = ({
+  item,
+  locationId,
+  className,
+  ...rest
+}: ServiceCardProps) => {
+  const router = useRouter();
   const modal = useModal({});
+
+  const handleSelectService = useCallback(() => {
+    router.push(`/booking/${locationId}/${item.id}`);
+  }, [locationId, item, router]);
+
   return (
     <>
       <div
         className={cn(
           "card flex flex-col overflow-hidden rounded-2xl",
-          className
+          className,
         )}
         {...rest}
       >
@@ -89,12 +110,9 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
 
             <button
               className="btn primary font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2"
-              onClick={() => {
-                booking.setBookingData("service", item);
-                booking.nextStep();
-              }}
+              onClick={handleSelectService}
             >
-              <span>選擇服務</span>
+              <span>選擇時間</span>
             </button>
           </div>
         </div>
@@ -141,10 +159,7 @@ const ServiceCard = ({ item, className, ...rest }: ServiceCardProps) => {
             </button>
             <button
               className="btn primary font-bold py-2.5 px-4 rounded-xl flex items-center justify-center"
-              onClick={() => {
-                booking.setBookingData("service", item);
-                booking.nextStep();
-              }}
+              onClick={handleSelectService}
             >
               選擇此服務
             </button>
