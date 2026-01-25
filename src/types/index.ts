@@ -5,7 +5,7 @@ export type MyResponse<T> = {
   message: string | undefined;
 };
 
-export type Location = {
+export type SupabaseLocation = {
   id: string;
   city: string;
   branch: string;
@@ -15,7 +15,7 @@ export type Location = {
   image_url: string | undefined;
 };
 
-export type Service = {
+export type SupabaseService = {
   id: string;
   name: string;
   duration: number;
@@ -36,8 +36,8 @@ export type Info = {
 export type BookingStep = (typeof bookingSteps)[number]["value"];
 
 export type BookingData = {
-  location?: Location;
-  service?: Service;
+  location?: SupabaseLocation;
+  service?: SupabaseService;
   time?: Date;
   info?: Info;
 };

@@ -1,7 +1,7 @@
 "use client";
 import {
-  Location,
-  Service,
+  SupabaseLocation,
+  SupabaseService,
   TimeSlot,
 } from "@/types";
 import { cn } from "@/utils/className";
@@ -16,8 +16,8 @@ import { useRouter } from "next/navigation";
 type TimeDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    locationId: Location["id"];
-    serviceId: Service["id"];
+    locationId: SupabaseLocation["id"];
+    serviceId: SupabaseService["id"];
   }
 >;
 export const TimeDiv = ({

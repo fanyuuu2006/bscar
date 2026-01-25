@@ -1,5 +1,5 @@
 "use client";
-import { BookingData, Location, Service } from "@/types";
+import { BookingData, SupabaseLocation, SupabaseService } from "@/types";
 import { getLocationById, getServiceById } from "@/utils/backend";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -32,8 +32,8 @@ const params = useParams();
     : params?.serviceId;
   const timeStr = Array.isArray(params?.time) ? params.time[0] : params?.time;
 
-  const [location, setLocation] = useState<Location | undefined>();
-  const [service, setService] = useState<Service | undefined>();
+  const [location, setLocation] = useState<SupabaseLocation | undefined>();
+  const [service, setService] = useState<SupabaseService | undefined>();
 
   // 處理地點資料的獲取
   useEffect(() => {

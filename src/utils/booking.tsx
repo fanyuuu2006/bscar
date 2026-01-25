@@ -1,7 +1,7 @@
 import {
   BookingStep,
-  Service,
-  Location,
+  SupabaseService,
+  SupabaseLocation,
   Info,
 } from "@/types";
 import { formatDate } from "./date";
@@ -9,8 +9,8 @@ import { formatDate } from "./date";
 export const getDisplayValue = <K extends BookingStep>(
   step: K,
   data: {
-    location: Location;
-    service: Service;
+    location: SupabaseLocation;
+    service: SupabaseService;
     time: Date;
     info: Info;
   }[K]
@@ -19,11 +19,11 @@ export const getDisplayValue = <K extends BookingStep>(
 
   switch (step) {
     case "location": {
-      const { city, branch } = data as Location;
+      const { city, branch } = data as SupabaseLocation;
       return `${city}-${branch}`;
     }
     case "service":
-      return (data as Service).name;
+      return (data as SupabaseService).name;
     case "time":
       return formatDate("YYYY/MM/DD hh:mm A", data as Date);
     default:

@@ -1,5 +1,5 @@
 "use client";
-import { Location } from "@/types";
+import { SupabaseLocation } from "@/types";
 import { cn } from "@/utils/className";
 import { LoadingOutlined } from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
@@ -8,7 +8,7 @@ import Link from "next/link";
 type LocationsDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    locations: Location[];
+    locations: SupabaseLocation[];
   }
 >;
 export const LocationsDiv = ({
@@ -40,7 +40,7 @@ export const LocationsDiv = ({
 type LocationCardProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    item: Location;
+    item: SupabaseLocation;
   }
 >;
 

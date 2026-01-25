@@ -1,5 +1,5 @@
 "use client";
-import { Location, Service } from "@/types";
+import { SupabaseLocation, SupabaseService } from "@/types";
 import { useModal } from "@/hooks/useModal";
 import { cn } from "@/utils/className";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -10,8 +10,8 @@ import { useCallback } from "react";
 type ServiceDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    services: Service[];
-    locationId: Location["id"];
+    services: SupabaseService[];
+    locationId: SupabaseLocation["id"];
   }
 >;
 export const ServiceDiv = ({
@@ -46,8 +46,8 @@ export const ServiceDiv = ({
 type ServiceCardProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    locationId: Location["id"];
-    item: Service;
+    locationId: SupabaseLocation["id"];
+    item: SupabaseService;
   }
 >;
 const ServiceCard = ({

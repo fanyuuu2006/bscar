@@ -10,13 +10,13 @@ import { useCallback, useMemo, useState } from "react";
 import { getDisplayValue } from "@/utils/booking";
 import { postBooking } from "@/utils/backend";
 import { formatDate } from "@/utils/date";
-import { Info, Location, Service } from "@/types";
+import { Info, SupabaseLocation, SupabaseService } from "@/types";
 
 type InfoDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    location:Location;
-    service:Service;
+    location:SupabaseLocation;
+    service:SupabaseService;
     time:Date;
   }
 >;
