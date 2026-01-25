@@ -10,19 +10,20 @@ import { useCallback, useMemo, useState } from "react";
 import { getDisplayValue } from "@/utils/booking";
 import { postBooking } from "@/utils/backend";
 import { formatDate } from "@/utils/date";
-import { useBookingData } from "@/hooks/useBookingData";
-import { Info } from "@/types";
+import { Info, Location, Service } from "@/types";
 
 type InfoDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    a?: string;
+    location:Location;
+    service:Service;
+    time:Date;
   }
 >;
 
-export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
+export const InfoDiv = ({ className, location, service, time, ...rest }: InfoDivProps) => {
   const [data, setData] = useState<Info>({ name: "", phone: "", email: "" });
-  const { location, service, time } = useBookingData();
+  
   const items = useMemo(() => {
     if (!location || !service || !time) return [];
     return [
