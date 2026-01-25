@@ -1,11 +1,12 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BookingData, Location, Service } from "@/types";
 import { getLocationById, getServiceById } from "@/utils/backend";
 
 export function useBookingData(): BookingData {
   const params = useParams();
+  const router = useRouter();
   const locationId = params?.locationId as string;
   const serviceId = params?.serviceId as string;
   const timeStr = params?.time as string;
@@ -15,21 +16,37 @@ export function useBookingData(): BookingData {
 
   useEffect(() => {
     if (locationId) {
-      getLocationById(locationId).then((res) => setLocation(res.data || undefined))
+      getLocationById(locationId)
+        .then((res) => {
+          if (res.success) {
+            setLocation(res.data || undefined);
+          } else {
+            setLocation(undefined);
+            router.push("/booking");
+          }
+        })
         .catch(() => setLocation(undefined));
     } else {
-      setTimeout(()=> setLocation(undefined),0);
+      setTimeout(() => setLocation(undefined), 0);
     }
-  }, [locationId]);
+  }, [locationId, router]);
 
   useEffect(() => {
     if (serviceId) {
-      getServiceById(serviceId).then((res) => setService(res.data || undefined))
+      getServiceById(serviceId)
+        .then((res) => {
+          if (res.success) {
+            setService(res.data || undefined);
+          } else {
+            setService(undefined);
+            router.push(`/booking${locationId ? `/${locationId}` : ""}`);
+          }
+        })
         .catch(() => setService(undefined));
     } else {
-      setTimeout(()=> setService(undefined),0);
+      setTimeout(() => setService(undefined), 0);
     }
-  }, [serviceId]);
+  }, [serviceId, router, locationId]);
 
   const time = timeStr ? new Date(Number(timeStr)) : undefined;
 
