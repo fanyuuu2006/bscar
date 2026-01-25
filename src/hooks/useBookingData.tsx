@@ -90,6 +90,21 @@ export function useBookingData(): BookingData {
     };
   }, [serviceId, router, locationId]);
 
+  // 處理時間資料的驗證與導航 Fallback
+  useEffect(() => {
+    if (timeStr) {
+      const timestamp = Number(timeStr);
+      if (isNaN(timestamp)) {
+        // 若時間格式錯誤 (非數字)，導回服務選擇頁面或當前地點頁面
+        const fallbackUrl =
+          locationId && serviceId
+            ? `/booking/${locationId}/${serviceId}`
+            : `/booking${locationId ? `/${locationId}` : ""}`;
+        router.push(fallbackUrl);
+      }
+    }
+  }, [timeStr, locationId, serviceId, router]);
+
   // 使用 useMemo 優化時間轉換運算
   // 只有當 timeStr 改變時才重新計算 Date 物件
   const time = useMemo(() => {
