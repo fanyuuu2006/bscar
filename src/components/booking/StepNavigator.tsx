@@ -1,29 +1,23 @@
 "use client";
 
+import { useBookingData } from "@/hooks/useBookingData";
 import { bookingSteps } from "@/libs/booking";
-import { BookingStep, Info, Location, Service } from "@/types";
+import { BookingStep } from "@/types";
 import { getDisplayValue } from "@/utils/booking";
 import { cn } from "@/utils/className";
-import { OverrideProps } from "fanyucomponents";
+import { DistributiveOmit } from "fanyucomponents";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
-type StepNavigatorProps = OverrideProps<
+type StepNavigatorProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
-  {
-    data: {
-      location?: Location;
-      service?: Service;
-      time?: Date;
-      info?: Info;
-    };
-  }
+  "children"
 >;
 
 
-export const StepNavigator = ({ className, data, ...rest }: StepNavigatorProps) => {
+export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
   const router = useRouter();
-
+  const data = useBookingData();
 
   const currentStepValue: BookingStep = useMemo(() => {
     if (data.time) return "info";
