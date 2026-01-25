@@ -1,9 +1,10 @@
 import { MainSection } from "@/components/booking/MainSection";
+import { BookingProvider } from "@/contexts/BookingContext";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: '預約',
-    description: '預約頁面',
+  title: "預約",
+  description: "預約頁面",
 };
 
 export default function Layout({
@@ -11,5 +12,9 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <MainSection>{children}</MainSection>;
+  return (
+    <BookingProvider>
+      <MainSection>{children}</MainSection>
+    </BookingProvider>
+  );
 }

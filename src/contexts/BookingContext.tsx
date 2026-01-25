@@ -1,11 +1,25 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
 import { BookingData, Location, Service } from "@/types";
 import { getLocationById, getServiceById } from "@/utils/backend";
+import { useParams, useRouter } from "next/navigation";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-export function useBookingData(): BookingData {
-  const params = useParams();
+type BookingContextType = BookingData
+
+const BookingContext = createContext<BookingContextType | null>(null);
+
+export const BookingProvider = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
+const params = useParams();
   const router = useRouter();
 
   // 確保取得的是單一字串，處理 string[] 的邊際情況
@@ -113,13 +127,24 @@ export function useBookingData(): BookingData {
     return isNaN(timestamp) ? undefined : new Date(timestamp);
   }, [timeStr]);
 
-  // Memoize 回傳物件，避免使用此 hook 的元件因物件參照改變而產生不必要的重新渲染
-  return useMemo(
+  const value = useMemo<BookingContextType>(
     () => ({
       location,
-      service,
-      time,
+        service,
+        time,
     }),
-    [location, service, time], // 只有當這些值改變時，才回傳新的物件
+    [location, service, time],
   );
-}
+
+  return (
+    <BookingContext.Provider value={value}>{children}</BookingContext.Provider>
+  );
+};
+
+export const useBooking = () => {
+  const context = useContext(BookingContext);
+  if (!context) {
+    throw new Error("useBooking 必須在 BookingProvider 中使用");
+  }
+  return context;
+};

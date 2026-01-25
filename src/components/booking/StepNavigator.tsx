@@ -1,6 +1,6 @@
 "use client";
 
-import { useBookingData } from "@/hooks/useBookingData";
+import { useBooking } from "@/contexts/BookingContext";
 import { bookingSteps } from "@/libs/booking";
 import { BookingStep } from "@/types";
 import { getDisplayValue } from "@/utils/booking";
@@ -16,7 +16,7 @@ type StepNavigatorProps = DistributiveOmit<
 
 export const StepNavigator = ({ className, ...rest }: StepNavigatorProps) => {
   const router = useRouter();
-  const data = useBookingData();
+  const data = useBooking();
 
   const currentStepValue = useMemo<BookingStep>(() => {
     if (data.time) return "info";
