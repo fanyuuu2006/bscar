@@ -13,12 +13,14 @@ export type ConfirmDivProps = OverrideProps<
 >;
 
 export const ConfirmDiv = ({ bookingData, location, service, ...rest }: ConfirmDivProps) => {
-  if (!bookingData || !location || !service) {
+
+ if (!bookingData || !location || !service) {
     return <div {...rest}>找不到預約資料。</div>;
   }
+
   return (
     <div {...rest}>
-      {/* 頂部成功訊息區塊 */}
+      {/* 頂部成功訊息 */}
       <div className="w-full flex flex-col items-center py-4">
         <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-50 text-green-500 mb-4 shadow-sm">
           <CheckCircleFilled className="text-5xl" />
@@ -28,7 +30,7 @@ export const ConfirmDiv = ({ bookingData, location, service, ...rest }: ConfirmD
         </h1>
         <p className="text-(--muted)">感謝您的預約，我們已收到您的資訊。</p>
       </div>
-      {/* 預約資訊區塊 */}
+      {/* 預約資訊卡片 */}
       <div className="w-full mt-8 p-6 card rounded-2xl shadow-sm">
         <h2 className="text-2xl font-bold text-(--foreground) mb-4">
           預約詳情
@@ -60,3 +62,4 @@ export const ConfirmDiv = ({ bookingData, location, service, ...rest }: ConfirmD
     </div>
   );
 };
+
