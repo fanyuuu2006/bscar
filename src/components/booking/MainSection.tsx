@@ -1,19 +1,19 @@
 "use client";
-import { BookingData } from "@/types";
 import { StepNavigator } from "./StepNavigator";
 import { OverrideProps } from "fanyucomponents";
+import { useBookingData } from "@/hooks/useBookingData";
+
 type MainsectionProps = OverrideProps<
   React.HTMLAttributes<HTMLElement>,
   {
-    data: BookingData;
     children: React.ReactNode;
   }
 >;
 export const MainSection = ({
-  data,
   children,
   ...rest
 }: MainsectionProps) => {
+  const data = useBookingData();
   return (
     <section {...rest}>
       <div className="container flex flex-col py-12 md:py-20">

@@ -1,4 +1,3 @@
-import { MainSection } from "@/components/booking/MainSection";
 import { InfoDiv } from "@/components/booking/[locationId]/[serviceId]/[time]/InfoDiv";
 import { getLocationById, getServiceById } from "@/utils/backend";
 
@@ -13,10 +12,6 @@ export default async function Booking(
     return null;
   }
   return (
-    <MainSection
-      data={{ location: location, service: service, time: timeDate }}
-    >
       <InfoDiv location={location} service={service} time={timeDate} />
-    </MainSection>
   );
 }
