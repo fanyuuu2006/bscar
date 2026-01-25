@@ -1,5 +1,4 @@
 "use client";
-import { Location, Info, Service } from "@/types";
 import { cn } from "@/utils/className";
 import { OverrideProps } from "fanyucomponents";
 import {
@@ -11,26 +10,22 @@ import { useCallback, useMemo, useState } from "react";
 import { getDisplayValue } from "@/utils/booking";
 import { postBooking } from "@/utils/backend";
 import { formatDate } from "@/utils/date";
+import { useBookingData } from "@/hooks/useBookingData";
+import { Info } from "@/types";
 
 type InfoDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    location: Location;
-    service: Service;
-    time: Date;
+    a?: string;
   }
 >;
 
-export const InfoDiv = ({
-  className,
-  location,
-  service,
-  time,
-  ...rest
-}: InfoDivProps) => {
+export const InfoDiv = ({ className, ...rest }: InfoDivProps) => {
   const [data, setData] = useState<Info>({ name: "", phone: "", email: "" });
-  const items = useMemo(
-    () => [
+  const { location, service, time } = useBookingData();
+  const items = useMemo(() => {
+    if (!location || !service || !time) return [];
+    return [
       {
         icon: EnvironmentOutlined,
         label: "地點",
@@ -51,9 +46,8 @@ export const InfoDiv = ({
         value: getDisplayValue("time", time),
         key: "time",
       },
-    ],
-    [location, service, time],
-  );
+    ];
+  }, [location, service, time]);
 
   const formFields = [
     {
@@ -80,6 +74,7 @@ export const InfoDiv = ({
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if (!location || !service || !time) return;
       postBooking({
         location_id: location.id,
         service_id: service.id,
@@ -94,7 +89,7 @@ export const InfoDiv = ({
           console.error("預約失敗:", err);
         });
     },
-    [location.id, service.id, time, data],
+    [location, service, time, data],
   );
 
   return (
