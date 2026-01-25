@@ -11,6 +11,7 @@ import { getDisplayValue } from "@/utils/booking";
 import { postBooking } from "@/utils/backend";
 import { formatDate } from "@/utils/date";
 import { Info, SupabaseLocation, SupabaseService } from "@/types";
+import { useRouter } from "next/navigation";
 
 type InfoDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -29,6 +30,7 @@ export const InfoDiv = ({
   ...rest
 }: InfoDivProps) => {
   const [data, setData] = useState<Info>({ name: "", phone: "", email: "" });
+  const router = useRouter();
 
   const items = useMemo(() => {
     if (!location || !service || !time) return [];
@@ -90,6 +92,7 @@ export const InfoDiv = ({
       })
         .then((res) => {
           if (res.success) {
+            router.push(`/booking/confirm/${res.data?.id}`);
           } else {
             alert(res.message || "預約失敗，請稍後再試。");
           }
@@ -99,7 +102,7 @@ export const InfoDiv = ({
           console.error("預約失敗:", err);
         });
     },
-    [location, service, time, data],
+    [location, service, time, data, router],
   );
 
   return (
