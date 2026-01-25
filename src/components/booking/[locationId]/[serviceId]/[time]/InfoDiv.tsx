@@ -15,15 +15,21 @@ import { Info, SupabaseLocation, SupabaseService } from "@/types";
 type InfoDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
-    location:SupabaseLocation;
-    service:SupabaseService;
-    time:Date;
+    location: SupabaseLocation;
+    service: SupabaseService;
+    time: Date;
   }
 >;
 
-export const InfoDiv = ({ className, location, service, time, ...rest }: InfoDivProps) => {
+export const InfoDiv = ({
+  className,
+  location,
+  service,
+  time,
+  ...rest
+}: InfoDivProps) => {
   const [data, setData] = useState<Info>({ name: "", phone: "", email: "" });
-  
+
   const items = useMemo(() => {
     if (!location || !service || !time) return [];
     return [
@@ -83,7 +89,10 @@ export const InfoDiv = ({ className, location, service, time, ...rest }: InfoDiv
         info: data,
       })
         .then((res) => {
-          alert(res.message);
+          if (res.success) {
+          } else {
+            alert(res.message || "預約失敗，請稍後再試。");
+          }
         })
         .catch((err) => {
           alert("預約失敗，請稍後再試。");
