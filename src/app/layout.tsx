@@ -4,7 +4,10 @@ import type { Metadata } from "next";
 import { description, title } from "@/libs/site";
 
 export const metadata: Metadata = {
-  title,
+  title: {
+    default: title,
+    template: `%s | ${title}`,
+  },
   description,
   icons: [
     {
