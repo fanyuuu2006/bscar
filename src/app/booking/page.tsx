@@ -10,6 +10,7 @@ export default async function Booking() {
       propsForComponent={{
         locations: data || [],
       }}
+      data={{}}
     />
   );
 }

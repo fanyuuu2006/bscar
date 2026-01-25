@@ -16,6 +16,7 @@ export default async function Booking(
     <MainSection
       ContentComponent={InfoDiv}
       propsForComponent={{ location, service, time: timeDate }}
+      data={{ location: location, service: service, time: timeDate }}
     />
   );
 }
