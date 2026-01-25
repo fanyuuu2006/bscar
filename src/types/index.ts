@@ -41,3 +41,14 @@ export type BookingData = {
   time?: Date;
   info?: Info;
 };
+
+export type SupabaseBooking = {
+  id: string;
+  location_id: SupabaseLocation["id"];
+  service_id: SupabaseService["id"];
+  booking_time: string;
+  created_at: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+};

@@ -1,6 +1,6 @@
 import { NEXT_PUBLIC_BACKEND_URL } from "@/libs/env";
 import { fetcher } from "./fetcher";
-import { MyResponse } from "@/types";
+import { MyResponse, SupabaseBooking } from "@/types";
 import { Info, SupabaseLocation, SupabaseService, TimeSlot } from "@/types";
 
 export const getLocations = async () =>
@@ -36,13 +36,19 @@ export const getAvailableSlots = async (
   );
 };
 
+export const getBookingById = async (id: SupabaseBooking["id"]) => {
+  return fetcher<MyResponse<SupabaseBooking>>(
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/data/booking/${id}`,
+  );
+} 
+
 export const postBooking = async (body: {
   location_id: SupabaseLocation["id"];
   service_id: SupabaseService["id"];
   time: string;
   info: Info;
 }) => {
-  return fetcher<MyResponse<null>>(
+  return fetcher<MyResponse<SupabaseBooking>>(
     `${NEXT_PUBLIC_BACKEND_URL}/v1/data/booking`,
     {
       method: "POST",
