@@ -1,5 +1,5 @@
 "use client";
-import { Info, Location, Service } from "@/types";
+import { BookingData } from "@/types";
 import { StepNavigator } from "./StepNavigator";
 import { OverrideProps } from "fanyucomponents";
 type MainsectionProps<T extends React.ElementType = React.ElementType> =
@@ -8,12 +8,7 @@ type MainsectionProps<T extends React.ElementType = React.ElementType> =
     {
       ContentComponent: T;
       propsForComponent: React.ComponentPropsWithRef<T>;
-      data: {
-        location?: Location;
-        service?: Service;
-        time?: Date;
-        info?: Info;
-      };
+      data: BookingData;
     }
   >;
 export const MainSection = <T extends React.ElementType>({

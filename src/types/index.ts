@@ -34,3 +34,10 @@ export type Info = {
 };
 
 export type BookingStep = (typeof bookingSteps)[number]["value"];
+
+export type BookingData = {
+  location?: Location;
+  service?: Service;
+  time?: Date;
+  info?: Info;
+};
