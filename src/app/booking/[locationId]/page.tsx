@@ -9,10 +9,8 @@ export default async function Booking(
   const { data } = await getServices();
   const { data: location } = await getLocationById(locationId);
   return (
-    <MainSection
-      ContentComponent={ServiceDiv}
-      propsForComponent={{ services: data || [], locationId }}
-      data={{ location: location ?? undefined }}
-    />
+    <MainSection data={{ location: location ?? undefined }}>
+      <ServiceDiv services={data || []} locationId={locationId} />
+    </MainSection>
   );
 }

@@ -5,12 +5,8 @@ import { getLocations } from "@/utils/backend";
 export default async function Booking() {
   const { data } = await getLocations();
   return (
-    <MainSection
-      ContentComponent={LocationsDiv}
-      propsForComponent={{
-        locations: data || [],
-      }}
-      data={{}}
-    />
+    <MainSection data={{}}>
+      <LocationsDiv locations={data || []} />
+    </MainSection>
   );
 }
