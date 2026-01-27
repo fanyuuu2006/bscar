@@ -20,7 +20,7 @@ export const getDisplayValue = <K extends BookingStep>(
   switch (step) {
     case "location": {
       const { city, branch } = data as SupabaseLocation;
-      return `${city}-${branch}`;
+      return `${city}-${branch}店`;
     }
     case "service":
       return (data as SupabaseService).name;

@@ -26,20 +26,20 @@ export const ConfirmDiv = ({ bookingData, location, service, ...rest }: ConfirmD
           <CheckCircleFilled className="text-5xl" />
         </div>
         <h1 className="text-3xl font-bold text-(--foreground) tracking-tight mb-2">
-          預約完成
+          預約成功
         </h1>
         <p className="text-(--muted)">感謝您的預約，我們已收到您的資訊。</p>
       </div>
       {/* 預約資訊卡片 */}
       <div className="w-full mt-8 p-6 card rounded-2xl shadow-sm">
         <h2 className="text-2xl font-bold text-(--foreground) mb-4">
-          預約詳情
+          預約摘要
         </h2>
         <div className="flex flex-col gap-4">
           <div>
             <span className="font-medium text-(--muted)">地點：</span>
             <span className="text-(--foreground)">
-              {location.city} {location.branch}
+              {location.city}-{location.branch}店
             </span>
           </div>
           <div>
