@@ -4,7 +4,6 @@ import { formatDate } from "@/utils/date";
 import {
   CheckCircleFilled,
   CloseCircleFilled,
-  HomeOutlined,
   EnvironmentOutlined,
   StarOutlined,
   ClockCircleOutlined,
@@ -115,17 +114,17 @@ export const ConfirmDiv = ({
           感謝您的預約！
         </p>
 
-        <div className="flex flex-col items-center gap-2">
+    {/* 預約編號區域 */}
+        <div className="flex flex-col items-center gap-2 w-full px-4">
           <span className="text-sm text-(--muted)">預約編號</span>
-          <div className="flex items-center gap-2">
-              <span className="text-lg font-mono font-bold text-(--foreground)">
-                {bookingData.id}
-              </span>
-              <CopyButton
-                title="點擊複製"
-                content={bookingData.id}
-              /></div>
-          
+          <div className="relative flex items-center gap-3 px-4 py-3 rounded-lg bg-white/60 border border-dashed border-(--border) max-w-full hover:border-(--primary)/50 transition-colors">
+            <span className="text-base md:text-xl font-mono font-bold text-(--foreground) break-all text-center selection:bg-(--primary) selection:text-white">
+              {bookingData.id}
+            </span>
+            <div className="shrink-0">
+              <CopyButton title="複製" content={bookingData.id} />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -161,7 +160,6 @@ export const ConfirmDiv = ({
           href="/"
           className="btn primary flex items-center gap-2 px-10 py-4 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
         >
-          <HomeOutlined />
           回到首頁
         </Link>
       </div>
