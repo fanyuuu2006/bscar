@@ -1,7 +1,9 @@
+"use client";
 import { SupabaseBooking, SupabaseLocation, SupabaseService } from "@/types";
 import { formatDate } from "@/utils/date";
 import {
   CheckCircleFilled,
+  CloseCircleFilled,
   HomeOutlined,
   EnvironmentOutlined,
   StarOutlined,
@@ -13,6 +15,7 @@ import {
 import { OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { cn } from "@/utils/className";
+import { CopyButton } from "@/components/CopyBuuton";
 
 export type ConfirmDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -35,13 +38,25 @@ export const ConfirmDiv = ({
       <div
         {...rest}
         className={cn(
-          "flex flex-col items-center justify-center p-8 space-y-4",
-          className,
+          "flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4 py-12 text-center",
+          className
         )}
       >
-        <div className="text-xl text-red-500">找不到預約資料</div>
-        <Link href="/" className="btn primary px-8 py-3 rounded-full">
-          回首頁
+        <div className="flex items-center justify-center w-24 h-24 rounded-full bg-red-50 text-red-500 mb-6 shadow-md animate-bounce-slow">
+          <CloseCircleFilled className="text-6xl" />
+        </div>
+        <h2 className="text-3xl font-bold text-(--foreground) mb-4">
+          找不到預約資料
+        </h2>
+        <p className="text-(--muted) text-lg mb-8 max-w-lg mx-auto leading-relaxed">
+          很抱歉，我們無法找到相關的預約資訊。
+          可能是連結已過期、資料傳輸錯誤，或是該預約已被刪除。
+        </p>
+        <Link
+          href="/"
+          className="btn primary flex items-center gap-2 px-8 py-3 rounded-full text-lg font-medium"
+        >
+          返回首頁
         </Link>
       </div>
     );
@@ -96,12 +111,22 @@ export const ConfirmDiv = ({
         <h1 className="text-3xl md:text-4xl font-bold text-(--foreground) tracking-tight mb-3">
           預約成功
         </h1>
-        <p className="text-(--muted) text-center max-w-lg text-lg">
-          感謝您的預約！您的預約編號為{" "}
-          <span className="font-mono font-bold text-(--primary)">
-            {bookingData.id}
-          </span>
+        <p className="text-(--muted) text-center max-w-lg text-lg mb-4">
+          感謝您的預約！
         </p>
+
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-sm text-(--muted)">預約編號</span>
+          <div className="flex items-center gap-2">
+              <span className="text-lg font-mono font-bold text-(--foreground)">
+                {bookingData.id}
+              </span>
+              <CopyButton
+                title="點擊複製"
+                content={bookingData.id}
+              /></div>
+          
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
