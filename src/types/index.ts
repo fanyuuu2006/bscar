@@ -51,4 +51,5 @@ export type SupabaseBooking = {
   customer_name: string;
   customer_email: string;
   customer_phone: string;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
 };
