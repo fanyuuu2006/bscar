@@ -3,6 +3,7 @@
 import { useAdmin } from "@/contexts/AdminContext";
 import { cn } from "@/utils/className";
 import { useState } from "react";
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 
 export const MainSection = () => {
   const { logIn, loading } = useAdmin();
@@ -10,6 +11,7 @@ export const MainSection = () => {
     id: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -58,17 +60,35 @@ export const MainSection = () => {
               >
                 {field.label}
               </label>
-              <input
-                required
-                id={field.id}
-                name={field.id}
-                type={field.type}
-                disabled={loading}
-                value={formData[field.id as keyof typeof formData]}
-                onChange={(e) => handleChange(field.id, e.target.value)}
-                placeholder={`請輸入${field.label}`}
-                className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              />
+              <div className="relative">
+                <input
+                  required
+                  id={field.id}
+                  name={field.id}
+                  type={
+                    field.id === "password" && showPassword
+                      ? "text"
+                      : field.type
+                  }
+                  disabled={loading}
+                  value={formData[field.id as keyof typeof formData]}
+                  onChange={(e) => handleChange(field.id, e.target.value)}
+                  placeholder={`請輸入${field.label}`}
+                  className={cn(
+                    "w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all disabled:opacity-50 disabled:cursor-not-allowed",
+                    field.id === "password" && "pr-10"
+                  )}
+                />
+                {field.id === "password" && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-(--muted) cursor-pointer"
+                  >
+                    {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
