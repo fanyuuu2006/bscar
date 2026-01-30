@@ -5,6 +5,9 @@ import { usePathname } from "next/navigation";
 import { routes } from "@/libs/admin";
 import { useAdmin } from "@/contexts/AdminContext";
 import { cn } from "@/utils/className";
+import { useEffect, useState } from "react";
+import { SupabaseLocation } from "@/types";
+import { getLocationById } from "@/utils/backend";
 
 type AsideBarProps = React.HTMLAttributes<HTMLElement>;
 
@@ -12,15 +15,30 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
   const pathname = usePathname();
   const { admin, logOut, loading } = useAdmin();
 
-  // 如果正在讀取中或未登入，不顯示側邊欄
-  if (loading || !admin) return null;
+  const [location, setLocation] = useState<SupabaseLocation | null>(null);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      if (loading || !admin) return;
+      getLocationById(admin.location_id)
+        .then((res) => {
+          if (res.success) {
+            setLocation(res.data || null);
+          }
+        })
+        .catch(() => {
+          setLocation(null);
+        });
+    };
+    fetchLocation();
+  }, [admin, loading]);
 
   return (
     <aside className={cn(className)} {...rest}>
       <div className="h-full flex flex-col bg-(--background) border-r border-(--border) w-50 p-4">
         <div className="flex items-center mb-4">
           <h2 className="text-xl font-bold tracking-tight text-(--foreground)">
-            管理後台
+            {location ? `${location.city}-${location.branch}店` : "管理後台"}
           </h2>
         </div>
 
