@@ -1,3 +1,4 @@
+import { Redirecter } from "@/components/admin/Redirecter";
 import { AdminProvider } from "@/contexts/AdminContext";
 import { Metadata } from "next";
 
@@ -13,7 +14,7 @@ export default function Layout({
 }>) {
   return (
     <AdminProvider>
-    {children}
+      <Redirecter>{children}</Redirecter>
     </AdminProvider>
   );
 }
