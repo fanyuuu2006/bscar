@@ -10,6 +10,7 @@ import {
 import { SupabaseAdmin } from "@/types";
 import { getAdminMe, adminLogin } from "@/utils/backend";
 import { useRouter } from "next/navigation";
+import { useAdminToken } from "@/hooks/useAdminToken";
 
 interface AdminContextType {
   admin: SupabaseAdmin | null;
@@ -19,29 +20,44 @@ interface AdminContextType {
   logOut: () => void;
 }
 
-export const LOCAL_STORAGE_KEY = "authToken";
-
 const adminContext = createContext<AdminContextType | null>(null);
 
 export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [admin, setAdmin] = useState<SupabaseAdmin | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true); // Default loading to true until token check
   const router = useRouter();
+  const { token, setToken, removeToken, isLoaded } = useAdminToken();
 
   const refresh = useCallback(() => {
-    const token = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!token) {
+      setAdmin(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
-    getAdminMe(token || "")
+    getAdminMe(token)
       .then((data) => {
         setAdmin(data.data);
       })
       .catch(() => {
         setAdmin(null);
+        // 若 token 無效，可考慮是否要自動清除
+        // removeToken();
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [token]);
+
+  // 當 token 載入完成或變更時，觸發 refresh
+  useEffect(() => {
+    if (isLoaded) {
+      setTimeout(() => {
+        refresh();
+      }, 0);
+    }
+  }, [isLoaded, token, refresh]);
 
   const logIn = useCallback(
     (...args: Parameters<typeof adminLogin>) => {
@@ -52,23 +68,21 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
             console.error("管理員登入失敗", res.message);
             return;
           }
-          localStorage.setItem(LOCAL_STORAGE_KEY, res.data!);
+          setToken(res.data!);
         })
         .catch((err) => {
-            alert("管理員登入失敗，請稍後再試");
+          alert("管理員登入失敗，請稍後再試");
           console.error("管理員登入失敗", err);
-        })
-        .finally(() => {
-          refresh();
         });
     },
-    [refresh],
+    [setToken],
   );
 
   const logOut = useCallback(() => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    refresh();
-  }, [refresh]);
+    removeToken();
+    setAdmin(null);
+    router.replace("/admin");
+  }, [removeToken, router]);
 
   const value = useMemo(
     () => ({
@@ -81,27 +95,23 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     [admin, loading, logIn, logOut, refresh],
   );
 
+  // 路由保護邏輯 (保留原有邏輯，但建議根據實際頁面結構調整)
   useEffect(() => {
-    if (admin || !localStorage.getItem(LOCAL_STORAGE_KEY)) return;
-    const fetchAdmin = async () => {
-      refresh();
-    };
-    fetchAdmin();
-  }, [refresh, admin]);
+    // 只有在確保 token 加載完成且 loading 結束後才進行跳轉判斷，避免閃爍
+    if (!isLoaded || loading) return;
 
-  useEffect(() => {
-        if (admin) {
-            router.replace('/admin/dashboard');
-        }
-        else {
-            router.replace('/admin');
-        }
-    }, [admin, router]);
+    if (admin) {
+      router.replace("/admin/dashboard");
+    } else {
+      router.replace("/admin");
+    }
+  }, [admin, router, isLoaded, loading]);
 
   return (
     <adminContext.Provider value={value}>{children}</adminContext.Provider>
   );
 };
+
 export const useAdmin = () => {
   const context = useContext(adminContext);
   if (!context) {
