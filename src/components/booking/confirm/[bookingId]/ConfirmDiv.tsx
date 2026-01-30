@@ -101,21 +101,21 @@ export const ConfirmDiv = ({
   ];
 
   return (
-    <div {...rest} className={cn("max-w-4xl mx-auto pb-8 px-4", className)}>
+    <div {...rest} className={cn('flex flex-col items-center gap-6',className)}>
       {/* 頂部成功訊息 */}
-      <div className="w-full flex flex-col items-center py-6 md:py-8">
-        <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-50 text-green-500 mb-4 shadow-md animate-bounce-slow">
+      <div className="w-full flex flex-col items-center">
+        <div className="flex items-center justify-center p-5 rounded-full bg-green-50 text-green-500 mb-4 shadow-md">
           <CheckCircleFilled className="text-5xl" />
         </div>
         <h1 className="text-2xl md:text-3xl font-bold text-(--foreground) tracking-tight mb-2">
           預約成功
         </h1>
-        <p className="text-(--muted) text-center max-w-lg text-base md:text-lg mb-3">
+        <p className="text-(--muted) text-center max-w-lg text-base md:text-lg mb-2">
           感謝您的預約！
         </p>
 
         {/* 預約編號區域 */}
-        <div className="flex flex-col items-center gap-1.5 mt-4 px-4 w-full">
+        <div className="flex flex-col items-center gap-1.5 mt-4 w-full">
           <span className="text-sm font-medium text-(--muted)">預約編號</span>
           <div className="flex items-center justify-center gap-3 w-full max-w-lg">
             <span className="font-mono font-bold text-lg md:text-xl text-(--foreground) break-all text-center leading-snug selection:bg-(--primary) selection:text-white">
@@ -155,7 +155,7 @@ export const ConfirmDiv = ({
       </div>
 
       {/* 動作按鈕 */}
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center">
         <Link
           href="/"
           className="btn primary flex items-center gap-2 px-10 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
