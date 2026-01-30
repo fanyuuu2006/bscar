@@ -101,40 +101,40 @@ export const ConfirmDiv = ({
   ];
 
   return (
-    <div {...rest} className={cn("max-w-4xl mx-auto pb-10 px-4", className)}>
+    <div {...rest} className={cn("max-w-4xl mx-auto pb-8 px-4", className)}>
       {/* 頂部成功訊息 */}
-      <div className="w-full flex flex-col items-center py-10">
-        <div className="flex items-center justify-center w-24 h-24 rounded-full bg-green-50 text-green-500 mb-6 shadow-md animate-bounce-slow">
-          <CheckCircleFilled className="text-6xl" />
+      <div className="w-full flex flex-col items-center py-6 md:py-8">
+        <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-50 text-green-500 mb-4 shadow-md animate-bounce-slow">
+          <CheckCircleFilled className="text-5xl" />
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-(--foreground) tracking-tight mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-(--foreground) tracking-tight mb-2">
           預約成功
         </h1>
-        <p className="text-(--muted) text-center max-w-lg text-lg mb-4">
+        <p className="text-(--muted) text-center max-w-lg text-base md:text-lg mb-3">
           感謝您的預約！
         </p>
 
-    {/* 預約編號區域 */}
-        <div className="flex flex-col items-center gap-2 w-full px-4">
-          <span className="text-sm text-(--muted)">預約編號</span>
-          <div className="relative flex items-center gap-3 px-4 py-3 rounded-lg bg-white/60 border border-dashed border-(--border) max-w-full hover:border-(--primary)/50 transition-colors">
-            <span className="text-base md:text-xl font-mono font-bold text-(--foreground) break-all text-center selection:bg-(--primary) selection:text-white">
+        {/* 預約編號區域 */}
+        <div className="flex flex-col items-center gap-1.5 mt-4 px-4 w-full">
+          <span className="text-sm font-medium text-(--muted)">預約編號</span>
+          <div className="flex items-center justify-center gap-3 w-full max-w-lg">
+            <span className="font-mono font-bold text-lg md:text-xl text-(--foreground) break-all text-center leading-snug selection:bg-(--primary) selection:text-white">
               {bookingData.id}
             </span>
-            <div className="shrink-0">
+            <div className="shrink-0 relative top-0.5">
               <CopyButton title="複製" content={bookingData.id} />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full">
         {/* 預約資訊卡片 */}
-        <div className="card rounded-2xl p-6 md:p-8">
-          <h2 className="text-xl font-bold text-(--foreground) border-b border-(--border) pb-3 mb-6">
+        <div className="card rounded-2xl p-5 md:p-6">
+          <h2 className="text-lg md:text-xl font-bold text-(--foreground) border-b border-(--border) pb-3 mb-4">
             預約詳細資訊
           </h2>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {bookingItems.map((item, index) => (
               <InfoRow key={index} {...item} />
             ))}
@@ -142,11 +142,11 @@ export const ConfirmDiv = ({
         </div>
 
         {/* 顧客資料卡片 */}
-        <div className="card rounded-2xl p-6 md:p-8">
-          <h2 className="text-xl font-bold text-(--foreground) border-b border-(--border) pb-3 mb-6">
+        <div className="card rounded-2xl p-5 md:p-6">
+          <h2 className="text-lg md:text-xl font-bold text-(--foreground) border-b border-(--border) pb-3 mb-4">
             顧客資料
           </h2>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {customerItems.map((item, index) => (
               <InfoRow key={index} {...item} />
             ))}
@@ -155,10 +155,10 @@ export const ConfirmDiv = ({
       </div>
 
       {/* 動作按鈕 */}
-      <div className="flex justify-center mt-12">
+      <div className="flex justify-center mt-8">
         <Link
           href="/"
-          className="btn primary flex items-center gap-2 px-10 py-4 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+          className="btn primary flex items-center gap-2 px-10 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
         >
           回到首頁
         </Link>
