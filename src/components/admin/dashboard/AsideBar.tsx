@@ -16,28 +16,30 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
   if (loading || !admin) return null;
 
   return (
-    <aside
-      className={cn(
-        className,
-      )}
-      {...rest}
-    >
+    <aside className={cn(className)} {...rest}>
       <div className="h-full flex flex-col bg-(--background) border-r border-(--border) w-50 p-4">
-        <nav className="w-full flex flex-col gap-1">
+        <div className="flex items-center mb-4">
+          <h2 className="text-xl font-bold tracking-tight text-(--foreground)">
+            管理後台
+          </h2>
+        </div>
+
+        <nav className="w-full flex flex-col gap-2">
           {routes.map((route) => {
             const href = `/admin/dashboard${route.url}`;
-            const isActive =
-              pathname === href || pathname.startsWith(`${href}/`);
+            const isActive = route.isActive
+              ? route.isActive(pathname)
+              : pathname === href || pathname.startsWith(`${href}/`);
 
             return (
               <Link
                 key={route.url}
                 href={href}
                 className={cn(
-                  "px-4 py-2.5 font-medium text-sm text-(--muted) flex items-center",
+                  "font-medium text-sm text-(--muted) flex items-center",
                   {
-                    'text-(--foreground)': isActive,
-                  }
+                    "text-(--foreground)": isActive,
+                  },
                 )}
               >
                 {route.label}
@@ -49,7 +51,7 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
         <div className="pt-4 mt-auto border-t border-(--border) flex items-center justify-center">
           <button
             onClick={logOut}
-            className="w-full flex items-center justify-center px-4 py-2.5 rounded-2xl bg-(--accent) text-(--background)"
+            className="w-full flex items-center justify-center px-4 py-2 rounded-xl bg-(--accent) text-(--background)"
           >
             登出
           </button>

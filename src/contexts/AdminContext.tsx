@@ -9,8 +9,8 @@ import {
 } from "react";
 import { SupabaseAdmin } from "@/types";
 import { getAdminMe, adminLogin } from "@/utils/backend";
-import { useRouter } from "next/navigation";
 import { useAdminToken } from "@/hooks/useAdminToken";
+import { useRouter } from "next/navigation";
 
 interface AdminContextType {
   admin: SupabaseAdmin | null;
@@ -25,8 +25,8 @@ const adminContext = createContext<AdminContextType | null>(null);
 export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [admin, setAdmin] = useState<SupabaseAdmin | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Default loading to true until token check
-  const router = useRouter();
   const { token, setToken, removeToken, isLoaded } = useAdminToken();
+  const router = useRouter();
 
   const refresh = useCallback(() => {
     if (!token) {
@@ -39,16 +39,16 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     getAdminMe(token)
       .then((data) => {
         setAdmin(data.data);
+        router.replace("/admin/dashboard");
       })
       .catch(() => {
         setAdmin(null);
-        // 若 token 無效，可考慮是否要自動清除
-        // removeToken();
+        removeToken();
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [token]);
+  }, [removeToken, router, token]);
 
   // 當 token 載入完成或變更時，觸發 refresh
   useEffect(() => {
@@ -64,15 +64,15 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
       adminLogin(...args)
         .then((res) => {
           if (!res.success) {
-            alert("管理員登入失敗，請檢查帳號密碼是否正確");
-            console.error("管理員登入失敗", res.message);
+            alert("後台登入失敗，請檢查帳號密碼是否正確");
+            console.error("後台登入失敗", res.message);
             return;
           }
           setToken(res.data!);
         })
         .catch((err) => {
-          alert("管理員登入失敗，請稍後再試");
-          console.error("管理員登入失敗", err);
+          alert("後台登入失敗，請稍後再試");
+          console.error("後台登入失敗", err);
         });
     },
     [setToken],
@@ -94,18 +94,6 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     }),
     [admin, loading, logIn, logOut, refresh],
   );
-
-  // 路由保護邏輯 (保留原有邏輯，但建議根據實際頁面結構調整)
-  useEffect(() => {
-    // 只有在確保 token 加載完成且 loading 結束後才進行跳轉判斷，避免閃爍
-    if (!isLoaded || loading) return;
-
-    if (admin) {
-      router.replace("/admin/dashboard");
-    } else {
-      router.replace("/admin");
-    }
-  }, [admin, router, isLoaded, loading]);
 
   return (
     <adminContext.Provider value={value}>{children}</adminContext.Provider>

@@ -1,12 +1,11 @@
 "use client";
-
 import { useAdmin } from "@/contexts/AdminContext";
 import { cn } from "@/utils/className";
 import { useState } from "react";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 
 export const MainSection = () => {
-  const { logIn, loading } = useAdmin();
+  const {  logIn, loading } = useAdmin();
   const [formData, setFormData] = useState<Parameters<typeof logIn>[0]>({
     id: "",
     password: "",
@@ -55,7 +54,7 @@ export const MainSection = () => {
                 htmlFor={field.id}
                 className={cn(
                   "text-sm font-medium text-(--foreground)",
-                  "after:content-['*'] after:ml-0.5 after:text-(--accent)"
+                  "after:content-['*'] after:ml-0.5 after:text-(--accent)",
                 )}
               >
                 {field.label}
@@ -76,7 +75,7 @@ export const MainSection = () => {
                   placeholder={`請輸入${field.label}`}
                   className={cn(
                     "w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all disabled:opacity-50 disabled:cursor-not-allowed",
-                    field.id === "password" && "pr-10"
+                    field.id === "password" && "pr-10",
                   )}
                 />
                 {field.id === "password" && (

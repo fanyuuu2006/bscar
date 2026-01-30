@@ -92,7 +92,7 @@ export const adminLogin = async (body: {
 
 export const bookingsByAdmin = async (token: string) => {
   return fetcher<MyResponse<SupabaseBooking[]>>(
-    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/bookings`,
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/booking`,
     {
       method: "GET",
       headers: {
