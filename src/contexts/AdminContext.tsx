@@ -65,7 +65,8 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logOut = useCallback(() => {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
-  }, []);
+    refresh();
+  }, [refresh]);
 
   const value = useMemo(
     () => ({

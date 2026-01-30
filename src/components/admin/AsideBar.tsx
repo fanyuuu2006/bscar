@@ -46,14 +46,12 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
           })}
         </nav>
 
-        <div className="pt-4 mt-auto border-t border-(--border)">
+        <div className="pt-4 mt-auto border-t border-(--border) flex items-center justify-center">
           <button
             onClick={logOut}
-            className="w-full px-4 py-2.5 text-sm font-medium text-(--muted) transition-colors rounded-lg hover:bg-red-50 hover:text-red-600 flex items-center gap-2 group"
+            className="w-full flex items-center justify-center px-4 py-2.5 rounded-2xl bg-(--accent) text-(--background)"
           >
-            <span className="group-hover:translate-x-1 transition-transform">
-              登出
-            </span>
+            登出
           </button>
         </div>
       </div>
