@@ -1,4 +1,3 @@
-import { Redirecter } from "@/components/admin/Redirecter";
 import { AdminProvider } from "@/contexts/AdminContext";
 import { Metadata } from "next";
 
@@ -12,9 +11,5 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <AdminProvider>
-      <Redirecter>{children}</Redirecter>
-    </AdminProvider>
-  );
+  return <AdminProvider>{children}</AdminProvider>;
 }

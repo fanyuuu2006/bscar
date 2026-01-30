@@ -9,6 +9,7 @@ import {
 } from "react";
 import { SupabaseAdmin } from "@/types";
 import { getAdminMe, postAdminLogin } from "@/utils/backend";
+import { useRouter } from "next/navigation";
 
 interface AdminContextType {
   admin: SupabaseAdmin | null;
@@ -25,6 +26,7 @@ const adminContext = createContext<AdminContextType | null>(null);
 export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [admin, setAdmin] = useState<SupabaseAdmin | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const refresh = useCallback(() => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -86,6 +88,15 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     };
     fetchAdmin();
   }, [refresh, admin]);
+
+  useEffect(() => {
+        if (admin) {
+            router.replace('/admin/dashboard');
+        }
+        else {
+            router.replace('/admin');
+        }
+    }, [admin, router]);
 
   return (
     <adminContext.Provider value={value}>{children}</adminContext.Provider>

@@ -5,7 +5,7 @@ import { cn } from "@/utils/className";
 import { useState } from "react";
 
 export const MainSection = () => {
-  const { admin, logIn, loading } = useAdmin();
+  const { logIn, loading } = useAdmin();
   const [formData, setFormData] = useState<Parameters<typeof logIn>[0]>({
     id: "",
     password: "",
@@ -32,10 +32,6 @@ export const MainSection = () => {
       type: "password",
     },
   ] as const;
-
-  if (admin) {
-    return null
-  }
 
   return (
     <section className="flex h-full w-full items-center justify-center p-4">
