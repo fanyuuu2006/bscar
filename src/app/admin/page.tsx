@@ -1,3 +1,5 @@
+import { MainSection } from "@/components/admin/MainSection";
+
 export default function Admin() {
-    return <div>Admin Page</div>;
+    return <MainSection />;
 }

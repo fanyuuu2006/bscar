@@ -7,7 +7,6 @@ import {
   useCallback,
   useEffect,
 } from "react";
-import { useRouter } from "next/navigation";
 import { SupabaseAdmin } from "@/types";
 import { getAdminMe, postAdminLogin } from "@/utils/backend";
 
@@ -26,34 +25,11 @@ const adminContext = createContext<AdminContextType | null>(null);
 export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [admin, setAdmin] = useState<SupabaseAdmin | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
-  const logIn = useCallback(
-    (...args: Parameters<typeof postAdminLogin>) => {
-      postAdminLogin(...args)
-        .then((res) => {
-          if (!res.success) {
-            console.error("管理員登入失敗", res.message);
-            return;
-          }
-          localStorage.setItem(LOCAL_STORAGE_KEY, res.data!);
-        })
-        .catch((err) => {
-          console.error("管理員登入失敗", err);
-        });
-    },
-    [],
-  );
 
-  const logOut = useCallback(() => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    router.replace("/admin");
-    setAdmin(null);
-  }, [router]);
   const refresh = useCallback(() => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (!token) return;
     setLoading(true);
-    getAdminMe(token)
+    getAdminMe(token || "")
       .then((data) => {
         setAdmin(data.data);
       })
@@ -63,6 +39,32 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
       .finally(() => {
         setLoading(false);
       });
+  }, []);
+
+  const logIn = useCallback(
+    (...args: Parameters<typeof postAdminLogin>) => {
+      postAdminLogin(...args)
+        .then((res) => {
+          if (!res.success) {
+            alert("管理員登入失敗，請檢查帳號密碼是否正確");
+            console.error("管理員登入失敗", res.message);
+            return;
+          }
+          localStorage.setItem(LOCAL_STORAGE_KEY, res.data!);
+        })
+        .catch((err) => {
+            alert("管理員登入失敗，請稍後再試");
+          console.error("管理員登入失敗", err);
+        })
+        .finally(() => {
+          refresh();
+        });
+    },
+    [refresh],
+  );
+
+  const logOut = useCallback(() => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
   }, []);
 
   const value = useMemo(
