@@ -37,7 +37,7 @@ export const MainSection = () => {
     <section className="flex h-full w-full items-center justify-center p-4">
       <form
         onSubmit={handleSubmit}
-        className="card flex w-full max-w-md flex-col gap-6 rounded-2xl border border-(--border) bg-(--background) p-8 shadow-sm"
+        className="card flex w-full max-w-md flex-col gap-6 rounded-2xl p-8"
       >
         <div className="text-center">
           <h2 className="text-2xl font-bold text-(--foreground)">後台登入</h2>
