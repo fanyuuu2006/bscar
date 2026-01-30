@@ -1,5 +1,5 @@
 import { MainSection } from "@/components/admin/dashboard/booking/MainSection";
 
-export default function Dashboard() {
+export default function Booking() {
   return <MainSection />;
 }

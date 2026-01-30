@@ -8,14 +8,14 @@ import {
   useEffect,
 } from "react";
 import { SupabaseAdmin } from "@/types";
-import { getAdminMe, postAdminLogin } from "@/utils/backend";
+import { getAdminMe, adminLogin } from "@/utils/backend";
 import { useRouter } from "next/navigation";
 
 interface AdminContextType {
   admin: SupabaseAdmin | null;
   loading: boolean;
   refresh: () => void;
-  logIn: (...args: Parameters<typeof postAdminLogin>) => void;
+  logIn: (...args: Parameters<typeof adminLogin>) => void;
   logOut: () => void;
 }
 
@@ -44,8 +44,8 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const logIn = useCallback(
-    (...args: Parameters<typeof postAdminLogin>) => {
-      postAdminLogin(...args)
+    (...args: Parameters<typeof adminLogin>) => {
+      adminLogin(...args)
         .then((res) => {
           if (!res.success) {
             alert("管理員登入失敗，請檢查帳號密碼是否正確");

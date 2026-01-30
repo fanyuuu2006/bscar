@@ -74,7 +74,7 @@ export const getAdminMe = async (token: string) => {
   );
 };
 
-export const postAdminLogin = async (body: {
+export const adminLogin = async (body: {
   id: SupabaseAdmin["id"];
   password: SupabaseAdmin["password"];
 }) => {
@@ -86,6 +86,18 @@ export const postAdminLogin = async (body: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+    },
+  );
+};
+
+export const bookingsByAdmin = async (token: string) => {
+  return fetcher<MyResponse<SupabaseBooking[]>>(
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/bookings`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
   );
 };
