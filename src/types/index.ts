@@ -53,3 +53,8 @@ export type SupabaseBooking = {
   customer_phone: string;
   status: "pending" | "confirmed" | "cancelled" | "completed";
 };
+export type SupabaseAdmin = {
+  id: string;
+  password: string;
+  location_id: SupabaseLocation["id"];
+};
