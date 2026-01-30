@@ -36,13 +36,12 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
             return;
           }
           localStorage.setItem(LOCAL_STORAGE_KEY, res.data!);
-          router.replace("/admin/dashboard");
         })
         .catch((err) => {
           console.error("管理員登入失敗", err);
         });
     },
-    [router],
+    [],
   );
 
   const logOut = useCallback(() => {

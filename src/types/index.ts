@@ -5,6 +5,15 @@ export type MyResponse<T> = {
   message: string | undefined;
 };
 
+
+export type Route = {
+  label: string;
+  url: string;
+  isActive?: (path: string) => boolean;
+  sub?: Route[];
+};
+
+
 export type SupabaseLocation = {
   id: string;
   city: string;
