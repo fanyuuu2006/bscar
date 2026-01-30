@@ -22,7 +22,7 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
       )}
       {...rest}
     >
-      <div className="h-full flex flex-col bg-(--background) border-r border-(--border) w-64 p-4">
+      <div className="h-full flex flex-col bg-(--background) border-r border-(--border) w-50 p-4">
         <nav className="w-full flex flex-col gap-1">
           {routes.map((route) => {
             const href = `/admin${route.url}`;

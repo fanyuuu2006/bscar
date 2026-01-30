@@ -1,0 +1,19 @@
+import { AdminProvider } from "@/contexts/AdminContext";
+import { AsideBar } from "@/components/admin/dashboard/AsideBar";
+
+export default function Layout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <AdminProvider>
+      <div className="flex h-full">
+        <AsideBar className="hidden md:block shrink-0 sticky left-0 h-full" />
+        <div role="main" className="flex-1 overflow-y-auto">
+          {children}
+        </div>
+      </div>
+    </AdminProvider>
+  );
+}
