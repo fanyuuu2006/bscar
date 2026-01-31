@@ -25,40 +25,50 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   return (
     <table className={cn("w-full text-left", className)} {...rest}>
-      <thead className="text-xs bg-(--background) text-(--muted) border-b border-(--border)">
-        <tr>
-          <th className="px-6 py-3 font-medium whitespace-nowrap">預約編號</th>
-          <th className="px-6 py-3 font-medium whitespace-nowrap">顧客資訊</th>
-          <th className="px-6 py-3 font-medium whitespace-nowrap">服務項目</th>
-          <th className="px-6 py-3 font-medium whitespace-nowrap">預約時間</th>
-          <th className="px-6 py-3 font-medium whitespace-nowrap">狀態</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-(--border) bg-white">
-        {isLoading ? (
-          <tr>
-            <td
-              colSpan={5}
-              className="py-6 px-4 text-center text-sm text-(--muted)"
-            >
-              載入中...
-            </td>
-          </tr>
-        ) : bookings.length === 0 ? (
-          <tr>
-            <td
-              colSpan={5}
-              className="py-6 px-4 text-center text-sm text-(--muted)"
-            >
-              目前沒有預約紀錄
-            </td>
-          </tr>
-        ) : (
-          bookings.map((booking) => (
-            <TableRow key={booking.id} item={booking} />
-          ))
-        )}
-      </tbody>
+          <thead className="bg-(--background) text-xs uppercase tracking-wider text-(--muted)">
+            <tr>
+              <th className="px-6 py-4 font-semibold whitespace-nowrap">
+                預約編號
+              </th>
+              <th className="px-6 py-4 font-semibold whitespace-nowrap">
+                顧客資訊
+              </th>
+              <th className="px-6 py-4 font-semibold whitespace-nowrap">
+                服務項目
+              </th>
+              <th className="px-6 py-4 font-semibold whitespace-nowrap">
+                預約時間
+              </th>
+              <th className="px-6 py-4 font-semibold whitespace-nowrap">
+                狀態
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-(--border)">
+            {isLoading ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="py-12 px-4 text-center text-sm text-(--muted)"
+                >
+                  載入中...
+                </td>
+              </tr>
+            ) : bookings.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="py-12 px-4 text-center text-sm text-(--muted)"
+                >
+                  目前沒有預約紀錄
+                </td>
+              </tr>
+            ) : (
+              bookings.map((booking) => (
+                <TableRow key={booking.id} item={booking} />
+              ))
+            )}
+          </tbody>
     </table>
   );
 };
@@ -69,19 +79,19 @@ const statusMap: Record<
 > = {
   pending: {
     label: "待處理",
-    className: "bg-yellow-100 text-yellow-900 border-yellow-900",
+    className: "bg-yellow-50 text-yellow-700 border-yellow-200",
   },
   confirmed: {
     label: "已確認",
-    className: "bg-green-100 text-green-900 border-green-900",
+    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
   },
   cancelled: {
     label: "已取消",
-    className: "bg-red-100 text-red-900 border-red-900",
+    className: "bg-red-50 text-red-700 border-red-200",
   },
   completed: {
     label: "已完成",
-    className: "bg-gray-100 text-gray-900 border-gray-900",
+    className: "bg-gray-50 text-gray-700 border-gray-200",
   },
 };
 
@@ -117,31 +127,43 @@ const TableRow = ({ item, className, ...rest }: TableRowProps) => {
   }, [item]);
 
   return (
-    <tr className={cn(className)} {...rest}>
-      <td className="py-6 px-4 text-xs truncate max-w-[14ch]" title={item.id}>
-        <span className="">{item.id}</span>
+    <tr
+      className={cn(className)}
+      {...rest}
+    >
+      <td className="px-6 py-4 text-xs">
+        <span className="font-mono text-(--muted)">
+          #{item.id.slice(0, 8)}...
+        </span>
       </td>
-      <td className="py-6 px-4 text-sm">
-        <div className="flex flex-col">
+      <td className="px-6 py-4 text-sm">
+        <div className="flex flex-col gap-1">
           <span className="font-medium text-(--foreground)">
             {item.customer_name}
           </span>
-          <span className="text-(--muted)">{item.customer_phone}</span>
-          <span className="text-(--muted)">{item.customer_email}</span>
+          <div className="flex flex-col text-xs text-(--muted)">
+            <span>{item.customer_phone}</span>
+            <span>{item.customer_email}</span>
+          </div>
         </div>
       </td>
-      <td className="py-6 px-4 text-sm">
-        <span className="font-medium text-(--foreground)">
-          {service ? service.name : "載入中..."}
+      <td className="px-6 py-4 text-sm">
+        <span className="text-(--foreground)">
+          {service ? service.name : "..."}
         </span>
       </td>
-      <td className="py-6 px-4 text-sm">
-        {formatDate("YYYY/MM/DD hh:mm A", item.booking_time)}
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        <div className="text-(--foreground)">
+          {formatDate("YYYY/MM/DD", item.booking_time)}
+        </div>
+        <div className="text-xs text-(--muted)">
+          {formatDate("hh:mm A", item.booking_time)}
+        </div>
       </td>
-      <td className="py-6 px-4">
+      <td className="px-6 py-4  whitespace-nowrap">
         <span
           className={cn(
-            "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border",
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border",
             status.className,
           )}
         >
