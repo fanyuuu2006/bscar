@@ -214,7 +214,7 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
               <oper.component
                 key={oper.label}
                 className={cn(
-                  "flex items-center justify-center border rounded-lg p-1 tooltip",
+                  "flex items-center p-2 rounded-md text-sm font-medium border tooltip",
                   operClassName,
                 )}
                 data-tooltip={oper.label}
