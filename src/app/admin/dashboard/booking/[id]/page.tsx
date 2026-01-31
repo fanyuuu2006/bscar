@@ -1,9 +1,15 @@
 import { MainSection } from "@/components/admin/dashboard/booking/[id]/MainSection";
-import { getBookingById } from "@/utils/backend";
+import { getBookingById, getLocationById, getServiceById } from "@/utils/backend";
 
-export default async function Booking(props: PageProps<"/admin/dashboard/booking/[id]">) {
+export default async function Booking(
+  props: PageProps<"/admin/dashboard/booking/[id]">,
+) {
   const { id } = await props.params;
-  const {data} = await getBookingById(id);
+  const { data: booking } = await getBookingById(id);
+  const { data: location } = await getLocationById(booking?.location_id || "");
+  const { data: service } = await getServiceById(booking?.service_id || "");
 
-  return <MainSection booking={data} />;
+  return (
+    <MainSection booking={booking} location={location} service={service} />
+  );
 }
