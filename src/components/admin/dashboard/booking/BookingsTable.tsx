@@ -9,7 +9,12 @@ import {
 } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
-import { EditOutlined, CloseOutlined, CheckOutlined, StarOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  CloseOutlined,
+  CheckOutlined,
+  StarOutlined,
+} from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
@@ -38,8 +43,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   const bookings = useMemo<SupabaseBooking[]>(() => {
     if (!data?.data) return [];
-    return data.data.sort((a, b) =>
-      new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime(),
+    return data.data.sort(
+      (a, b) =>
+        new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime(),
     );
   }, [data]);
 
@@ -96,7 +102,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   );
 };
 
-
 type TableRowProps = OverrideProps<
   React.HTMLAttributes<HTMLTableRowElement>,
   {
@@ -118,19 +123,22 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
   const { token } = useAdminToken();
   const { mutate } = useSWRConfig();
 
-  const handleStatusChange = useCallback((newStatus: SupabaseBooking['status']) => {
-    if (!token) return;
-    updateBookingByAdmin(token, { ...item, status: newStatus }).then(
-      (res) => {
-        if (res.success) {
+  const handleStatusChange = useCallback(
+    (newStatus: SupabaseBooking["status"]) => {
+      if (!token) return;
+      updateBookingByAdmin(token, { ...item, status: newStatus }).then(
+        (res) => {
+          if (res.success) {
             // 觸發 SWR 重新驗證以更新資料
             mutate(["admin-bookings", token]);
-        } else {
-          alert("更新預約狀態失敗，請稍後再試。");
-        }
-      },
-    );
-  }, [item, token, mutate]);
+          } else {
+            alert("更新預約狀態失敗，請稍後再試。");
+          }
+        },
+      );
+    },
+    [item, token, mutate],
+  );
 
   const operations = useMemo<OperationItem[]>(
     () => [
@@ -183,11 +191,15 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
   return (
     <tr className={cn(className)} {...rest}>
       <td className="px-6 py-4 text-xs" title={item.id}>
-        <span className="font-mono text-(--muted)">#{item.id.slice(0, 8)}...</span>
+        <span className="font-mono text-(--muted)">
+          #{item.id.slice(0, 8)}...
+        </span>
       </td>
       <td className="px-6 py-4 text-sm">
         <div className="flex flex-col gap-1">
-          <span className="font-medium text-(--foreground)">{item.customer_name}</span>
+          <span className="font-medium text-(--foreground)">
+            {item.customer_name}
+          </span>
           <div className="flex flex-col text-xs text-(--muted)">
             <span>{item.customer_phone}</span>
             <span>{item.customer_email}</span>
@@ -195,14 +207,25 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         </div>
       </td>
       <td className="px-6 py-4 text-sm">
-        <span className="text-(--foreground)">{service ? service.name : "..."}</span>
+        <span className="text-(--foreground)">
+          {service ? service.name : "..."}
+        </span>
       </td>
       <td className="px-6 py-4 text-sm whitespace-nowrap">
-        <div className="text-(--foreground)">{formatDate("YYYY/MM/DD", item.booking_time)}</div>
-        <div className="text-xs text-(--muted)">{formatDate("hh:mm A", item.booking_time)}</div>
+        <div className="text-(--foreground)">
+          {formatDate("YYYY/MM/DD", item.booking_time)}
+        </div>
+        <div className="text-xs text-(--muted)">
+          {formatDate("hh:mm A", item.booking_time)}
+        </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className={cn("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border", status.className)}>
+        <span
+          className={cn(
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border",
+            status.className,
+          )}
+        >
           {status.label}
         </span>
       </td>
