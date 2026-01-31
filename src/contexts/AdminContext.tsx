@@ -31,6 +31,7 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const refresh = useCallback(() => {
     if (!token) {
       setAdmin(null);
+      router.replace("/admin");
       setLoading(false);
       return;
     }
@@ -39,15 +40,17 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     getAdminMe(token)
       .then((data) => {
         setAdmin(data.data);
+        router.replace("/admin/dashboard");
       })
       .catch(() => {
         setAdmin(null);
         removeToken();
+        router.replace("/admin");
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [removeToken, token]);
+  }, [removeToken, router, token]);
 
   // 當 token 載入完成或變更時，觸發 refresh
   useEffect(() => {
@@ -80,8 +83,7 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const logOut = useCallback(() => {
     removeToken();
     setAdmin(null);
-    router.replace("/admin");
-  }, [removeToken, router]);
+  }, [removeToken]);
 
   const value = useMemo(
     () => ({

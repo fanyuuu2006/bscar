@@ -1,13 +1,11 @@
 "use client";
 import { useAdmin } from "@/contexts/AdminContext";
 import { cn } from "@/utils/className";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
 
 export const MainSection = () => {
-  const { admin, logIn, loading } = useAdmin();
-  const router = useRouter();
+  const {  logIn, loading } = useAdmin();
   const [formData, setFormData] = useState<Parameters<typeof logIn>[0]>({
     id: "",
     password: "",
@@ -22,13 +20,6 @@ export const MainSection = () => {
     e.preventDefault();
     logIn(formData);
   };
-
-  useEffect(() => {
-    if (!loading && admin) {
-      router.push("/admin/dashboard");
-    }
-  }, [admin, loading, router]);
-
   const formFields = [
     {
       id: "id",
