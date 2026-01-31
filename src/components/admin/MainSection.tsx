@@ -3,7 +3,7 @@ import { useAdmin } from "@/contexts/AdminContext";
 import { cn } from "@/utils/className";
 import { useEffect, useState } from "react";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export const MainSection = () => {
   const { admin, logIn, loading } = useAdmin();

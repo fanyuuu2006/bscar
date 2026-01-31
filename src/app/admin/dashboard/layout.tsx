@@ -7,7 +7,7 @@ export default function Layout({
 }>) {
   return (
       <div className="flex h-full">
-        <AsideBar className="hidden md:block shrink-0 sticky left-0 h-full" />
+        <AsideBar className="shrink-0 sticky left-0 h-full" />
         <div role="main" className="flex-1 overflow-y-auto">
           {children}
         </div>
