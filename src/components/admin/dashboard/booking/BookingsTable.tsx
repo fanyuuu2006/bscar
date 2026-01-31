@@ -96,19 +96,23 @@ const statusMap: Record<
 > = {
   pending: {
     label: "待處理",
-    className: "bg-yellow-50 text-yellow-700 border-yellow-200",
+    // 橘色系，與操作按鈕不重複
+    className: "bg-orange-50 text-orange-700 border-orange-200",
   },
   confirmed: {
     label: "已確認",
-    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    // 綠色系，與操作按鈕一致但色階不同
+    className: "bg-green-100 text-green-800 border-green-300",
   },
   cancelled: {
     label: "已取消",
-    className: "bg-red-50 text-red-700 border-red-200",
+    // 深紅色系，與操作按鈕有明顯區分
+    className: "bg-rose-100 text-rose-800 border-rose-300",
   },
   completed: {
     label: "已完成",
-    className: "bg-gray-50 text-gray-700 border-gray-200",
+    // 藍色系，與操作按鈕區分
+    className: "bg-blue-50 text-blue-700 border-blue-200",
   },
 };
 
