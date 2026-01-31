@@ -4,8 +4,10 @@ import { SupabaseBooking, SupabaseLocation, SupabaseService } from "@/types";
 import { bookingsByAdmin, getServiceById } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
+import { EditOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useState, useMemo } from "react";
 import useSWR from "swr";
 
 type BookingsTableProps = DistributiveOmit<
@@ -25,50 +27,49 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   return (
     <table className={cn("w-full text-left", className)} {...rest}>
-          <thead className="bg-(--background) text-xs uppercase tracking-wider text-(--muted)">
-            <tr>
-              <th className="px-6 py-4 font-semibold whitespace-nowrap">
-                預約編號
-              </th>
-              <th className="px-6 py-4 font-semibold whitespace-nowrap">
-                顧客資訊
-              </th>
-              <th className="px-6 py-4 font-semibold whitespace-nowrap">
-                服務項目
-              </th>
-              <th className="px-6 py-4 font-semibold whitespace-nowrap">
-                預約時間
-              </th>
-              <th className="px-6 py-4 font-semibold whitespace-nowrap">
-                狀態
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-(--border)">
-            {isLoading ? (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="py-12 px-4 text-center text-sm text-(--muted)"
-                >
-                  載入中...
-                </td>
-              </tr>
-            ) : bookings.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="py-12 px-4 text-center text-sm text-(--muted)"
-                >
-                  目前沒有預約紀錄
-                </td>
-              </tr>
-            ) : (
-              bookings.map((booking) => (
-                <TableRow key={booking.id} item={booking} />
-              ))
-            )}
-          </tbody>
+      <thead className="bg-(--background) text-xs uppercase tracking-wider text-(--muted)">
+        <tr>
+          <th className="px-6 py-4 font-semibold whitespace-nowrap">
+            預約編號
+          </th>
+          <th className="px-6 py-4 font-semibold whitespace-nowrap">
+            顧客資訊
+          </th>
+          <th className="px-6 py-4 font-semibold whitespace-nowrap">
+            服務項目
+          </th>
+          <th className="px-6 py-4 font-semibold whitespace-nowrap">
+            預約時間
+          </th>
+          <th className="px-6 py-4 font-semibold whitespace-nowrap">狀態</th>
+          <th className="px-6 py-4 font-semibold whitespace-nowrap">操作</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-(--border)">
+        {isLoading ? (
+          <tr>
+            <td
+              colSpan={5}
+              className="py-12 px-4 text-center text-sm text-(--muted)"
+            >
+              載入中...
+            </td>
+          </tr>
+        ) : bookings.length === 0 ? (
+          <tr>
+            <td
+              colSpan={5}
+              className="py-12 px-4 text-center text-sm text-(--muted)"
+            >
+              目前沒有預約紀錄
+            </td>
+          </tr>
+        ) : (
+          bookings.map((booking) => (
+            <TableRow key={booking.id} item={booking} />
+          ))
+        )}
+      </tbody>
     </table>
   );
 };
@@ -104,9 +105,30 @@ type TableRowProps = OverrideProps<
   }
 >;
 
+type OperationItem<T extends React.ElementType = React.ElementType> = {
+  label: string;
+  component: T;
+  props: React.ComponentProps<T>;
+  Icon: React.ElementType;
+};
+
 const TableRow = ({ item, className, ...rest }: TableRowProps) => {
   const [service, setService] = useState<SupabaseService | null>(null);
   const status = statusMap[item.status];
+
+  const operations = useMemo<OperationItem[]>(
+    () => [
+      {
+        label: "編輯",
+        component: Link,
+        props: {
+          href: `/admin/dashboard/booking/${item.id}`,
+        },
+        Icon: EditOutlined,
+      },
+    ],
+    [item.id],
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,11 +149,8 @@ const TableRow = ({ item, className, ...rest }: TableRowProps) => {
   }, [item]);
 
   return (
-    <tr
-      className={cn(className)}
-      {...rest}
-    >
-      <td className="px-6 py-4 text-xs">
+    <tr className={cn(className)} {...rest}>
+      <td className="px-6 py-4 text-xs" title={item.id}>
         <span className="font-mono text-(--muted)">
           #{item.id.slice(0, 8)}...
         </span>
@@ -169,6 +188,22 @@ const TableRow = ({ item, className, ...rest }: TableRowProps) => {
         >
           {status.label}
         </span>
+      </td>
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        <div className="flex items-center">
+          {operations.map((oper) => {
+            return (
+              <oper.component
+                key={oper.label}
+                title={oper.label}
+                {...oper.props}
+                className="flex items-center justify-center border rounded-lg p-1"
+              >
+                <oper.Icon />
+              </oper.component>
+            );
+          })}
+        </div>
       </td>
     </tr>
   );
