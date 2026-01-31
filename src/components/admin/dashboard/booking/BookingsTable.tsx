@@ -12,7 +12,7 @@ import { EditOutlined, CloseOutlined, CheckOutlined, StarOutlined } from "@ant-d
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 type BookingsTableProps = DistributiveOmit<
   React.TableHTMLAttributes<HTMLTableElement>,
@@ -35,7 +35,12 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     return map;
   }, [servicesRes]);
 
-  const bookings = data?.data || [];
+  const bookings = useMemo<SupabaseBooking[]>(() => {
+    if (!data?.data) return [];
+    return data.data.sort((a, b) =>
+      new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime(),
+    );
+  }, [data]);
 
   return (
     <table className={cn("w-full text-left", className)} {...rest}>
@@ -96,22 +101,18 @@ const statusMap: Record<
 > = {
   pending: {
     label: "待處理",
-    // 橘色系，與操作按鈕不重複
     className: "bg-orange-50 text-orange-700 border-orange-200",
   },
   confirmed: {
     label: "已確認",
-    // 綠色系，與操作按鈕一致但色階不同
     className: "bg-green-100 text-green-800 border-green-300",
   },
   cancelled: {
     label: "已取消",
-    // 深紅色系，與操作按鈕有明顯區分
     className: "bg-rose-100 text-rose-800 border-rose-300",
   },
   completed: {
     label: "已完成",
-    // 藍色系，與操作按鈕區分
     className: "bg-blue-50 text-blue-700 border-blue-200",
   },
 };
@@ -135,19 +136,21 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
 const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
   const status = statusMap[item.status];
   const { token } = useAdminToken();
+  const { mutate } = useSWRConfig();
 
   const handleStatusChange = useCallback((newStatus: SupabaseBooking['status']) => {
     if (!token) return;
     updateBookingByAdmin(token, { ...item, status: newStatus }).then(
       (res) => {
         if (res.success) {
-            window.location.reload();
+            // 觸發 SWR 重新驗證以更新資料
+            mutate(["admin-bookings", token]);
         } else {
           alert("更新預約狀態失敗，請稍後再試。");
         }
       },
     );
-  }, [item, token]);
+  }, [item, token, mutate]);
 
   const operations = useMemo<OperationItem[]>(
     () => [
@@ -155,8 +158,8 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         label: "編輯",
         component: Link,
         props: {
+          className: "text-yellow-600 border-yellow-200",
           href: `/admin/dashboard/booking/${item.id}`,
-          className: "text-blue-600 border-blue-200",
         },
         Icon: EditOutlined,
       },
@@ -177,8 +180,8 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         props: {
           type: "button",
           onClick: () => handleStatusChange("completed"),
+          className: "text-blue-600 border-blue-200",
           disabled: item.status === "completed",
-          className: "text-yellow-600 border-yellow-200",
         },
         Icon: StarOutlined,
       },
