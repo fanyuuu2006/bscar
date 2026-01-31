@@ -11,9 +11,17 @@ export const MainSection = ({
   className,
   ...rest
 }: MainSectionProps) => {
+  if (!booking) return null;
   return (
     <section className={cn(className)} {...rest}>
-      MainSection Booking ID
+      <div className="w-full flex flex-col p-4 gap-4">
+        <h2 className="text-2xl font-bold mb-4">編輯預約</h2>
+
+        <div className="card p-4 rounded-xl">
+
+        </div>
+            
+      </div>
     </section>
   );
 };
