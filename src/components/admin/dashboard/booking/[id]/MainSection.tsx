@@ -24,6 +24,18 @@ export const MainSection = ({
   const [services, setServices] = useState<SupabaseService[]>([]);
   const { token } = useAdminToken();
   const router = useRouter();
+
+  const handleChange = useCallback(
+    <T extends keyof SupabaseBooking>(key: T, value: SupabaseBooking[T]) => {
+      if (!newBooking) return;
+      setNewBooking({
+        ...newBooking,
+        [key]: value,
+      });
+    },
+    [newBooking],
+  );
+
   const handleSave = useCallback(() => {
     if (!token || !newBooking) return;
     updateBookingByAdmin(token, newBooking).then((res) => {
@@ -67,10 +79,23 @@ export const MainSection = ({
               <span className="font-light">{newBooking.id}</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-bold">服務</span>
-              <span className="font-light">
-                {service ? service.name : newBooking.service_id}
-              </span>
+              <label className="font-bold mb-1">服務</label>
+              <select
+                value={newBooking.service_id}
+                onChange={(e) => {
+                  const sid = e.target.value;
+                  handleChange("service_id", sid);
+                  const matched = services.find((s) => s.id === sid) || null;
+                  setService(matched);
+                }}
+                className="mt-1 p-2 border border-(--border) rounded-lg bg-(--input-background) text-(--foreground)"
+              >
+                {services.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="flex flex-col">
               <span className="font-bold">預約時間</span>
@@ -80,9 +105,48 @@ export const MainSection = ({
             </div>
           </div>
         </div>
+        <div className="card p-4 rounded-xl">
+          <h3 className="text-2xl font-extrabold">顧客資訊</h3>
+          <div className="mt-2 flex flex-col gap-2">
+            {[
+              { key: "customer_name", label: "姓名", type: "text" },
+              {
+                key: "customer_phone",
+                label: "電話",
+                type: "text",
+              },
+              {
+                key: "customer_email",
+                label: "電子郵件",
+                type: "email",
+              },
+            ].map((field) => (
+              <div key={field.key} className="flex flex-col">
+                <label className="font-bold mb-1" htmlFor={field.key}>
+                  {field.label}
+                </label>
+                <input
+                  id={field.key}
+                  type={field.type}
+                  value={newBooking[field.key as keyof SupabaseBooking] || ""}
+                  onChange={(e) =>
+                    handleChange(
+                      field.key as keyof SupabaseBooking,
+                      e.target.value,
+                    )
+                  }
+                  className="mt-1 p-2 border border-(--border) rounded-lg bg-(--input-background) text-(--foreground)"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="w-full flex">
           <div className="ms-auto">
-            <button className="btn primary rounded-xl px-6 py-2.5" onClick={handleSave}>
+            <button
+              className="btn primary rounded-xl px-6 py-2.5"
+              onClick={handleSave}
+            >
               保存
             </button>
           </div>
