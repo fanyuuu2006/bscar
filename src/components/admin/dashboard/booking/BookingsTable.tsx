@@ -1,13 +1,17 @@
 "use client";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { SupabaseBooking, SupabaseLocation, SupabaseService } from "@/types";
-import { bookingsByAdmin, getServices } from "@/utils/backend";
+import {
+  bookingsByAdmin,
+  getServices,
+  updateBookingByAdmin,
+} from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { EditOutlined, CloseOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 type BookingsTableProps = DistributiveOmit<
@@ -126,6 +130,19 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
 
 const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
   const status = statusMap[item.status];
+  const { token } = useAdminToken();
+
+  const handleCancel = useCallback(() => {
+    if (!token) return;
+    updateBookingByAdmin(token, { ...item, status: "cancelled" }).then(
+      (res) => {
+        if (res.success) {
+        } else {
+          alert("取消預約失敗，請稍後再試。");
+        }
+      },
+    );
+  }, [item, token]);
 
   const operations = useMemo<OperationItem[]>(
     () => [
@@ -134,8 +151,7 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: Link,
         props: {
           href: `/admin/dashboard/booking/${item.id}`,
-          className:
-            "text-blue-600 border-blue-200",
+          className: "text-blue-600 border-blue-200",
         },
         Icon: EditOutlined,
       },
@@ -144,13 +160,14 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: "button",
         props: {
           type: "button",
-          className:
-            "text-red-600 border-red-200",
+          className: "text-red-600 border-red-200",
+          onClick: handleCancel,
+          disabled: item.status === "cancelled",
         },
         Icon: CloseOutlined,
       },
     ],
-    [item.id],
+    [handleCancel, item],
   );
 
   return (
