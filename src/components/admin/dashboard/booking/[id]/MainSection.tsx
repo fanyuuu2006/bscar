@@ -67,21 +67,23 @@ export const MainSection = ({
         {/* 預約資訊 */}
         <div className="card p-4 rounded-xl">
           <h3 className="text-2xl font-extrabold">預約資訊</h3>
-
+          
           <div className="mt-2 flex flex-col gap-2">
+
             <div className="flex flex-col">
               <span className="font-bold">預約編號</span>
               <span className="font-light">{newBooking.id}</span>
             </div>
+
             <div className="flex flex-col">
-              <label className="font-bold mb-1">服務</label>
+              <label className="font-bold">服務</label>
               <select
                 value={newBooking.service_id}
                 onChange={(e) => {
                   const sid = e.target.value;
                   handleChange("service_id", sid);
                 }}
-                className="mt-1 p-2 border border-(--border) rounded-lg bg-(--input-background) text-(--foreground)"
+                className="p-2 border border-(--border) rounded-lg bg-black/5"
               >
                 {services.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -90,20 +92,31 @@ export const MainSection = ({
                 ))}
               </select>
             </div>
+
             <div className="flex flex-col">
               <span className="font-bold">預約時間</span>
               <span className="font-light">
                 {formatDate("YYYY/MM/DD hh:mm A", newBooking.booking_time)}
               </span>
             </div>
+
             <div className="flex flex-col">
-              <span className="font-bold">狀態</span>
-              <span className="font-light">
-                {statusMap[newBooking.status]
-                  ? statusMap[newBooking.status].label
-                  : newBooking.status}
-              </span>
-            </div>
+              <label className="font-bold">狀態</label>
+              <select
+                value={newBooking.status}
+                onChange={(e) => {
+                  const st = e.target.value as SupabaseBooking["status"];
+                  handleChange("status", st);
+                }}
+                className="p-2 border border-(--border) rounded-lg bg-black/5"
+              >
+                {Object.entries(statusMap).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+          </div>
           </div>
         </div>
 
@@ -138,7 +151,7 @@ export const MainSection = ({
                       e.target.value,
                     )
                   }
-                  className="mt-1 p-2 border border-(--border) rounded-lg bg-(--input-background) text-(--foreground)"
+                  className="p-2 border border-(--border) rounded-lg bg-black/5"
                 />
               </div>
             ))}
