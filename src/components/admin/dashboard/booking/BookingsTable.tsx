@@ -1,13 +1,13 @@
 "use client";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { SupabaseBooking, SupabaseLocation, SupabaseService } from "@/types";
-import { bookingsByAdmin, getServiceById } from "@/utils/backend";
+import { bookingsByAdmin, getServices } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { EditOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 
 type BookingsTableProps = DistributiveOmit<
@@ -22,6 +22,14 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     token ? ["admin-bookings", token] : null,
     () => bookingsByAdmin(token!),
   );
+
+  const { data: servicesRes } = useSWR("services", getServices);
+
+  const servicesMap = useMemo(() => {
+    const map = new Map<string, SupabaseService>();
+    servicesRes?.data?.forEach((s) => map.set(s.id, s));
+    return map;
+  }, [servicesRes]);
 
   const bookings = data?.data || [];
 
@@ -49,7 +57,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         {isLoading ? (
           <tr>
             <td
-              colSpan={5}
+              colSpan={6}
               className="py-12 px-4 text-center text-sm text-(--muted)"
             >
               載入中...
@@ -58,7 +66,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         ) : bookings.length === 0 ? (
           <tr>
             <td
-              colSpan={5}
+              colSpan={6}
               className="py-12 px-4 text-center text-sm text-(--muted)"
             >
               目前沒有預約紀錄
@@ -66,7 +74,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           </tr>
         ) : (
           bookings.map((booking) => (
-            <TableRow key={booking.id} item={booking} />
+            <TableRow
+              key={booking.id}
+              item={booking}
+              service={servicesMap.get(booking.service_id)}
+            />
           ))
         )}
       </tbody>
@@ -112,8 +124,12 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
   Icon: React.ElementType;
 };
 
-const TableRow = ({ item, className, ...rest }: TableRowProps) => {
-  const [service, setService] = useState<SupabaseService | null>(null);
+const TableRow = ({
+  item,
+  service,
+  className,
+  ...rest
+}: TableRowProps) => {
   const status = statusMap[item.status];
 
   const operations = useMemo<OperationItem[]>(
@@ -129,24 +145,6 @@ const TableRow = ({ item, className, ...rest }: TableRowProps) => {
     ],
     [item.id],
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { service_id } = item;
-      getServiceById(service_id)
-        .then((res) => {
-          if (res.success) {
-            setService(res.data || null);
-          } else {
-            setService(null);
-          }
-        })
-        .catch(() => {
-          setService(null);
-        });
-    };
-    fetchData();
-  }, [item]);
 
   return (
     <tr className={cn(className)} {...rest}>
