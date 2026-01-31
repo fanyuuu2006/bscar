@@ -134,6 +134,8 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: Link,
         props: {
           href: `/admin/dashboard/booking/${item.id}`,
+          className:
+            "text-blue-600 border-blue-200",
         },
         Icon: EditOutlined,
       },
@@ -142,7 +144,8 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: "button",
         props: {
           type: "button",
-          className: "text-red-500 border-red-200",
+          className:
+            "text-red-600 border-red-200",
         },
         Icon: CloseOutlined,
       },
@@ -200,7 +203,7 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
                 key={oper.label}
                 title={oper.label}
                 className={cn(
-                  "flex items-center justify-center border rounded-lg p-1",
+                  "flex items-center justify-center w-8 h-8 border rounded-md transition-colors",
                   operClassName,
                 )}
                 {...operRest}

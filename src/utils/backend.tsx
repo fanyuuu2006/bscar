@@ -101,3 +101,20 @@ export const bookingsByAdmin = async (token: string) => {
     },
   );
 };
+
+export const updateBookingByAdmin = async (
+  token: string,
+  booking: SupabaseBooking,
+) => {
+  return fetcher<MyResponse<SupabaseBooking>>(
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/booking/${booking.id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(booking),
+    },
+  );
+};
