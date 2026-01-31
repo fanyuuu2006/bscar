@@ -59,25 +59,26 @@ export const TimeSlotSelector = ({
   }, [locationId, serviceId, viewDate]);
 
   return (
-    <div className={cn("flex flex-col items-center", className)} {...rest}>
+    <div className={cn(className)} {...rest}>
       {/* 月曆 */}
       <Calender
         pastDateDisabled
-        className="w-full text-sm md:text-base lg:text-lg"
+        className="w-full text-[1em]"
         value={viewDate}
         onChange={setViewDate}
       />
+
       {/* 時段選擇區域 */}
       <div className="w-full">
-        <h2 className="text-xl font-bold mb-6 mt-8 flex items-center gap-2">
+        <h2 className="text-[1.25em] font-bold mb-6 mt-8 flex items-center gap-2">
           可選擇時段
         </h2>
         {isLoading ? (
           <div className="text-(--muted) text-center py-8">
-            <LoadingOutlined className="text-2xl" />
+            <LoadingOutlined className="text-[1.5em]" />
           </div>
         ) : timeSlots.length > 0 ? (
-          <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="text-[1em] grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-5">
             {timeSlots.map((slot) => {
               const slotDate = new Date(
                 `${formatDate("YYYY-MM-DD", viewDate)}T${slot.start_time}`,

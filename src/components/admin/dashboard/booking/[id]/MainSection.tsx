@@ -177,7 +177,7 @@ export const MainSection = ({
                 {formatDate("YYYY/MM/DD hh:mm A", newBooking.booking_time)}
               </span>
               <TimeSlotSelector
-                className="w-full mt-2"
+                className="mt-2 flex gap-4 p-2 text-xs"
                 locationId={newBooking.location_id}
                 serviceId={newBooking.service_id}
                 value={new Date(newBooking.booking_time)}
