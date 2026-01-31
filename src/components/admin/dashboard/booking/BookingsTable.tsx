@@ -8,7 +8,7 @@ import {
 } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
-import { EditOutlined, CloseOutlined, CheckOutlined } from "@ant-design/icons";
+import { EditOutlined, CloseOutlined, CheckOutlined, StarOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
@@ -152,6 +152,7 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: Link,
         props: {
           href: `/admin/dashboard/booking/${item.id}`,
+          title: "編輯",
           className: "text-blue-600 border-blue-200",
         },
         Icon: EditOutlined,
@@ -160,21 +161,35 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         label: "確認",
         component: "button",
         props: {
-            type: "button",
-            className: "text-emerald-600 border-emerald-200",
-            onClick: () => handleStatusChange("confirmed"),
-            disabled: item.status === "confirmed",
+          type: "button",
+          title: "確認",
+          onClick: () => handleStatusChange("confirmed"),
+          disabled: item.status === "confirmed",
+          className: "text-emerald-600 border-emerald-200",
         },
         Icon: CheckOutlined,
+      },
+      {
+        label: "完成",
+        component: "button",
+        props: {
+          type: "button",
+          title: "完成",
+          onClick: () => handleStatusChange("completed"),
+          disabled: item.status === "completed",
+          className: "text-yellow-600 border-yellow-200",
+        },
+        Icon: StarOutlined,
       },
       {
         label: "取消",
         component: "button",
         props: {
           type: "button",
-          className: "text-red-600 border-red-200",
+          title: "取消",
           onClick: () => handleStatusChange("cancelled"),
           disabled: item.status === "cancelled",
+          className: "text-red-600 border-red-200",
         },
         Icon: CloseOutlined,
       },
@@ -185,15 +200,11 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
   return (
     <tr className={cn(className)} {...rest}>
       <td className="px-6 py-4 text-xs" title={item.id}>
-        <span className="font-mono text-(--muted)">
-          #{item.id.slice(0, 8)}...
-        </span>
+        <span className="font-mono text-(--muted)">#{item.id.slice(0, 8)}...</span>
       </td>
       <td className="px-6 py-4 text-sm">
         <div className="flex flex-col gap-1">
-          <span className="font-medium text-(--foreground)">
-            {item.customer_name}
-          </span>
+          <span className="font-medium text-(--foreground)">{item.customer_name}</span>
           <div className="flex flex-col text-xs text-(--muted)">
             <span>{item.customer_phone}</span>
             <span>{item.customer_email}</span>
@@ -201,38 +212,26 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         </div>
       </td>
       <td className="px-6 py-4 text-sm">
-        <span className="text-(--foreground)">
-          {service ? service.name : "..."}
-        </span>
+        <span className="text-(--foreground)">{service ? service.name : "..."}</span>
       </td>
       <td className="px-6 py-4 text-sm whitespace-nowrap">
-        <div className="text-(--foreground)">
-          {formatDate("YYYY/MM/DD", item.booking_time)}
-        </div>
-        <div className="text-xs text-(--muted)">
-          {formatDate("hh:mm A", item.booking_time)}
-        </div>
+        <div className="text-(--foreground)">{formatDate("YYYY/MM/DD", item.booking_time)}</div>
+        <div className="text-xs text-(--muted)">{formatDate("hh:mm A", item.booking_time)}</div>
       </td>
-      <td className="px-6 py-4  whitespace-nowrap">
-        <span
-          className={cn(
-            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border",
-            status.className,
-          )}
-        >
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className={cn("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border", status.className)}>
           {status.label}
         </span>
       </td>
       <td className="px-6 py-4 text-sm whitespace-nowrap">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {operations.map((oper) => {
             const { className: operClassName, ...operRest } = oper.props;
             return (
               <oper.component
                 key={oper.label}
-                title={oper.label}
                 className={cn(
-                  "flex items-center justify-center w-8 h-8 border rounded-md transition-colors",
+                  "flex items-center justify-center border rounded-lg p-1",
                   operClassName,
                 )}
                 {...operRest}
