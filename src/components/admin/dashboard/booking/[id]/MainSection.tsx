@@ -122,7 +122,6 @@ export const MainSection = ({
 
   const onInputChange = useCallback(
     (key: CustomerFieldKey, e: React.ChangeEvent<HTMLInputElement>) => {
-      // 由於 input 值為字串，這裡使用 unknown 轉成 booking 欄位型別，避免使用 any
       handleChange(
         key as keyof SupabaseBooking,
         e.target.value as unknown as SupabaseBooking[keyof SupabaseBooking],
@@ -147,7 +146,7 @@ export const MainSection = ({
         <h2 className="text-3xl font-black">編輯預約</h2>
 
         {/* ===== 預約資訊 ===== */}
-        <div className="card p-4 rounded-xl">
+        <div className="card p-4 md:p-6 rounded-xl">
           <h3 className="text-2xl font-extrabold">預約資訊</h3>
 
           <div className="mt-2 flex flex-col gap-2">
@@ -203,7 +202,7 @@ export const MainSection = ({
         </div>
 
         {/* ===== 顧客資訊 ===== */}
-        <div className="card p-4 rounded-xl">
+        <div className="card p-4 md:p-6 rounded-xl">
           <h3 className="text-2xl font-extrabold">顧客資訊</h3>
           <div className="mt-2 flex flex-col gap-2">
             {customerFields.map((field) => (
