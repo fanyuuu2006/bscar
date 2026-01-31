@@ -23,22 +23,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   const bookings = data?.data || [];
 
-  if (isLoading) {
-    return <div className="p-8 text-center text-(--muted)">載入中...</div>;
-  }
-
-  if (data?.success === false || (!isLoading && !data)) {
-    return (
-      <div className="p-8 text-center text-(--accent)">無法載入預約資料</div>
-    );
-  }
-
-  if (bookings.length === 0) {
-    return (
-      <div className="p-8 text-center text-(--muted)">目前沒有預約資料</div>
-    );
-  }
-
   return (
     <table className={cn("w-full text-left", className)} {...rest}>
       <thead className="text-xs bg-(--background) text-(--muted) border-b border-(--border)">
@@ -51,23 +35,54 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         </tr>
       </thead>
       <tbody className="divide-y divide-(--border) bg-white">
-        {bookings.map((item) => (
-          <TableRow key={item.id} item={item} />
-        ))}
+        {isLoading ? (
+          <tr>
+            <td
+              colSpan={5}
+              className="py-6 px-4 text-center text-sm text-(--muted)"
+            >
+              載入中...
+            </td>
+          </tr>
+        ) : bookings.length === 0 ? (
+          <tr>
+            <td
+              colSpan={5}
+              className="py-6 px-4 text-center text-sm text-(--muted)"
+            >
+              目前沒有預約紀錄
+            </td>
+          </tr>
+        ) : (
+          bookings.map((booking) => (
+            <TableRow key={booking.id} item={booking} />
+          ))
+        )}
       </tbody>
     </table>
   );
 };
 
-
 const statusMap: Record<
   SupabaseBooking["status"],
   { label: string; className: string }
 > = {
-  pending: { label: "待處理", className: "bg-yellow-100 text-yellow-900 border-yellow-900" },
-  confirmed: { label: "已確認", className: "bg-green-100 text-green-900 border-green-900" },
-  cancelled: { label: "已取消", className: "bg-red-100 text-red-900 border-red-900" },
-  completed: { label: "已完成", className: "bg-gray-100 text-gray-900 border-gray-900" },
+  pending: {
+    label: "待處理",
+    className: "bg-yellow-100 text-yellow-900 border-yellow-900",
+  },
+  confirmed: {
+    label: "已確認",
+    className: "bg-green-100 text-green-900 border-green-900",
+  },
+  cancelled: {
+    label: "已取消",
+    className: "bg-red-100 text-red-900 border-red-900",
+  },
+  completed: {
+    label: "已完成",
+    className: "bg-gray-100 text-gray-900 border-gray-900",
+  },
 };
 
 type TableRowProps = OverrideProps<
