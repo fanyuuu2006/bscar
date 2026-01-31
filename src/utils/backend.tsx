@@ -118,3 +118,38 @@ export const updateBookingByAdmin = async (
     },
   );
 };
+
+export const updateAdmin = async (
+  token: string,
+  admin: SupabaseAdmin,
+) => {
+  return fetcher<MyResponse<SupabaseAdmin>>(
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/me`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(admin),
+    },
+  );
+}
+
+
+export const updateLocationByAdmin = async (
+  token: string,
+  location: SupabaseLocation,
+) => {
+  return fetcher<MyResponse<SupabaseLocation>>(
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/location`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(location),
+    },
+  );
+}
