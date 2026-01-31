@@ -1,5 +1,6 @@
 "use client";
 import { useAdminToken } from "@/hooks/useAdminToken";
+import { statusMap } from "@/libs/booking";
 import { SupabaseBooking, SupabaseService } from "@/types";
 import { getServices, updateBookingByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
@@ -20,7 +21,6 @@ export const MainSection = ({
   ...rest
 }: MainSectionProps) => {
   const [newBooking, setNewBooking] = useState<SupabaseBooking | null>(booking);
-  const [service, setService] = useState<SupabaseService | null>(null);
   const [services, setServices] = useState<SupabaseService[]>([]);
   const { token } = useAdminToken();
   const router = useRouter();
@@ -42,7 +42,7 @@ export const MainSection = ({
       if (res.success) {
         router.push("/admin/dashboard/booking");
       } else {
-        alert("保存失敗，請稍後再試");
+        alert(`保存失敗${res.message ? `：${res.message}` : ""}`);
       }
     });
   }, [newBooking, router, token]);
@@ -52,11 +52,6 @@ export const MainSection = ({
       getServices().then((res) => {
         if (res.success && res.data) {
           setServices(res.data);
-          res.data.forEach((s) => {
-            if (s.id === newBooking?.service_id) {
-              setService(s);
-            }
-          });
         }
       });
     };
@@ -85,8 +80,6 @@ export const MainSection = ({
                 onChange={(e) => {
                   const sid = e.target.value;
                   handleChange("service_id", sid);
-                  const matched = services.find((s) => s.id === sid) || null;
-                  setService(matched);
                 }}
                 className="mt-1 p-2 border border-(--border) rounded-lg bg-(--input-background) text-(--foreground)"
               >
@@ -103,8 +96,18 @@ export const MainSection = ({
                 {formatDate("YYYY/MM/DD hh:mm A", newBooking.booking_time)}
               </span>
             </div>
+            <div className="flex flex-col">
+              <span className="font-bold">狀態</span>
+              <span className="font-light">
+                {statusMap[newBooking.status]
+                  ? statusMap[newBooking.status].label
+                  : newBooking.status}
+              </span>
+            </div>
           </div>
         </div>
+
+        {/* 顧客資訊 */}
         <div className="card p-4 rounded-xl">
           <h3 className="text-2xl font-extrabold">顧客資訊</h3>
           <div className="mt-2 flex flex-col gap-2">
