@@ -4,7 +4,7 @@ import { SupabaseBooking, SupabaseLocation, SupabaseService } from "@/types";
 import { bookingsByAdmin, getServices } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, CloseOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -124,12 +124,7 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
   Icon: React.ElementType;
 };
 
-const TableRow = ({
-  item,
-  service,
-  className,
-  ...rest
-}: TableRowProps) => {
+const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
   const status = statusMap[item.status];
 
   const operations = useMemo<OperationItem[]>(
@@ -141,6 +136,15 @@ const TableRow = ({
           href: `/admin/dashboard/booking/${item.id}`,
         },
         Icon: EditOutlined,
+      },
+      {
+        label: "取消",
+        component: "button",
+        props: {
+          type: "button",
+          className: "text-red-500 border-red-200",
+        },
+        Icon: CloseOutlined,
       },
     ],
     [item.id],
@@ -188,14 +192,18 @@ const TableRow = ({
         </span>
       </td>
       <td className="px-6 py-4 text-sm whitespace-nowrap">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           {operations.map((oper) => {
+            const { className: operClassName, ...operRest } = oper.props;
             return (
               <oper.component
                 key={oper.label}
                 title={oper.label}
-                {...oper.props}
-                className="flex items-center justify-center border rounded-lg p-1"
+                className={cn(
+                  "flex items-center justify-center border rounded-lg p-1",
+                  operClassName,
+                )}
+                {...operRest}
               >
                 <oper.Icon />
               </oper.component>
