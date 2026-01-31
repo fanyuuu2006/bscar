@@ -69,8 +69,8 @@ export const TimeSlotSelector = ({
       />
 
       {/* 時段選擇區域 */}
-      <div className="w-full">
-        <h2 className="text-[1.25em] font-bold mb-6 mt-8 flex items-center gap-2">
+      <div className="w-full flex flex-col p-4 gap-4">
+        <h2 className="text-[1.25em] font-bold flex items-center gap-2">
           可選擇時段
         </h2>
         {isLoading ? (
