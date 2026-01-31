@@ -66,4 +66,5 @@ export type SupabaseAdmin = {
   id: string;
   password: string;
   location_id: SupabaseLocation["id"];
+  account: string;
 };

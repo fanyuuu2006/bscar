@@ -22,7 +22,7 @@ export const MainSection = () => {
   };
   const formFields = [
     {
-      id: "id",
+      id: "account",
       label: "帳號",
       type: "text",
     },
