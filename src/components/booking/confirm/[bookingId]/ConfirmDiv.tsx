@@ -158,7 +158,7 @@ export const ConfirmDiv = ({
       <div className="flex justify-center">
         <Link
           href="/"
-          className="btn primary flex items-center gap-2 px-10 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+          className="btn primary flex items-center gap-2 px-10 py-3 rounded-full text-lg font-medium"
         >
           回到首頁
         </Link>
