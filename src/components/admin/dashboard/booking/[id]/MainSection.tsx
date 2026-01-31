@@ -7,8 +7,15 @@ import { getServices, updateBookingByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+export type OperationItem<T extends React.ElementType = React.ElementType> = {
+  label: string;
+  component: T;
+  props: React.ComponentProps<T>;
+};
 
 type MainSectionProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -61,6 +68,29 @@ export const MainSection = ({
       mounted = false;
     };
   }, []);
+
+  const buttons: OperationItem[] = useMemo(() => {
+    return [
+    {
+        label: "取消",
+        component: Link,
+        props: {
+            role: "button",
+            href: "/admin/dashboard/booking",
+            className: "btn btn-secondary",
+        },
+    },
+      {
+        label: "保存",
+        component: "button",
+        props: {
+          type: "button",
+          onClick: handleSave,
+          className: "primary",
+        },
+      },
+    ];
+  }, [handleSave]);
 
   // 常用表單欄位定義 memo 化，避免每次 render 重建陣列
   const customerFields = useMemo(
@@ -196,13 +226,22 @@ export const MainSection = ({
         </div>
 
         <div className="w-full flex">
-          <div className="ms-auto">
-            <button
-              className="btn primary rounded-xl px-6 py-2.5"
-              onClick={handleSave}
-            >
-              保存
-            </button>
+          <div className="ms-auto text-xl flex items-center gap-4">
+            {buttons.map((item) => {
+              const { className: itemClassName, ...itemProps } = item.props;
+              return (
+                <item.component
+                  key={item.label}
+                  className={cn(
+                    "btn px-6 py-3 rounded-2xl font-medium",
+                    itemClassName,
+                  )}
+                  {...itemProps}
+                >
+                  {item.label}
+                </item.component>
+              );
+            })}
           </div>
         </div>
       </div>
