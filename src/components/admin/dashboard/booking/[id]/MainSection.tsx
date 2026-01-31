@@ -1,4 +1,4 @@
-import { SupabaseBooking, SupabaseLocation, SupabaseService } from "@/types";
+import { SupabaseBooking,  SupabaseService } from "@/types";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
@@ -7,13 +7,11 @@ type MainSectionProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
     booking: SupabaseBooking | null;
-    location: SupabaseLocation | null;
     service: SupabaseService | null;
   }
 >;
 export const MainSection = ({
   booking,
-    location,
     service,
   className,
   ...rest
@@ -32,7 +30,6 @@ export const MainSection = ({
             <div className="flex flex-col">
                 <span className="font-medium">預約編號</span>
                 <span>{booking.id}</span>
-
             </div>
             <div className="flex flex-col">
                 <span className="font-medium">服務</span>
