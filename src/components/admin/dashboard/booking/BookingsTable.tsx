@@ -156,7 +156,6 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: Link,
         props: {
           href: `/admin/dashboard/booking/${item.id}`,
-          title: "編輯",
           className: "text-blue-600 border-blue-200",
         },
         Icon: EditOutlined,
@@ -166,7 +165,6 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: "button",
         props: {
           type: "button",
-          title: "確認",
           onClick: () => handleStatusChange("confirmed"),
           disabled: item.status === "confirmed",
           className: "text-emerald-600 border-emerald-200",
@@ -178,7 +176,6 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: "button",
         props: {
           type: "button",
-          title: "完成",
           onClick: () => handleStatusChange("completed"),
           disabled: item.status === "completed",
           className: "text-yellow-600 border-yellow-200",
@@ -190,7 +187,6 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: "button",
         props: {
           type: "button",
-          title: "取消",
           onClick: () => handleStatusChange("cancelled"),
           disabled: item.status === "cancelled",
           className: "text-red-600 border-red-200",
@@ -235,9 +231,10 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
               <oper.component
                 key={oper.label}
                 className={cn(
-                  "flex items-center justify-center border rounded-lg p-1",
+                  "flex items-center justify-center border rounded-lg p-1 tooltip",
                   operClassName,
                 )}
+                data-tooltip={oper.label}
                 {...operRest}
               >
                 <oper.Icon />

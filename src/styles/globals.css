@@ -150,4 +150,29 @@
     overflow: hidden;
     will-change: height;
   }
+
+  .tooltip {
+    position: relative;
+  }
+
+  .tooltip[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    width: max-content;
+    white-space: nowrap;
+    max-width: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 70%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1000;
+  }
+
+  .tooltip:hover[data-tooltip]::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: 120%;
+  }
 }
