@@ -77,7 +77,7 @@ export const MainSection = ({
         props: {
             role: "button",
             href: "/admin/dashboard/booking",
-            className: "btn btn-secondary",
+            className: "btn secondary",
         },
     },
       {
@@ -86,7 +86,7 @@ export const MainSection = ({
         props: {
           type: "button",
           onClick: handleSave,
-          className: "primary",
+          className: "bg-(--accent) text-(--background) border-(--accent) border",
         },
       },
     ];
@@ -232,7 +232,7 @@ export const MainSection = ({
                 <item.component
                   key={item.label}
                   className={cn(
-                    "btn px-6 py-3 rounded-2xl font-medium",
+                    "px-4 py-2 rounded-xl font-medium",
                     itemClassName,
                   )}
                   {...itemProps}
