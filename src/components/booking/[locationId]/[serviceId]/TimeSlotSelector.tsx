@@ -14,7 +14,7 @@ type TimeSlotSelectorProps = OverrideProps<
     locationId: SupabaseLocation["id"];
     serviceId: SupabaseService["id"];
     value?: Date | null;
-    onChange?: (date: Date | null) => void;
+    onChange?: (date: Date) => void;
   }
 >;
 export const TimeSlotSelector = ({
@@ -31,7 +31,7 @@ export const TimeSlotSelector = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handlerChange = useCallback(
-    (date: Date | null) => {
+    (date: Date) => {
       setSelectedTime(date);
       onChange?.(date);
     },
@@ -102,7 +102,7 @@ export const TimeSlotSelector = ({
           </div>
         ) : (
           <div className="text-(--muted) text-center py-4">
-            {location ? "本日無可預約時段" : "請先選擇地點"}
+            {locationId ? "本日無可預約時段" : "請先選擇地點"}
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 "use client";
+import { TimeSlotSelector } from "@/components/booking/[locationId]/[serviceId]/TimeSlotSelector";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { statusMap } from "@/libs/booking";
 import { SupabaseBooking, SupabaseService } from "@/types";
@@ -67,9 +68,8 @@ export const MainSection = ({
         {/* 預約資訊 */}
         <div className="card p-4 rounded-xl">
           <h3 className="text-2xl font-extrabold">預約資訊</h3>
-          
-          <div className="mt-2 flex flex-col gap-2">
 
+          <div className="mt-2 flex flex-col gap-2">
             <div className="flex flex-col">
               <span className="font-bold">預約編號</span>
               <span className="font-light">{newBooking.id}</span>
@@ -98,6 +98,18 @@ export const MainSection = ({
               <span className="font-light">
                 {formatDate("YYYY/MM/DD hh:mm A", newBooking.booking_time)}
               </span>
+              <TimeSlotSelector
+                className="w-full mt-2"
+                locationId={newBooking.location_id}
+                serviceId={newBooking.service_id}
+                value={new Date(newBooking.booking_time)}
+                onChange={(date) => {
+                  handleChange(
+                    "booking_time",
+                    formatDate("YYYY-MM-DD HH:mm:ss", date),
+                  );
+                }}
+              />
             </div>
 
             <div className="flex flex-col">
@@ -116,7 +128,7 @@ export const MainSection = ({
                   </option>
                 ))}
               </select>
-          </div>
+            </div>
           </div>
         </div>
 
