@@ -8,7 +8,7 @@ import {
 } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
-import { EditOutlined, CloseOutlined } from "@ant-design/icons";
+import { EditOutlined, CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
@@ -132,13 +132,14 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
   const status = statusMap[item.status];
   const { token } = useAdminToken();
 
-  const handleCancel = useCallback(() => {
+  const handleStatusChange = useCallback((newStatus: SupabaseBooking['status']) => {
     if (!token) return;
-    updateBookingByAdmin(token, { ...item, status: "cancelled" }).then(
+    updateBookingByAdmin(token, { ...item, status: newStatus }).then(
       (res) => {
         if (res.success) {
+            window.location.reload();
         } else {
-          alert("取消預約失敗，請稍後再試。");
+          alert("更新預約狀態失敗，請稍後再試。");
         }
       },
     );
@@ -156,18 +157,29 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         Icon: EditOutlined,
       },
       {
+        label: "確認",
+        component: "button",
+        props: {
+            type: "button",
+            className: "text-emerald-600 border-emerald-200",
+            onClick: () => handleStatusChange("confirmed"),
+            disabled: item.status === "confirmed",
+        },
+        Icon: CheckOutlined,
+      },
+      {
         label: "取消",
         component: "button",
         props: {
           type: "button",
           className: "text-red-600 border-red-200",
-          onClick: handleCancel,
+          onClick: () => handleStatusChange("cancelled"),
           disabled: item.status === "cancelled",
         },
         Icon: CloseOutlined,
       },
     ],
-    [handleCancel, item],
+    [handleStatusChange, item.id, item.status],
   );
 
   return (
