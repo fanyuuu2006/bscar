@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import  { useCallback, useMemo, useState, useEffect, memo } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 type BookingsTableProps = DistributiveOmit<
@@ -55,34 +55,34 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [inputQuery]);
 
   const filteredBookings = useMemo(() => {
-    if (!data || !data.data) return [];
+    if (!data?.data) return [];
 
-    let list = data.data;
+    // copy array so sorting doesn't mutate SWR cache
+    let list = data.data.slice();
+
     if (statusFilter !== "all") {
       list = list.filter((b) => b.status === statusFilter);
     }
     if (serviceFilter !== "all") {
       list = list.filter((b) => b.service_id === serviceFilter);
     }
-    const q = query.trim().toLowerCase();
+
+    const q = query.trim();
     if (q) {
+      const qLower = q.toLowerCase();
       list = list.filter((b) => {
         const serviceName = servicesMap.get(b.service_id)?.name || "";
         return (
-          b.customer_name.toLowerCase().includes(q) ||
-          b.customer_phone.toLowerCase().includes(q) ||
-          b.customer_email.toLowerCase().includes(q) ||
-          b.id.toLowerCase().includes(q) ||
-          serviceName.toLowerCase().includes(q)
+          b.customer_name.toLowerCase().includes(qLower) ||
+          b.customer_phone.toLowerCase().includes(qLower) ||
+          b.customer_email.toLowerCase().includes(qLower) ||
+          b.id.toLowerCase().includes(qLower) ||
+          serviceName.toLowerCase().includes(qLower)
         );
       });
     }
 
-    list.sort((a, b) => {
-      return (
-        new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime()
-      );
-    });
+    list.sort((a, b) => new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime());
 
     return list;
   }, [data, statusFilter, serviceFilter, query, servicesMap]);
@@ -206,8 +206,8 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
   Icon: React.ElementType;
 };
 
-const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
-  const status = statusMap[item.status];
+const TableRow = memo(({ item, service, className, ...rest }: TableRowProps) => {
+  const status = statusMap[item.status] ?? { label: item.status, className: "" };
   const { token } = useAdminToken();
   const { mutate } = useSWRConfig();
 
@@ -339,4 +339,6 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
       </td>
     </tr>
   );
-};
+});
+
+TableRow.displayName = "TableRow";
