@@ -50,6 +50,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const [statusFilter, setStatusFilter] = useState<string | "all">("all");
   const [serviceFilter, setServiceFilter] = useState<string | "all">("all");
   const [timeAscending, setTimeAscending] = useState<boolean>(false);
+  const [isTodayOnly, setIsTodayOnly] = useState<boolean>(false);
 
   // 防抖 inputQuery -> query
   useEffect(() => {
@@ -87,6 +88,18 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           return searchFields.some((field) => field?.toLowerCase().includes(q));
         },
       },
+      {
+        enable: isTodayOnly,
+        check: (b: SupabaseBooking) => {
+          const bookingDate = new Date(b.booking_time);
+          const today = new Date();
+          return (
+            bookingDate.getDate() === today.getDate() &&
+            bookingDate.getMonth() === today.getMonth() &&
+            bookingDate.getFullYear() === today.getFullYear()
+          );
+        },
+      },
     ];
 
     // 執行篩選
@@ -100,7 +113,15 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       const timeB = new Date(b.booking_time).getTime();
       return timeAscending ? timeA - timeB : timeB - timeA;
     });
-  }, [data, query, statusFilter, serviceFilter, servicesMap, timeAscending]);
+  }, [
+    data,
+    query,
+    statusFilter,
+    serviceFilter,
+    isTodayOnly,
+    servicesMap,
+    timeAscending,
+  ]);
 
   return (
     <div
@@ -112,15 +133,28 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     >
       {/* 篩選列 */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b border-(--border) bg-gray-50/30">
-        <div className="w-full sm:w-80">
-          <input
-            type="text"
-            value={inputQuery}
-            onChange={(e) => setInputQuery(e.target.value)}
-            placeholder="搜尋編號、姓名、電話、Email..."
-            className="w-full px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
-          />
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="w-64">
+            <input
+              type="text"
+              value={inputQuery}
+              onChange={(e) => setInputQuery(e.target.value)}
+              placeholder="搜尋編號、姓名、電話、Email..."
+              className="w-full px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
+            />
+          </div>
+          <div>
+            <label className="select-none flex items-center gap-2 text-sm text-(--muted)">
+              <input
+                type="checkbox"
+                checked={isTodayOnly}
+                onChange={(e) => setIsTodayOnly(e.target.checked)}
+              />
+              僅顯示今日
+            </label>
+          </div>
         </div>
+
         <div className="text-xs text-(--muted) font-medium">
           共 {filteredBookings.length} 筆預約
         </div>
