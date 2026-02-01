@@ -94,12 +94,12 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
             placeholder="搜尋顧客、電話、Email、服務或預約編號"
-            className="w-full sm:w-80 px-3 py-2 rounded-md border bg-(--surface) text-(--foreground) placeholder:(--muted)"
+            className="w-80 p-2 rounded-lg border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
           />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-md border bg-(--surface) text-(--foreground)"
+            className="p-2 rounded-lg border-(--border) bg-black/5 text-(--foreground)"
           >
             <option value="all">全部狀態</option>
             {Object.entries(statusMap).map(([key, val]) => (
@@ -109,7 +109,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             ))}
           </select>
         </div>
-        <div className="text-sm text-(--muted) text-nowrap">
+        <div className="text-sm text-(--muted) whitespace-nowrap">
           {filteredBookings.length} 筆資料
         </div>
       </div>
