@@ -31,7 +31,10 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   const [query, setQuery] = useState<
     Parameters<typeof bookingsByAdmin>["1"]
-  >({});
+  >({
+    page: 1,
+    count: 10,
+  });
 
   const { data, isLoading, mutate } = useSWR(
     token ? ["admin-bookings", token, query] : null,
@@ -148,7 +151,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         </div>
 
         <div className="text-xs text-(--muted) font-medium">
-          共 {filteredBookings.length} 筆預約
+          本頁共 {filteredBookings.length} 筆預約
         </div>
       </div>
 
@@ -257,6 +260,54 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* 分頁控制 */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-(--border) bg-gray-50/30">
+        <div className="flex items-center gap-2 text-sm text-(--muted)">
+          <span>每頁顯示</span>
+          <select
+            value={query?.count || 10}
+            onChange={(e) =>
+              setQuery((prev) => ({
+                ...prev,
+                count: Number(e.target.value),
+                page: 1,
+              }))
+            }
+            className="h-8 rounded-md border border-(--border) bg-white px-2 text-xs"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+          <span>筆</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            disabled={query?.page === 1}
+            onClick={() =>
+              setQuery((prev) => ({ ...prev, page: (prev?.page || 1) - 1 }))
+            }
+            className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            上一頁
+          </button>
+          <span className="text-sm font-medium min-w-12 text-center">
+            第 {query?.page || 1} 頁
+          </span>
+          <button
+            disabled={!data?.data || data.data.length < (query?.count || 10)}
+            onClick={() =>
+              setQuery((prev) => ({ ...prev, page: (prev?.page || 1) + 1 }))
+            }
+            className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            下一頁
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -373,7 +424,7 @@ const TableRow = memo(
         <td className="px-6 py-4">
           <span
             className={cn(
-              "inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border border-transparent",
+              "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-transparent",
               status.className,
             )}
           >
