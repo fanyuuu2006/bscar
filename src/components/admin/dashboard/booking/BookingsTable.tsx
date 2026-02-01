@@ -41,14 +41,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     return map;
   }, [servicesRes]);
 
-  const bookings = useMemo<SupabaseBooking[]>(() => {
-    if (!data?.data) return [];
-    return data.data.sort(
-      (a, b) =>
-        new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime(),
-    );
-  }, [data]);
-
   // 查詢與篩選狀態
   // 使用 inputQuery 作為即時輸入，query 為經過防抖處理後的查詢字串
   const [inputQuery, setInputQuery] = useState("");
@@ -62,7 +54,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [inputQuery]);
 
   const filteredBookings = useMemo(() => {
-    let list = bookings;
+    if (!data || !data.data) return [];
+
+    let list = data.data;
     if (statusFilter !== "all") {
       list = list.filter((b) => b.status === statusFilter);
     }
@@ -79,8 +73,15 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         );
       });
     }
+
+    list.sort((a, b) => {
+      return (
+        new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime()
+      );
+    });
+
     return list;
-  }, [bookings, query, statusFilter, servicesMap]);
+  }, [data, statusFilter, query, servicesMap]);
 
   return (
     <div
