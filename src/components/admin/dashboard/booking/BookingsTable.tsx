@@ -14,6 +14,7 @@ import {
   CloseOutlined,
   CheckOutlined,
   StarOutlined,
+  ArrowDownOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
@@ -44,9 +45,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   // 查詢與篩選狀態
   // 使用 inputQuery 作為即時輸入，query 為經過防抖處理後的查詢字串
   const [inputQuery, setInputQuery] = useState("");
+
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | "all">("all");
   const [serviceFilter, setServiceFilter] = useState<string | "all">("all");
+  const [timeAscending, setTimeAscending] = useState<boolean>(false);
 
   // 防抖 inputQuery -> query
   useEffect(() => {
@@ -57,38 +60,47 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const filteredBookings = useMemo(() => {
     if (!data?.data) return [];
 
-    // 複製原始資料以避免修改
-    let list = data.data.slice();
-
-    if (statusFilter !== "all") {
-      list = list.filter((b) => b.status === statusFilter);
-    }
-    if (serviceFilter !== "all") {
-      list = list.filter((b) => b.service_id === serviceFilter);
-    }
-
     const q = query.trim().toLocaleLowerCase();
-    if (q) {
-      list = list.filter((b) => {
-        const serviceName = servicesMap.get(b.service_id)?.name || "";
-        return (
-          b.customer_name.toLowerCase().includes(q) ||
-          b.customer_phone.toLowerCase().includes(q) ||
-          b.customer_email.toLowerCase().includes(q) ||
-          b.id.toLowerCase().includes(q) ||
-          serviceName.toLowerCase().includes(q)
-        );
-      });
-    }
 
-    list.sort((a, b) => {
+    // 定義篩選條件策略
+    const strategies = [
+      {
+        enable: statusFilter !== "all",
+        check: (b: SupabaseBooking) => b.status === statusFilter,
+      },
+      {
+        enable: serviceFilter !== "all",
+        check: (b: SupabaseBooking) => b.service_id === serviceFilter,
+      },
+      {
+        enable: !!q,
+        check: (b: SupabaseBooking) => {
+          const serviceName = servicesMap.get(b.service_id)?.name || "";
+          // 搜尋欄位清單
+          const searchFields = [
+            b.customer_name,
+            b.customer_phone,
+            b.customer_email,
+            b.id,
+            serviceName,
+          ];
+          return searchFields.some((field) => field?.toLowerCase().includes(q));
+        },
+      },
+    ];
+
+    // 執行篩選
+    const result = data.data.filter((booking) =>
+      strategies.every((s) => !s.enable || s.check(booking)),
+    );
+
+    // 排序
+    return result.sort((a, b) => {
       const timeA = new Date(a.booking_time).getTime();
       const timeB = new Date(b.booking_time).getTime();
-      return timeB - timeA;
+      return timeAscending ? timeA - timeB : timeB - timeA;
     });
-
-    return list;
-  }, [data, statusFilter, serviceFilter, query, servicesMap]);
+  }, [data, query, statusFilter, serviceFilter, servicesMap, timeAscending]);
 
   return (
     <div
@@ -140,8 +152,15 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 </div>
               </th>
               <th className="px-6 py-4 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <span>預約時間</span>
+                  <button onClick={() => setTimeAscending((prev) => !prev)}>
+                    <ArrowDownOutlined
+                      className={cn("transition-transform", {
+                        "rotate-180": timeAscending,
+                      })}
+                    />
+                  </button>
                 </div>
               </th>
               <th className="px-6 py-4 font-medium whitespace-nowrap">
