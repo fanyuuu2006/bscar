@@ -29,9 +29,7 @@ type BookingsTableProps = DistributiveOmit<
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const { token } = useAdminToken();
 
-  const [query, setQuery] = useState<
-    Parameters<typeof bookingsByAdmin>["1"]
-  >({
+  const [query, setQuery] = useState<Parameters<typeof bookingsByAdmin>["1"]>({
     page: 1,
     count: 50,
   });
@@ -125,17 +123,31 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               className="w-full px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
             />
           </div>
-          <div>
+          <div className="flex items-center gap-2">
             <input
               type="date"
               className="px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
               onChange={(e) => {
                 const val = e.target.value;
-                setQuery((prev) => ({
-                  ...prev,
-                  date: val || undefined,
-                }));
+                setQuery((prev) => {
+                  const newQuery = { ...prev, start_date: val || undefined };
+                  return newQuery;
+                });
               }}
+              placeholder="起始日期"
+            />
+            <span className="text-(--muted)">至</span>
+            <input
+              type="date"
+              className="px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
+              onChange={(e) => {
+                const val = e.target.value;
+                setQuery((prev) => {
+                  const newQuery = { ...prev, end_date: val || undefined };
+                  return newQuery;
+                });
+              }}
+              placeholder="結束日期"
             />
           </div>
         </div>
