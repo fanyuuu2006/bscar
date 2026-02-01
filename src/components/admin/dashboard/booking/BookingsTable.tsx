@@ -57,7 +57,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const filteredBookings = useMemo(() => {
     if (!data?.data) return [];
 
-    // copy array so sorting doesn't mutate SWR cache
+    // 複製原始資料以避免修改
     let list = data.data.slice();
 
     if (statusFilter !== "all") {
@@ -81,10 +81,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       });
     }
 
-    list.sort(
-      (a, b) =>
-        new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime(),
-    );
+    list.sort((a, b) => {
+      const timeA = new Date(a.booking_time).getTime();
+      const timeB = new Date(b.booking_time).getTime();
+      return timeB - timeA;
+    });
 
     return list;
   }, [data, statusFilter, serviceFilter, query, servicesMap]);
@@ -139,7 +140,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 </div>
               </th>
               <th className="px-6 py-4 font-medium whitespace-nowrap">
-                預約時間
+                <div className="flex items-center gap-2">
+                  <span>預約時間</span>
+                </div>
               </th>
               <th className="px-6 py-4 font-medium whitespace-nowrap">
                 <div className="flex items-center gap-2">
