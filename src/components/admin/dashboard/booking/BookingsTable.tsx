@@ -46,6 +46,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const [inputQuery, setInputQuery] = useState("");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | "all">("all");
+  const [serviceFilter, setServiceFilter] = useState<string | "all">("all");
 
   // 防抖 inputQuery -> query
   useEffect(() => {
@@ -59,6 +60,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     let list = data.data;
     if (statusFilter !== "all") {
       list = list.filter((b) => b.status === statusFilter);
+    }
+    if (serviceFilter !== "all") {
+      list = list.filter((b) => b.service_id === serviceFilter);
     }
     const q = query.trim().toLowerCase();
     if (q) {
@@ -81,7 +85,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     });
 
     return list;
-  }, [data, statusFilter, query, servicesMap]);
+  }, [data, statusFilter, serviceFilter, query, servicesMap]);
 
   return (
     <div
@@ -94,21 +98,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           <input
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
-            placeholder="搜尋顧客、電話、Email、服務或預約編號"
+            placeholder="搜尋"
             className="w-80 p-2 rounded-lg border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
           />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="p-2 rounded-lg border-(--border) bg-black/5 text-(--foreground)"
-          >
-            <option value="all">全部狀態</option>
-            {Object.entries(statusMap).map(([key, val]) => (
-              <option key={key} value={key}>
-                {val.label}
-              </option>
-            ))}
-          </select>
         </div>
         <div className="text-sm text-(--muted) whitespace-nowrap">
           {filteredBookings.length} 筆資料
@@ -125,12 +117,42 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               顧客資訊
             </th>
             <th className="px-6 py-4 font-semibold whitespace-nowrap">
-              服務項目
+              <div className="flex items-center gap-2">
+                <span>服務項目</span>
+                <select
+                  value={serviceFilter}
+                  onChange={(e) => setServiceFilter(e.target.value)}
+                  className="p-1 rounded-lg border-(--border) bg-black/5 text-(--foreground) text-sm"
+                >
+                  <option value="all">全部服務</option>
+                  {servicesRes?.data?.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </th>
             <th className="px-6 py-4 font-semibold whitespace-nowrap">
               預約時間
             </th>
-            <th className="px-6 py-4 font-semibold whitespace-nowrap">狀態</th>
+            <th className="px-6 py-4 font-semibold whitespace-nowrap">
+              <div className="flex items-center gap-2">
+                <span>狀態</span>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="p-1 rounded-lg border-(--border) bg-black/5 text-(--foreground) text-sm"
+                >
+                  <option value="all">全部</option>
+                  {Object.entries(statusMap).map(([key, val]) => (
+                    <option key={key} value={key}>
+                      {val.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </th>
             <th className="px-6 py-4 font-semibold whitespace-nowrap">操作</th>
           </tr>
         </thead>
