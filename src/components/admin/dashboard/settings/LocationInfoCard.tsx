@@ -5,6 +5,7 @@ import { SupabaseLocation } from "@/types";
 import { getLocationById, updateLocationByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { useEffect, useState, useMemo, useCallback } from "react";
+import { FieldInput, FieldInputProps } from "../FieldInput";
 
 type LocationInfoCardProps = React.HTMLAttributes<HTMLDivElement>;
 export const LocationInfoCard = ({
@@ -14,17 +15,18 @@ export const LocationInfoCard = ({
   const { admin, refresh } = useAdmin();
   const { token } = useAdminToken();
   const [newLocation, setNewLocation] = useState<SupabaseLocation | null>(null);
-  const [origLocation, setOrigLocation] = useState<SupabaseLocation | null>(null);
+  const [origLocation, setOrigLocation] = useState<SupabaseLocation | null>(
+    null,
+  );
 
-  const formFields = useMemo(
-    () =>
-      [
-        { id: "city", label: "城市", type: "text" },
-        { id: "branch", label: "分店名稱", type: "text" },
-        { id: "address", label: "地址", type: "text" },
-        { id: "open_time", label: "營業開始時間", type: "text" },
-        { id: "close_time", label: "營業結束時間", type: "text" },
-      ] as const,
+  const formFields: FieldInputProps["field"][] = useMemo(
+    () => [
+      { id: "city", label: "城市", type: "text" },
+      { id: "branch", label: "分店名稱", type: "text", hint: "不用添加`店`" },
+      { id: "address", label: "地址", type: "text" },
+      { id: "open_time", label: "營業開始時間", type: "text",},
+      { id: "close_time", label: "營業結束時間", type: "text" },
+    ],
     [],
   );
 
@@ -66,7 +68,10 @@ export const LocationInfoCard = ({
   const handleSave = useCallback(() => {
     if (!token || !admin || !newLocation) return;
 
-    if (origLocation && JSON.stringify(origLocation) === JSON.stringify(newLocation)) {
+    if (
+      origLocation &&
+      JSON.stringify(origLocation) === JSON.stringify(newLocation)
+    ) {
       alert("資料未變更");
       return;
     }
@@ -96,37 +101,38 @@ export const LocationInfoCard = ({
       <div className="mt-2 flex flex-col gap-2">
         <div className="flex flex-col ">
           <span className="font-bold">ID</span>
-          <span className="font-light">{newLocation ? newLocation.id : ""}</span>
+          <span className="font-light">
+            {newLocation ? newLocation.id : ""}
+          </span>
         </div>
 
         {formFields.map((field) => (
-          <div key={field.id} className="flex flex-col">
-            <label className="font-bold mb-1" htmlFor={field.id}>
-              {field.label}
-            </label>
-            <input
-              id={field.id}
-              type={field.type}
-              value={
-                newLocation
-                  ? (newLocation[field.id as keyof SupabaseLocation] as string) || ""
-                  : ""
-              }
-              onChange={(e) =>
-                onLocationInputChange(field.id as (typeof formFields)[number]["id"], e)
-              }
-              className={cn("w-full p-2 border-(--border) rounded-lg bg-black/5")}
-            />
-          </div>
+          <FieldInput
+            field={field}
+            key={field.id}
+            value={
+              newLocation
+                ? newLocation[field.id as keyof SupabaseLocation] || ""
+                : ""
+            }
+            onChange={(e) =>
+              onLocationInputChange(
+                field.id as (typeof formFields)[number]["id"],
+                e,
+              )
+            }
+          />
         ))}
       </div>
 
       <div className="mt-4 flex justify-end">
-        <button onClick={handleSave} className="px-4 py-1 rounded-xl btn secondary">
+        <button
+          onClick={handleSave}
+          className="px-4 py-1 rounded-xl btn secondary"
+        >
           儲存變更
         </button>
       </div>
     </div>
   );
 };
-
