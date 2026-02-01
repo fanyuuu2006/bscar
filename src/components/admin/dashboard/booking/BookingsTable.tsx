@@ -29,13 +29,13 @@ type BookingsTableProps = DistributiveOmit<
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const { token } = useAdminToken();
 
-  const [apiQuery, setAPIQuery] = useState<
+  const [query, setQuery] = useState<
     Parameters<typeof bookingsByAdmin>["1"]
   >({});
 
   const { data, isLoading, mutate } = useSWR(
-    token ? ["admin-bookings", token, apiQuery] : null,
-    () => bookingsByAdmin(token!, apiQuery),
+    token ? ["admin-bookings", token, query] : null,
+    () => bookingsByAdmin(token!, query),
   );
 
   const { data: servicesRes } = useSWR("services", getServices);
@@ -47,15 +47,15 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [servicesRes?.data]);
 
   // 查詢與篩選狀態
-  // 使用 inputQuery 作為即時輸入，query 為經過防抖處理後的查詢字串
+  // 使用 inputQuery 作為即時輸入，keywordQuery 為經過防抖處理後的查詢字串
   const [inputQuery, setInputQuery] = useState("");
 
-  const [query, setQuery] = useState("");
+  const [keywordQuery, setKeywordQuery] = useState("");
   const [timeAscending, setTimeAscending] = useState<boolean>(false);
 
-  // 防抖 inputQuery -> query
+  // 防抖 inputQuery -> keywordQuery
   useEffect(() => {
-    const id = setTimeout(() => setQuery(inputQuery.trim()), 350);
+    const id = setTimeout(() => setKeywordQuery(inputQuery.trim()), 350);
     return () => clearTimeout(id);
   }, [inputQuery]);
 
@@ -66,7 +66,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     let result = data.data;
 
     // 搜尋過濾
-    const q = query.toLowerCase();
+    const q = keywordQuery.toLowerCase();
     if (q) {
       result = result.filter((b) => {
         const serviceName = servicesMap.get(b.service_id)?.name || "";
@@ -81,7 +81,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       const timeB = new Date(b.booking_time).getTime();
       return timeAscending ? timeA - timeB : timeB - timeA;
     });
-  }, [data, query, servicesMap, timeAscending]);
+  }, [data, keywordQuery, servicesMap, timeAscending]);
 
   const handleStatusUpdate = useCallback(
     async (booking: SupabaseBooking, newStatus: SupabaseBooking["status"]) => {
@@ -130,12 +130,12 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   const checked = e.target.checked;
                   const today = new Date();
                   if (checked) {
-                    setAPIQuery((prev) => ({
+                    setQuery((prev) => ({
                       ...prev,
                       date: formatDate("YYYY-MM-DD", today),
                     }));
                   } else {
-                    setAPIQuery((prev) => ({
+                    setQuery((prev) => ({
                       ...prev,
                       date: undefined,
                     }));
@@ -164,10 +164,10 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 <div className="flex items-center gap-2">
                   <span>服務項目</span>
                   <select
-                    value={apiQuery?.service_id || "all"}
+                    value={query?.service_id || "all"}
                     onChange={(e) => {
                       const val = e.target.value;
-                      setAPIQuery((prev) => ({
+                      setQuery((prev) => ({
                         ...prev,
                         service_id: val === "all" ? undefined : val,
                       }));
@@ -199,10 +199,10 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 <div className="flex items-center gap-2">
                   <span>狀態</span>
                   <select
-                    value={apiQuery?.status || "all"}
+                    value={query?.status || "all"}
                     onChange={(e) => {
                       const val = e.target.value;
-                      setAPIQuery((prev) => ({
+                      setQuery((prev) => ({
                         ...prev,
                         status:
                           val === "all"
