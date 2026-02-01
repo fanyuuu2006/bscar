@@ -90,9 +90,19 @@ export const adminLogin = async (body: {
   );
 };
 
-export const bookingsByAdmin = async (token: string) => {
+export const bookingsByAdmin = async (
+  token: string,
+  query?: Partial<{
+    page: number;
+    count: number;
+    status: SupabaseBooking["status"];
+    service_id: SupabaseService["id"];
+  }>,
+) => {
+  const queryParams = new URLSearchParams(query as Record<string, string>);
+
   return fetcher<MyResponse<SupabaseBooking[]>>(
-    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/booking`,
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/booking${query ? `?${queryParams.toString()}` : ""}`,
     {
       method: "GET",
       headers: {
@@ -119,10 +129,7 @@ export const updateBookingByAdmin = async (
   );
 };
 
-export const updateAdmin = async (
-  token: string,
-  admin: SupabaseAdmin,
-) => {
+export const updateAdmin = async (token: string, admin: SupabaseAdmin) => {
   return fetcher<MyResponse<SupabaseAdmin>>(
     `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/me`,
     {
@@ -134,8 +141,7 @@ export const updateAdmin = async (
       body: JSON.stringify(admin),
     },
   );
-}
-
+};
 
 export const updateLocationByAdmin = async (
   token: string,
@@ -152,4 +158,4 @@ export const updateLocationByAdmin = async (
       body: JSON.stringify(location),
     },
   );
-}
+};

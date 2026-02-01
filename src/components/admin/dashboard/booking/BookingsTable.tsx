@@ -29,9 +29,13 @@ type BookingsTableProps = DistributiveOmit<
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const { token } = useAdminToken();
 
+  const [apiQuery, setAPIQuery] = useState<
+    Parameters<typeof bookingsByAdmin>["1"]
+  >({});
+
   const { data, isLoading } = useSWR(
-    token ? ["admin-bookings", token] : null,
-    () => bookingsByAdmin(token!),
+    token ? ["admin-bookings", token, apiQuery] : null,
+    () => bookingsByAdmin(token!, apiQuery),
   );
 
   const { data: servicesRes } = useSWR("services", getServices);
@@ -47,8 +51,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const [inputQuery, setInputQuery] = useState("");
 
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string | "all">("all");
-  const [serviceFilter, setServiceFilter] = useState<string | "all">("all");
   const [timeAscending, setTimeAscending] = useState<boolean>(false);
   const [isTodayOnly, setIsTodayOnly] = useState<boolean>(false);
 
@@ -65,14 +67,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
     // 定義篩選條件策略
     const strategies = [
-      {
-        enable: statusFilter !== "all",
-        check: (b: SupabaseBooking) => b.status === statusFilter,
-      },
-      {
-        enable: serviceFilter !== "all",
-        check: (b: SupabaseBooking) => b.service_id === serviceFilter,
-      },
       {
         enable: !!q,
         check: (b: SupabaseBooking) => {
@@ -113,20 +107,12 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       const timeB = new Date(b.booking_time).getTime();
       return timeAscending ? timeA - timeB : timeB - timeA;
     });
-  }, [
-    data,
-    query,
-    statusFilter,
-    serviceFilter,
-    isTodayOnly,
-    servicesMap,
-    timeAscending,
-  ]);
+  }, [data, query, isTodayOnly, servicesMap, timeAscending]);
 
   return (
     <div
       className={cn(
-        "bg-white border border-(--border) rounded-xl shadow-sm overflow-hidden flex flex-col",
+        "card rounded-xl overflow-hidden flex flex-col",
         className,
       )}
       {...rest}
@@ -172,8 +158,14 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 <div className="flex items-center gap-2">
                   <span>服務項目</span>
                   <select
-                    value={serviceFilter}
-                    onChange={(e) => setServiceFilter(e.target.value)}
+                    value={apiQuery?.service_id || "all"}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setAPIQuery((prev) => ({
+                        ...prev,
+                        service_id: val === "all" ? undefined : val,
+                      }));
+                    }}
                     className="p-0 text-xs font-medium"
                   >
                     <option value="all">全部</option>
@@ -201,8 +193,17 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 <div className="flex items-center gap-2">
                   <span>狀態</span>
                   <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
+                    value={apiQuery?.status || "all"}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setAPIQuery((prev) => ({
+                        ...prev,
+                        status:
+                          val === "all"
+                            ? undefined
+                            : (val as SupabaseBooking["status"]),
+                      }));
+                    }}
                     className="p-0 text-xs font-medium"
                   >
                     <option value="all">全部</option>
