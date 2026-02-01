@@ -1,7 +1,7 @@
 "use client";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { statusMap } from "@/libs/booking";
-import { SupabaseBooking, SupabaseLocation, SupabaseService } from "@/types";
+import { SupabaseBooking, SupabaseService } from "@/types";
 import {
   bookingsByAdmin,
   getServices,
@@ -242,6 +242,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   key={booking.id}
                   item={booking}
                   service={servicesMap.get(booking.service_id)}
+                  apiQuery={apiQuery}
                 />
               ))
             )}
@@ -256,8 +257,8 @@ type TableRowProps = OverrideProps<
   React.HTMLAttributes<HTMLTableRowElement>,
   {
     item: SupabaseBooking;
-    service?: SupabaseService;
-    location?: SupabaseLocation;
+    service: SupabaseService | undefined;
+    apiQuery: Parameters<typeof bookingsByAdmin>["1"];
   }
 >;
 
@@ -269,7 +270,7 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
 };
 
 const TableRow = memo(
-  ({ item, service, className, ...rest }: TableRowProps) => {
+  ({ item, service, apiQuery, className, ...rest }: TableRowProps) => {
     const status = statusMap[item.status] ?? {
       label: item.status,
       className: "",
@@ -283,14 +284,14 @@ const TableRow = memo(
         updateBookingByAdmin(token, { ...item, status: newStatus }).then(
           (res) => {
             if (res.success) {
-              mutate(["admin-bookings", token]);
+              mutate(["admin-bookings", token, apiQuery]);
             } else {
               alert("更新失敗");
             }
           },
         );
       },
-      [item, token, mutate],
+      [token, item, mutate, apiQuery],
     );
 
     const operations = useMemo<OperationItem[]>(
