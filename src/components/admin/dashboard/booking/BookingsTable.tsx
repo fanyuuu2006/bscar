@@ -67,17 +67,16 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       list = list.filter((b) => b.service_id === serviceFilter);
     }
 
-    const q = query.trim();
+    const q = query.trim().toLocaleLowerCase();
     if (q) {
-      const qLower = q.toLowerCase();
       list = list.filter((b) => {
         const serviceName = servicesMap.get(b.service_id)?.name || "";
         return (
-          b.customer_name.toLowerCase().includes(qLower) ||
-          b.customer_phone.toLowerCase().includes(qLower) ||
-          b.customer_email.toLowerCase().includes(qLower) ||
-          b.id.toLowerCase().includes(qLower) ||
-          serviceName.toLowerCase().includes(qLower)
+          b.customer_name.toLowerCase().includes(q) ||
+          b.customer_phone.toLowerCase().includes(q) ||
+          b.customer_email.toLowerCase().includes(q) ||
+          b.id.toLowerCase().includes(q) ||
+          serviceName.toLowerCase().includes(q)
         );
       });
     }
