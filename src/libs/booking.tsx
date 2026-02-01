@@ -17,8 +17,8 @@ export const statusMap: Record<
     className: "bg-orange-50 text-orange-700 border-orange-200",
   },
   confirmed: {
+    className: "bg-blue-50 text-blue-700 border-blue-200",
     label: "已確認",
-    className: "bg-green-100 text-green-800 border-green-300",
   },
   cancelled: {
     label: "已取消",
@@ -26,6 +26,6 @@ export const statusMap: Record<
   },
   completed: {
     label: "已完成",
-    className: "bg-blue-50 text-blue-700 border-blue-200",
+    className: "bg-green-100 text-green-800 border-green-300",
   },
 };

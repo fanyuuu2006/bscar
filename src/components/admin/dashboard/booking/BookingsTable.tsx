@@ -212,7 +212,7 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         label: "編輯",
         component: Link,
         props: {
-          className: "text-yellow-600 border-yellow-600 bg-yellow-100",
+          className: "text-violet-600 border-violet-600 bg-violet-100",
           href: `/admin/dashboard/booking/${item.id}`,
         },
         Icon: EditOutlined,
@@ -224,7 +224,7 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
           type: "button",
           onClick: () => handleStatusChange("confirmed"),
           disabled: item.status === "confirmed",
-          className: "text-emerald-600 border-emerald-600 bg-emerald-100",
+          className: "text-blue-600 border-blue-600 bg-blue-100",
         },
         Icon: CheckOutlined,
       },
@@ -233,8 +233,8 @@ const TableRow = ({ item, service, className, ...rest }: TableRowProps) => {
         component: "button",
         props: {
           type: "button",
+          className: "text-emerald-600 border-emerald-600 bg-emerald-100",
           onClick: () => handleStatusChange("completed"),
-          className: "text-blue-600 border-blue-600 bg-blue-100",
           disabled: item.status === "completed",
         },
         Icon: StarOutlined,
