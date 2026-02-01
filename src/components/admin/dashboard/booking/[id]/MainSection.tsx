@@ -232,7 +232,7 @@ export const MainSection = ({
                 <item.component
                   key={item.label}
                   className={cn(
-                    "px-4 py-2 rounded-xl font-medium",
+                    "px-6 py-2 rounded-xl font-medium",
                     itemClassName,
                   )}
                   {...itemProps}
