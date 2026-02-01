@@ -126,27 +126,17 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             />
           </div>
           <div>
-            <label className="select-none flex items-center gap-2 text-sm text-(--muted)">
-              <input
-                type="checkbox"
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  const today = new Date();
-                  if (checked) {
-                    setQuery((prev) => ({
-                      ...prev,
-                      date: formatDate("YYYY-MM-DD", today),
-                    }));
-                  } else {
-                    setQuery((prev) => ({
-                      ...prev,
-                      date: undefined,
-                    }));
-                  }
-                }}
-              />
-              僅顯示今日
-            </label>
+            <input
+              type="date"
+              className="px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
+              onChange={(e) => {
+                const val = e.target.value;
+                setQuery((prev) => ({
+                  ...prev,
+                  date: val || undefined,
+                }));
+              }}
+            />
           </div>
         </div>
 
