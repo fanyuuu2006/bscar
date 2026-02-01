@@ -15,6 +15,7 @@ import {
   CheckOutlined,
   StarOutlined,
   ArrowDownOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
@@ -26,13 +27,21 @@ type BookingsTableProps = DistributiveOmit<
   "children"
 >;
 
+// 定義預設查詢參數
+const DEFAULT_QUERY = {
+  page: 1,
+  count: 50,
+  status: undefined,
+  service_id: undefined,
+  start_date: undefined,
+  end_date: undefined,
+};
+
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const { token } = useAdminToken();
 
-  const [query, setQuery] = useState<Parameters<typeof bookingsByAdmin>["1"]>({
-    page: 1,
-    count: 50,
-  });
+  const [query, setQuery] =
+    useState<Parameters<typeof bookingsByAdmin>["1"]>(DEFAULT_QUERY);
 
   const { data, isLoading, mutate } = useSWR(
     token ? ["admin-bookings", token, query] : null,
@@ -78,6 +87,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     });
   }, [data, timeAscending]);
 
+  const handleReset = useCallback(() => {
+    setQuery(DEFAULT_QUERY);
+    setInputQuery("");
+  }, []);
+
   const handleStatusUpdate = useCallback(
     async (booking: SupabaseBooking, newStatus: SupabaseBooking["status"]) => {
       if (!token) return;
@@ -120,6 +134,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           <div className="flex items-center gap-2">
             <input
               type="date"
+              value={query?.start_date || ""}
               className="px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
               onChange={(e) => {
                 const val = e.target.value;
@@ -133,6 +148,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             <span className="text-(--muted)">至</span>
             <input
               type="date"
+              value={query?.end_date || ""}
               className="px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
               onChange={(e) => {
                 const val = e.target.value;
@@ -143,6 +159,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               }}
               placeholder="結束日期"
             />
+            <button onClick={handleReset} title="清除所有篩選條件">
+              <ReloadOutlined />
+            </button>
           </div>
         </div>
 
