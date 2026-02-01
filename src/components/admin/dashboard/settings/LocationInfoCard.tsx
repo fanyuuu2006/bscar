@@ -1,17 +1,52 @@
 "use client";
 import { useAdmin } from "@/contexts/AdminContext";
+import { useAdminToken } from "@/hooks/useAdminToken";
 import { SupabaseLocation } from "@/types";
-import { getLocationById } from "@/utils/backend";
+import { getLocationById, updateLocationByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 
 type LocationInfoCardProps = React.HTMLAttributes<HTMLDivElement>;
 export const LocationInfoCard = ({
   className,
   ...rest
 }: LocationInfoCardProps) => {
-  const { admin } = useAdmin();
+  const { admin, refresh } = useAdmin();
+  const { token } = useAdminToken();
   const [newLocation, setNewLocation] = useState<SupabaseLocation | null>(null);
+  const [origLocation, setOrigLocation] = useState<SupabaseLocation | null>(null);
+
+  const formFields = useMemo(
+    () =>
+      [
+        { id: "city", label: "城市", type: "text" },
+        { id: "branch", label: "分店名稱", type: "text" },
+        { id: "address", label: "地址", type: "text" },
+        { id: "open_time", label: "營業開始時間", type: "text" },
+        { id: "close_time", label: "營業結束時間", type: "text" },
+      ] as const,
+    [],
+  );
+
+  const handleLocationChange = useCallback(
+    <T extends keyof SupabaseLocation>(key: T, value: SupabaseLocation[T]) => {
+      setNewLocation((prev) => (prev ? { ...prev, [key]: value } : prev));
+    },
+    [],
+  );
+
+  const onLocationInputChange = useCallback(
+    (
+      key: (typeof formFields)[number]["id"],
+      e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+      handleLocationChange(
+        key as keyof SupabaseLocation,
+        e.target.value as unknown as SupabaseLocation[keyof SupabaseLocation],
+      );
+    },
+    [handleLocationChange],
+  );
 
   useEffect(() => {
     if (!admin) return;
@@ -19,29 +54,79 @@ export const LocationInfoCard = ({
       .then((res) => {
         if (res.success) {
           setNewLocation(res.data || null);
+          setOrigLocation(res.data || null);
         }
       })
       .catch(() => {
         setNewLocation(null);
+        setOrigLocation(null);
       });
   }, [admin]);
+
+  const handleSave = useCallback(() => {
+    if (!token || !admin || !newLocation) return;
+
+    if (origLocation && JSON.stringify(origLocation) === JSON.stringify(newLocation)) {
+      alert("資料未變更");
+      return;
+    }
+
+    updateLocationByAdmin(token, newLocation).then((res) => {
+      if (res.success) {
+        alert("店家資料已更新");
+        refresh();
+      } else {
+        alert(`更新失敗${res.message ? `：${res.message}` : ""}`);
+      }
+    });
+  }, [newLocation, origLocation, refresh, token, admin]);
+
+  if (!newLocation)
+    return (
+      <div className={cn("card p-4 md:p-6 rounded-xl", className)} {...rest}>
+        <h3 className="text-lg font-medium mb-2">所屬店家資訊</h3>
+        <p className="text-(--muted)">載入中</p>
+      </div>
+    );
+
   return (
     <div className={cn("card p-4 md:p-6 rounded-xl", className)} {...rest}>
-      <h3 className="text-lg font-medium mb-2">所屬店家資訊</h3>
-      {newLocation ? (
-        <div className="text-(--foreground)">
-          <p>
-            <strong>店名：</strong>
-            {newLocation.city} - {newLocation.branch} 店
-          </p>
-          <p>
-            <strong>地址：</strong>
-            {newLocation.address}
-          </p>
+      <h3 className="text-2xl font-extrabold">店家資料</h3>
+
+      <div className="mt-2 flex flex-col gap-2">
+        <div className="flex flex-col ">
+          <span className="font-bold">ID</span>
+          <span className="font-light">{newLocation ? newLocation.id : ""}</span>
         </div>
-      ) : (
-        <p className="text-(--muted)">載入中</p>
-      )}
+
+        {formFields.map((field) => (
+          <div key={field.id} className="flex flex-col">
+            <label className="font-bold mb-1" htmlFor={field.id}>
+              {field.label}
+            </label>
+            <input
+              id={field.id}
+              type={field.type}
+              value={
+                newLocation
+                  ? (newLocation[field.id as keyof SupabaseLocation] as string) || ""
+                  : ""
+              }
+              onChange={(e) =>
+                onLocationInputChange(field.id as (typeof formFields)[number]["id"], e)
+              }
+              className={cn("w-full p-2 border-(--border) rounded-lg bg-black/5")}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 flex justify-end">
+        <button onClick={handleSave} className="px-4 py-1 rounded-xl btn secondary">
+          儲存變更
+        </button>
+      </div>
     </div>
   );
 };
+
