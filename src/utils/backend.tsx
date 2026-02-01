@@ -99,10 +99,13 @@ export const bookingsByAdmin = async (
     service_id: SupabaseService["id"];
   }>,
 ) => {
-  const queryParams = new URLSearchParams(query as Record<string, string>);
+  const params = new URLSearchParams();
+  Object.entries(query || {}).forEach(([k, v]) => {
+    if (v || (v != null && v !== "")) params.append(k, String(v));
+  });
 
   return fetcher<MyResponse<SupabaseBooking[]>>(
-    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/booking${query ? `?${queryParams.toString()}` : ""}`,
+    `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/booking?${params.toString()}`,
     {
       method: "GET",
       headers: {
