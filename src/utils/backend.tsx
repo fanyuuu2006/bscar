@@ -78,7 +78,7 @@ export const getAdminMe = async (token: string) => {
 };
 
 export const adminLogin = async (body: {
-  id: SupabaseAdmin["id"];
+  account: SupabaseAdmin["id"];
   password: SupabaseAdmin["password"];
 }) => {
   return fetcher<MyResponse<string>>(

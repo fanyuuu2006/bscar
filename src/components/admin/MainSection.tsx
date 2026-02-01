@@ -7,7 +7,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 export const MainSection = () => {
   const {  logIn, loading } = useAdmin();
   const [formData, setFormData] = useState<Parameters<typeof logIn>[0]>({
-    id: "",
+    account: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
