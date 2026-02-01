@@ -102,10 +102,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b border-(--border) bg-gray-50/30">
         <div className="w-full sm:w-80">
           <input
+            type="text"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
-            placeholder="搜尋姓名、電話、Email..."
-            className="w-full px-3 py-2 text-sm rounded-md border border-(--border) bg-white text-(--foreground) placeholder:text-(--muted) focus:outline-none focus:border-(--primary) transition-colors"
+            placeholder="搜尋編號、姓名、電話、Email..."
+            className="w-full px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
           />
         </div>
         <div className="text-xs text-(--muted) font-medium">
@@ -117,9 +118,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-(--border) bg-gray-50/50 text-xs text-(--muted)">
-              <th className="px-6 py-4 font-medium whitespace-nowrap w-24">
-                編號
-              </th>
+              <th className="px-6 py-4 font-medium whitespace-nowrap">編號</th>
               <th className="px-6 py-4 font-medium whitespace-nowrap">
                 顧客資訊
               </th>
@@ -129,7 +128,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   <select
                     value={serviceFilter}
                     onChange={(e) => setServiceFilter(e.target.value)}
-                    className="border-none p-0 text-xs font-medium"
+                    className="p-0 text-xs font-medium"
                   >
                     <option value="all">全部</option>
                     {servicesRes?.data?.map((s) => (
@@ -149,7 +148,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="border-none p-0 text-xs font-medium"
+                    className="p-0 text-xs font-medium"
                   >
                     <option value="all">全部</option>
                     {Object.entries(statusMap).map(([key, val]) => (
@@ -292,7 +291,7 @@ const TableRow = memo(
     return (
       <tr className={cn("group", className)} {...rest}>
         <td className="px-6 py-4 text-xs font-mono text-(--muted)">
-          #{item.id.slice(0, 6)}
+          #{item.id.slice(0, 8)}...
         </td>
         <td className="px-6 py-4">
           <div className="flex flex-col gap-0.5">
