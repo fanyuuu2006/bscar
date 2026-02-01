@@ -48,15 +48,19 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [servicesRes?.data]);
 
   // 查詢與篩選狀態
-  // 使用 inputQuery 作為即時輸入，keywordQuery 為經過防抖處理後的查詢字串
+  // 使用 inputQuery 作為即時輸入
   const [inputQuery, setInputQuery] = useState("");
 
-  const [keywordQuery, setKeywordQuery] = useState("");
   const [timeAscending, setTimeAscending] = useState<boolean>(false);
 
-  // 防抖 inputQuery -> keywordQuery
+  // 防抖 inputQuery -> query.keyword
   useEffect(() => {
-    const id = setTimeout(() => setKeywordQuery(inputQuery.trim()), 350);
+    const id = setTimeout(() => {
+      setQuery((prev) => ({
+        ...prev,
+        keyword: inputQuery.trim() || undefined,
+      }));
+    }, 350);
     return () => clearTimeout(id);
   }, [inputQuery]);
 
@@ -64,17 +68,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     // 確保有資料
     if (!data?.data) return [];
 
-    let result = data.data;
-
-    // 搜尋過濾
-    const q = keywordQuery.toLowerCase();
-    if (q) {
-      result = result.filter((b) => {
-        const serviceName = servicesMap.get(b.service_id)?.name || "";
-        const searchTarget = `${b.customer_name} ${b.customer_phone} ${b.customer_email} ${b.id} ${serviceName}`;
-        return searchTarget.toLowerCase().includes(q);
-      });
-    }
+    const result = data.data;
 
     // 排序
     return [...result].sort((a, b) => {
@@ -82,7 +76,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       const timeB = new Date(b.booking_time).getTime();
       return timeAscending ? timeA - timeB : timeB - timeA;
     });
-  }, [data, keywordQuery, servicesMap, timeAscending]);
+  }, [data, timeAscending]);
 
   const handleStatusUpdate = useCallback(
     async (booking: SupabaseBooking, newStatus: SupabaseBooking["status"]) => {

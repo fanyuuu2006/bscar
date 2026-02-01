@@ -102,6 +102,7 @@ export const bookingsByAdmin = async (
     service_id: SupabaseService["id"];
     start_date: string;
     end_date: string;
+    keyword: string;
   }>,
 ) => {
   const params = new URLSearchParams();
