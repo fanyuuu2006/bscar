@@ -35,6 +35,9 @@ export const getAvailableSlots = async (
   });
   return fetcher<MyResponse<TimeSlot[]>>(
     `${NEXT_PUBLIC_BACKEND_URL}/v1/data/booking/available-slots?${queryParams.toString()}`,
+    {
+      cache: "no-store",
+    },
   );
 };
 
@@ -112,6 +115,7 @@ export const bookingsByAdmin = async (
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     },
   );
 };
