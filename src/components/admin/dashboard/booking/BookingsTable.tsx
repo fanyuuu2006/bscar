@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 type BookingsTableProps = DistributiveOmit<
@@ -49,11 +49,62 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     );
   }, [data]);
 
+  // 查詢與篩選狀態
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | "all">("all");
+
+  const filteredBookings = useMemo(() => {
+    let list = bookings;
+    if (statusFilter !== "all") {
+      list = list.filter((b) => b.status === statusFilter);
+    }
+    const q = query.trim().toLowerCase();
+    if (q) {
+      list = list.filter((b) => {
+        const serviceName = servicesMap.get(b.service_id)?.name || "";
+        return (
+          b.customer_name.toLowerCase().includes(q) ||
+          b.customer_phone.toLowerCase().includes(q) ||
+          b.customer_email.toLowerCase().includes(q) ||
+          b.id.toLowerCase().includes(q) ||
+          serviceName.toLowerCase().includes(q)
+        );
+      });
+    }
+    return list;
+  }, [bookings, query, statusFilter, servicesMap]);
+
   return (
     <div
       className={cn("card w-full rounded-xl overflow-auto", className)}
       {...rest}
     >
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 border-b border-(--border)">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="搜尋顧客、電話、Email、服務或預約編號"
+            className="w-full sm:w-80 px-3 py-2 rounded-md border bg-(--surface) text-(--foreground) placeholder:(--muted)"
+          />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 rounded-md border bg-(--surface) text-(--foreground)"
+          >
+            <option value="all">全部狀態</option>
+            {Object.entries(statusMap).map(([key, val]) => (
+              <option key={key} value={key}>
+                {val.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="text-sm text-(--muted)">
+          {filteredBookings.length} 筆資料
+        </div>
+      </div>
+
       <table className={cn("w-full text-left")}>
         <thead className="bg-(--background) text-xs uppercase tracking-wider text-(--muted)">
           <tr>
@@ -83,17 +134,17 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 載入中...
               </td>
             </tr>
-          ) : bookings.length === 0 ? (
+          ) : filteredBookings.length === 0 ? (
             <tr>
               <td
                 colSpan={6}
                 className="py-12 px-4 text-center text-sm text-(--muted)"
               >
-                目前沒有預約紀錄
+                目前沒有符合條件的預約紀錄
               </td>
             </tr>
           ) : (
-            bookings.map((booking) => (
+            filteredBookings.map((booking) => (
               <TableRow
                 key={booking.id}
                 item={booking}
