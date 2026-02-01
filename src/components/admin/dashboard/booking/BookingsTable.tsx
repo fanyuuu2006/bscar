@@ -25,6 +25,23 @@ type BookingsTableProps = DistributiveOmit<
   "children"
 >;
 
+const selectOptions: {
+  value: string;
+  label: string;
+  handler: (booking: SupabaseBooking) => boolean;
+}[] = [
+  {
+    value: "all",
+    label: "全部狀態",
+    handler: () => true,
+  },
+  ...Object.entries(statusMap).map(([key, val]) => ({
+    value: key,
+    label: val.label,
+    handler: (booking: SupabaseBooking) => booking.status === key,
+  })),
+];
+
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const { token } = useAdminToken();
 
@@ -45,7 +62,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   // 使用 inputQuery 作為即時輸入，query 為經過防抖處理後的查詢字串
   const [inputQuery, setInputQuery] = useState("");
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string | "all">("all");
+  const [selectOption, setSlectOption] = useState(selectOptions[0]);
 
   // 防抖 inputQuery -> query
   useEffect(() => {
@@ -57,9 +74,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     if (!data || !data.data) return [];
 
     let list = data.data;
-    if (statusFilter !== "all") {
-      list = list.filter((b) => b.status === statusFilter);
-    }
+    list = list.filter(selectOption.handler);
     const q = query.trim().toLowerCase();
     if (q) {
       list = list.filter((b) => {
@@ -81,7 +96,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     });
 
     return list;
-  }, [data, statusFilter, query, servicesMap]);
+  }, [data, selectOption.handler, query, servicesMap]);
 
   return (
     <div
@@ -98,14 +113,20 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             className="w-80 p-2 rounded-lg border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
           />
           <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={selectOption.value}
+            onChange={(e)=> {
+                const val = e.target.value;
+                setSlectOption(selectOptions.find(option => option.value === val) || selectOptions[0]); 
+            }}
             className="p-2 rounded-lg border-(--border) bg-black/5 text-(--foreground)"
           >
-            <option value="all">全部狀態</option>
-            {Object.entries(statusMap).map(([key, val]) => (
-              <option key={key} value={key}>
-                {val.label}
+            {selectOptions.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+                onClick={() => setSlectOption(option)}
+              >
+                {option.label}
               </option>
             ))}
           </select>
