@@ -21,7 +21,7 @@ import { useCallback, useMemo } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 type BookingsTableProps = DistributiveOmit<
-  React.TableHTMLAttributes<HTMLTableElement>,
+  React.HTMLAttributes<HTMLDivElement>,
   "children"
 >;
 
@@ -50,55 +50,60 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [data]);
 
   return (
-    <table className={cn("w-full text-left", className)} {...rest}>
-      <thead className="bg-(--background) text-xs uppercase tracking-wider text-(--muted)">
-        <tr>
-          <th className="px-6 py-4 font-semibold whitespace-nowrap">
-            預約編號
-          </th>
-          <th className="px-6 py-4 font-semibold whitespace-nowrap">
-            顧客資訊
-          </th>
-          <th className="px-6 py-4 font-semibold whitespace-nowrap">
-            服務項目
-          </th>
-          <th className="px-6 py-4 font-semibold whitespace-nowrap">
-            預約時間
-          </th>
-          <th className="px-6 py-4 font-semibold whitespace-nowrap">狀態</th>
-          <th className="px-6 py-4 font-semibold whitespace-nowrap">操作</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-(--border)">
-        {isLoading ? (
+    <div
+      className={cn("card w-full rounded-xl overflow-auto", className)}
+      {...rest}
+    >
+      <table className={cn("w-full text-left")}>
+        <thead className="bg-(--background) text-xs uppercase tracking-wider text-(--muted)">
           <tr>
-            <td
-              colSpan={6}
-              className="py-12 px-4 text-center text-sm text-(--muted)"
-            >
-              載入中...
-            </td>
+            <th className="px-6 py-4 font-semibold whitespace-nowrap">
+              預約編號
+            </th>
+            <th className="px-6 py-4 font-semibold whitespace-nowrap">
+              顧客資訊
+            </th>
+            <th className="px-6 py-4 font-semibold whitespace-nowrap">
+              服務項目
+            </th>
+            <th className="px-6 py-4 font-semibold whitespace-nowrap">
+              預約時間
+            </th>
+            <th className="px-6 py-4 font-semibold whitespace-nowrap">狀態</th>
+            <th className="px-6 py-4 font-semibold whitespace-nowrap">操作</th>
           </tr>
-        ) : bookings.length === 0 ? (
-          <tr>
-            <td
-              colSpan={6}
-              className="py-12 px-4 text-center text-sm text-(--muted)"
-            >
-              目前沒有預約紀錄
-            </td>
-          </tr>
-        ) : (
-          bookings.map((booking) => (
-            <TableRow
-              key={booking.id}
-              item={booking}
-              service={servicesMap.get(booking.service_id)}
-            />
-          ))
-        )}
-      </tbody>
-    </table>
+        </thead>
+        <tbody className="divide-y divide-(--border)">
+          {isLoading ? (
+            <tr>
+              <td
+                colSpan={6}
+                className="py-12 px-4 text-center text-sm text-(--muted)"
+              >
+                載入中...
+              </td>
+            </tr>
+          ) : bookings.length === 0 ? (
+            <tr>
+              <td
+                colSpan={6}
+                className="py-12 px-4 text-center text-sm text-(--muted)"
+              >
+                目前沒有預約紀錄
+              </td>
+            </tr>
+          ) : (
+            bookings.map((booking) => (
+              <TableRow
+                key={booking.id}
+                item={booking}
+                service={servicesMap.get(booking.service_id)}
+              />
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
