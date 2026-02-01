@@ -19,7 +19,7 @@ import {
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useCallback, useMemo, useState, useEffect, memo } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 
 type BookingsTableProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -33,7 +33,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     Parameters<typeof bookingsByAdmin>["1"]
   >({});
 
-  const { data, isLoading } = useSWR(
+  const { data, isLoading, mutate } = useSWR(
     token ? ["admin-bookings", token, apiQuery] : null,
     () => bookingsByAdmin(token!, apiQuery),
   );
@@ -44,7 +44,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     const map = new Map<string, SupabaseService>();
     servicesRes?.data?.forEach((s) => map.set(s.id, s));
     return map;
-  }, [servicesRes]);
+  }, [servicesRes?.data]);
 
   // 查詢與篩選狀態
   // 使用 inputQuery 作為即時輸入，query 為經過防抖處理後的查詢字串
@@ -60,41 +60,50 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [inputQuery]);
 
   const filteredBookings = useMemo(() => {
+    // 確保有資料
     if (!data?.data) return [];
 
-    const q = query.trim().toLocaleLowerCase();
+    let result = data.data;
 
-    // 定義篩選條件策略
-    const strategies = [
-      {
-        enable: !!q,
-        check: (b: SupabaseBooking) => {
-          const serviceName = servicesMap.get(b.service_id)?.name || "";
-          // 搜尋欄位清單
-          const searchFields = [
-            b.customer_name,
-            b.customer_phone,
-            b.customer_email,
-            b.id,
-            serviceName,
-          ];
-          return searchFields.some((field) => field?.toLowerCase().includes(q));
-        },
-      },
-    ];
-
-    // 執行篩選
-    const result = data.data.filter((booking) =>
-      strategies.every((s) => !s.enable || s.check(booking)),
-    );
+    // 搜尋過濾
+    const q = query.toLowerCase();
+    if (q) {
+      result = result.filter((b) => {
+        const serviceName = servicesMap.get(b.service_id)?.name || "";
+        const searchTarget = `${b.customer_name} ${b.customer_phone} ${b.customer_email} ${b.id} ${serviceName}`;
+        return searchTarget.toLowerCase().includes(q);
+      });
+    }
 
     // 排序
-    return result.sort((a, b) => {
+    return [...result].sort((a, b) => {
       const timeA = new Date(a.booking_time).getTime();
       const timeB = new Date(b.booking_time).getTime();
       return timeAscending ? timeA - timeB : timeB - timeA;
     });
   }, [data, query, servicesMap, timeAscending]);
+
+  const handleStatusUpdate = useCallback(
+    async (booking: SupabaseBooking, newStatus: SupabaseBooking["status"]) => {
+      if (!token) return;
+      try {
+        const res = await updateBookingByAdmin(token, {
+          ...booking,
+          status: newStatus,
+        });
+
+        if (res.success) {
+          mutate();
+        } else {
+          alert("更新失敗");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("更新發生錯誤");
+      }
+    },
+    [token, mutate],
+  );
 
   return (
     <div
@@ -242,7 +251,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   key={booking.id}
                   item={booking}
                   service={servicesMap.get(booking.service_id)}
-                  apiQuery={apiQuery}
+                  onUpdate={handleStatusUpdate}
                 />
               ))
             )}
@@ -258,7 +267,10 @@ type TableRowProps = OverrideProps<
   {
     item: SupabaseBooking;
     service: SupabaseService | undefined;
-    apiQuery: Parameters<typeof bookingsByAdmin>["1"];
+    onUpdate: (
+      booking: SupabaseBooking,
+      status: SupabaseBooking["status"],
+    ) => void;
   }
 >;
 
@@ -270,29 +282,11 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
 };
 
 const TableRow = memo(
-  ({ item, service, apiQuery, className, ...rest }: TableRowProps) => {
+  ({ item, service, onUpdate, className, ...rest }: TableRowProps) => {
     const status = statusMap[item.status] ?? {
       label: item.status,
       className: "",
     };
-    const { token } = useAdminToken();
-    const { mutate } = useSWRConfig();
-
-    const handleStatusChange = useCallback(
-      (newStatus: SupabaseBooking["status"]) => {
-        if (!token) return;
-        updateBookingByAdmin(token, { ...item, status: newStatus }).then(
-          (res) => {
-            if (res.success) {
-              mutate(["admin-bookings", token, apiQuery]);
-            } else {
-              alert("更新失敗");
-            }
-          },
-        );
-      },
-      [token, item, mutate, apiQuery],
-    );
 
     const operations = useMemo<OperationItem[]>(
       () => [
@@ -310,9 +304,10 @@ const TableRow = memo(
           component: "button",
           props: {
             type: "button",
-            onClick: () => handleStatusChange("confirmed"),
+            onClick: () => onUpdate(item, "confirmed"),
             disabled: item.status === "confirmed",
-            className: "text-blue-600 border-blue-600 bg-blue-100",
+            className:
+              "text-blue-600 border-blue-600 bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed",
           },
           Icon: CheckOutlined,
         },
@@ -321,8 +316,9 @@ const TableRow = memo(
           component: "button",
           props: {
             type: "button",
-            className: "text-emerald-600 border-emerald-600 bg-emerald-100",
-            onClick: () => handleStatusChange("completed"),
+            className:
+              "text-emerald-600 border-emerald-600 bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed",
+            onClick: () => onUpdate(item, "completed"),
             disabled: item.status === "completed",
           },
           Icon: StarOutlined,
@@ -332,14 +328,15 @@ const TableRow = memo(
           component: "button",
           props: {
             type: "button",
-            onClick: () => handleStatusChange("cancelled"),
+            onClick: () => onUpdate(item, "cancelled"),
             disabled: item.status === "cancelled",
-            className: "text-red-600 border-red-600 bg-red-100",
+            className:
+              "text-red-600 border-red-600 bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed",
           },
           Icon: CloseOutlined,
         },
       ],
-      [handleStatusChange, item.id, item.status],
+      [item, onUpdate],
     );
 
     return (
@@ -384,11 +381,13 @@ const TableRow = memo(
           </span>
         </td>
         <td className="px-6 py-4 text-sm text-right whitespace-nowrap">
+          {/* 操作按鈕群組 */}
           <div className="flex items-center justify-end gap-1.5">
             {operations.map((oper) => {
               const { className: operClassName, ...operRest } = oper.props;
+              const Component = oper.component;
               return (
-                <oper.component
+                <Component
                   key={oper.label}
                   className={cn(
                     "flex items-center p-2 rounded-md text-sm font-medium border tooltip",
@@ -398,7 +397,7 @@ const TableRow = memo(
                   {...operRest}
                 >
                   <oper.Icon />
-                </oper.component>
+                </Component>
               );
             })}
           </div>
