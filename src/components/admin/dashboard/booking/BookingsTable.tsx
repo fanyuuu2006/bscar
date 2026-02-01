@@ -87,8 +87,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       className={cn("card w-full rounded-xl overflow-auto", className)}
       {...rest}
     >
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 border-b border-(--border)">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+      {/* 篩選列 */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-b border-(--border)">
+        <div className="flex items-center gap-3 w-full">
           <input
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
@@ -108,7 +109,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             ))}
           </select>
         </div>
-        <div className="text-sm text-(--muted)">
+        <div className="text-sm text-(--muted) text-nowrap">
           {filteredBookings.length} 筆資料
         </div>
       </div>
