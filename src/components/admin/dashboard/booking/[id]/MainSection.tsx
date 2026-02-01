@@ -10,6 +10,7 @@ import { OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { FieldInput } from "../../FieldInput";
 
 export type OperationItem<T extends React.ElementType = React.ElementType> = {
   label: string;
@@ -71,15 +72,15 @@ export const MainSection = ({
 
   const buttons: OperationItem[] = useMemo(() => {
     return [
-    {
+      {
         label: "取消",
         component: Link,
         props: {
-            role: "button",
-            href: "/admin/dashboard/booking",
-            className: "btn secondary",
+          role: "button",
+          href: "/admin/dashboard/booking",
+          className: "btn secondary",
         },
-    },
+      },
       {
         label: "保存",
         component: "button",
@@ -96,14 +97,12 @@ export const MainSection = ({
   const customerFields = useMemo(
     () =>
       [
-        { key: "customer_name", label: "姓名", type: "text" },
-        { key: "customer_phone", label: "電話", type: "text" },
-        { key: "customer_email", label: "電子郵件", type: "email" },
+        { id: "customer_name", label: "姓名", type: "text" },
+        { id: "customer_phone", label: "電話", type: "text" },
+        { id: "customer_email", label: "電子郵件", type: "email" },
       ] as const,
     [],
   );
-  // 客戶欄位鍵的型別
-  type CustomerFieldKey = (typeof customerFields)[number]["key"];
 
   // 專用事件處理器，避免在 JSX 中建立過多匿名函式
   const onServiceChange = useCallback(
@@ -121,7 +120,7 @@ export const MainSection = ({
   );
 
   const onInputChange = useCallback(
-    (key: CustomerFieldKey, e: React.ChangeEvent<HTMLInputElement>) => {
+    (key: string, e: React.ChangeEvent<HTMLInputElement>) => {
       handleChange(
         key as keyof SupabaseBooking,
         e.target.value as unknown as SupabaseBooking[keyof SupabaseBooking],
@@ -206,20 +205,15 @@ export const MainSection = ({
           <h3 className="text-2xl font-extrabold">顧客資訊</h3>
           <div className="mt-2 flex flex-col gap-2">
             {customerFields.map((field) => (
-              <div key={field.key} className="flex flex-col">
-                <label className="font-bold mb-1" htmlFor={field.key}>
-                  {field.label}
-                </label>
-                <input
-                  id={field.key}
-                  type={field.type}
-                  value={newBooking[field.key as keyof SupabaseBooking] || ""}
-                  onChange={(e) =>
-                    onInputChange(field.key as CustomerFieldKey, e)
-                  }
-                  className="p-2 border-(--border) rounded-lg bg-black/5"
-                />
-              </div>
+              <FieldInput
+                key={field.id}
+                field={field}
+                value={
+                  (newBooking[field.id as keyof SupabaseBooking] as string) ||
+                  ""
+                }
+                onChange={(e) => onInputChange(field.id, e)}
+              />
             ))}
           </div>
         </div>
