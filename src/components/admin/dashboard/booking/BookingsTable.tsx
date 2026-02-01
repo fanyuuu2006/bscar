@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
-import  { useCallback, useMemo, useState, useEffect, memo } from "react";
+import { useCallback, useMemo, useState, useEffect, memo } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 type BookingsTableProps = DistributiveOmit<
@@ -82,110 +82,120 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       });
     }
 
-    list.sort((a, b) => new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime());
+    list.sort(
+      (a, b) =>
+        new Date(b.booking_time).getTime() - new Date(a.booking_time).getTime(),
+    );
 
     return list;
   }, [data, statusFilter, serviceFilter, query, servicesMap]);
 
   return (
     <div
-      className={cn("card w-full rounded-xl overflow-auto", className)}
+      className={cn(
+        "bg-white border border-(--border) rounded-xl shadow-sm overflow-hidden flex flex-col",
+        className,
+      )}
       {...rest}
     >
       {/* 篩選列 */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-b border-(--border)">
-        <div className="flex items-center gap-3 w-full">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b border-(--border) bg-gray-50/30">
+        <div className="w-full sm:w-80">
           <input
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
-            placeholder="搜尋"
-            className="w-80 p-2 rounded-lg border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
+            placeholder="搜尋姓名、電話、Email..."
+            className="w-full px-3 py-2 text-sm rounded-md border border-(--border) bg-white text-(--foreground) placeholder:text-(--muted) focus:outline-none focus:border-(--primary) transition-colors"
           />
         </div>
-        <div className="text-sm text-(--muted) whitespace-nowrap">
-          {filteredBookings.length} 筆資料
+        <div className="text-xs text-(--muted) font-medium">
+          共 {filteredBookings.length} 筆預約
         </div>
       </div>
 
-      <table className={cn("w-full text-left")}>
-        <thead className="bg-(--background) text-xs uppercase tracking-wider text-(--muted)">
-          <tr>
-            <th className="px-6 py-4 font-semibold whitespace-nowrap">
-              預約編號
-            </th>
-            <th className="px-6 py-4 font-semibold whitespace-nowrap">
-              顧客資訊
-            </th>
-            <th className="px-6 py-4 font-semibold whitespace-nowrap">
-              <div className="flex items-center gap-2">
-                <span>服務項目</span>
-                <select
-                  value={serviceFilter}
-                  onChange={(e) => setServiceFilter(e.target.value)}
-                  className="p-1 rounded-lg border-(--border) bg-black/5 text-(--foreground) text-sm"
-                >
-                  <option value="all">全部服務</option>
-                  {servicesRes?.data?.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </th>
-            <th className="px-6 py-4 font-semibold whitespace-nowrap">
-              預約時間
-            </th>
-            <th className="px-6 py-4 font-semibold whitespace-nowrap">
-              <div className="flex items-center gap-2">
-                <span>狀態</span>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="p-1 rounded-lg border-(--border) bg-black/5 text-(--foreground) text-sm"
-                >
-                  <option value="all">全部</option>
-                  {Object.entries(statusMap).map(([key, val]) => (
-                    <option key={key} value={key}>
-                      {val.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </th>
-            <th className="px-6 py-4 font-semibold whitespace-nowrap">操作</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-(--border)">
-          {isLoading ? (
-            <tr>
-              <td
-                colSpan={6}
-                className="py-12 px-4 text-center text-sm text-(--muted)"
-              >
-                載入中...
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-(--border) bg-gray-50/50 text-xs text-(--muted)">
+              <th className="px-6 py-4 font-medium whitespace-nowrap w-24">
+                編號
+              </th>
+              <th className="px-6 py-4 font-medium whitespace-nowrap">
+                顧客資訊
+              </th>
+              <th className="px-6 py-4 font-medium whitespace-nowrap">
+                <div className="flex items-center gap-2">
+                  <span>服務項目</span>
+                  <select
+                    value={serviceFilter}
+                    onChange={(e) => setServiceFilter(e.target.value)}
+                    className="border-none p-0 text-xs font-medium"
+                  >
+                    <option value="all">全部</option>
+                    {servicesRes?.data?.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </th>
+              <th className="px-6 py-4 font-medium whitespace-nowrap">
+                預約時間
+              </th>
+              <th className="px-6 py-4 font-medium whitespace-nowrap">
+                <div className="flex items-center gap-2">
+                  <span>狀態</span>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="border-none p-0 text-xs font-medium"
+                  >
+                    <option value="all">全部</option>
+                    {Object.entries(statusMap).map(([key, val]) => (
+                      <option key={key} value={key}>
+                        {val.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </th>
+              <th className="px-6 py-4 font-medium whitespace-nowrap text-right">
+                操作
+              </th>
             </tr>
-          ) : filteredBookings.length === 0 ? (
-            <tr>
-              <td
-                colSpan={6}
-                className="py-12 px-4 text-center text-sm text-(--muted)"
-              >
-                目前沒有符合條件的預約紀錄
-              </td>
-            </tr>
-          ) : (
-            filteredBookings.map((booking) => (
-              <TableRow
-                key={booking.id}
-                item={booking}
-                service={servicesMap.get(booking.service_id)}
-              />
-            ))
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-(--border)">
+            {isLoading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="py-16 text-center text-sm text-(--muted)"
+                >
+                  載入中...
+                </td>
+              </tr>
+            ) : filteredBookings.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="py-16 text-center text-sm text-(--muted)"
+                >
+                  無符合條件的資料
+                </td>
+              </tr>
+            ) : (
+              filteredBookings.map((booking) => (
+                <TableRow
+                  key={booking.id}
+                  item={booking}
+                  service={servicesMap.get(booking.service_id)}
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
@@ -206,139 +216,143 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
   Icon: React.ElementType;
 };
 
-const TableRow = memo(({ item, service, className, ...rest }: TableRowProps) => {
-  const status = statusMap[item.status] ?? { label: item.status, className: "" };
-  const { token } = useAdminToken();
-  const { mutate } = useSWRConfig();
+const TableRow = memo(
+  ({ item, service, className, ...rest }: TableRowProps) => {
+    const status = statusMap[item.status] ?? {
+      label: item.status,
+      className: "",
+    };
+    const { token } = useAdminToken();
+    const { mutate } = useSWRConfig();
 
-  const handleStatusChange = useCallback(
-    (newStatus: SupabaseBooking["status"]) => {
-      if (!token) return;
-      updateBookingByAdmin(token, { ...item, status: newStatus }).then(
-        (res) => {
-          if (res.success) {
-            // 觸發 SWR 重新驗證以更新資料
-            mutate(["admin-bookings", token]);
-          } else {
-            alert("更新預約狀態失敗，請稍後再試。");
-          }
-        },
-      );
-    },
-    [item, token, mutate],
-  );
+    const handleStatusChange = useCallback(
+      (newStatus: SupabaseBooking["status"]) => {
+        if (!token) return;
+        updateBookingByAdmin(token, { ...item, status: newStatus }).then(
+          (res) => {
+            if (res.success) {
+              mutate(["admin-bookings", token]);
+            } else {
+              alert("更新失敗");
+            }
+          },
+        );
+      },
+      [item, token, mutate],
+    );
 
-  const operations = useMemo<OperationItem[]>(
-    () => [
-      {
-        label: "編輯",
-        component: Link,
-        props: {
-          className: "text-violet-600 border-violet-600 bg-violet-100",
-          href: `/admin/dashboard/booking/${item.id}`,
+    const operations = useMemo<OperationItem[]>(
+      () => [
+        {
+          label: "編輯",
+          component: Link,
+          props: {
+            className: "text-violet-600 border-violet-600 bg-violet-100",
+            href: `/admin/dashboard/booking/${item.id}`,
+          },
+          Icon: EditOutlined,
         },
-        Icon: EditOutlined,
-      },
-      {
-        label: "確認",
-        component: "button",
-        props: {
-          type: "button",
-          onClick: () => handleStatusChange("confirmed"),
-          disabled: item.status === "confirmed",
-          className: "text-blue-600 border-blue-600 bg-blue-100",
+        {
+          label: "確認",
+          component: "button",
+          props: {
+            type: "button",
+            onClick: () => handleStatusChange("confirmed"),
+            disabled: item.status === "confirmed",
+            className: "text-blue-600 border-blue-600 bg-blue-100",
+          },
+          Icon: CheckOutlined,
         },
-        Icon: CheckOutlined,
-      },
-      {
-        label: "完成",
-        component: "button",
-        props: {
-          type: "button",
-          className: "text-emerald-600 border-emerald-600 bg-emerald-100",
-          onClick: () => handleStatusChange("completed"),
-          disabled: item.status === "completed",
+        {
+          label: "完成",
+          component: "button",
+          props: {
+            type: "button",
+            className: "text-emerald-600 border-emerald-600 bg-emerald-100",
+            onClick: () => handleStatusChange("completed"),
+            disabled: item.status === "completed",
+          },
+          Icon: StarOutlined,
         },
-        Icon: StarOutlined,
-      },
-      {
-        label: "取消",
-        component: "button",
-        props: {
-          type: "button",
-          onClick: () => handleStatusChange("cancelled"),
-          disabled: item.status === "cancelled",
-          className: "text-red-600 border-red-600 bg-red-100",
+        {
+          label: "取消",
+          component: "button",
+          props: {
+            type: "button",
+            onClick: () => handleStatusChange("cancelled"),
+            disabled: item.status === "cancelled",
+            className: "text-red-600 border-red-600 bg-red-100",
+          },
+          Icon: CloseOutlined,
         },
-        Icon: CloseOutlined,
-      },
-    ],
-    [handleStatusChange, item.id, item.status],
-  );
+      ],
+      [handleStatusChange, item.id, item.status],
+    );
 
-  return (
-    <tr className={cn(className)} {...rest}>
-      <td className="px-6 py-4 text-xs" title={item.id}>
-        <span className="font-mono text-(--muted)">
-          #{item.id.slice(0, 8)}...
-        </span>
-      </td>
-      <td className="px-6 py-4 text-sm">
-        <div className="flex flex-col gap-1">
-          <span className="font-medium text-(--foreground)">
-            {item.customer_name}
-          </span>
-          <div className="flex flex-col text-xs text-(--muted)">
-            <span>{item.customer_phone}</span>
-            <span>{item.customer_email}</span>
+    return (
+      <tr className={cn("group", className)} {...rest}>
+        <td className="px-6 py-4 text-xs font-mono text-(--muted)">
+          #{item.id.slice(0, 6)}
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm font-medium text-(--foreground)">
+              {item.customer_name}
+            </span>
+            <span className="text-xs text-(--muted)">
+              {item.customer_phone}
+            </span>
+            <span className="text-xs text-(--muted)">
+              {item.customer_email}
+            </span>
           </div>
-        </div>
-      </td>
-      <td className="px-6 py-4 text-sm">
-        <span className="text-(--foreground)">
-          {service ? service.name : "..."}
-        </span>
-      </td>
-      <td className="px-6 py-4 text-sm whitespace-nowrap">
-        <div className="text-(--foreground)">
-          {formatDate("YYYY/MM/DD", item.booking_time)}
-        </div>
-        <div className="text-xs text-(--muted)">
-          {formatDate("hh:mm A", item.booking_time)}
-        </div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span
-          className={cn(
-            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border",
-            status.className,
-          )}
-        >
-          {status.label}
-        </span>
-      </td>
-      <td className="px-6 py-4 text-sm whitespace-nowrap">
-        <div className="flex items-center gap-1.5">
-          {operations.map((oper) => {
-            const { className: operClassName, ...operRest } = oper.props;
-            return (
-              <oper.component
-                key={oper.label}
-                className={cn(
-                  "flex items-center p-2 rounded-md text-sm font-medium border tooltip",
-                  operClassName,
-                )}
-                data-tooltip={oper.label}
-                {...operRest}
-              >
-                <oper.Icon />
-              </oper.component>
-            );
-          })}
-        </div>
-      </td>
-    </tr>
-  );
-});
+        </td>
+        <td className="px-6 py-4 text-sm text-(--foreground)">
+          {service?.name || "-"}
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex flex-col text-sm">
+            <span className="text-(--foreground)">
+              {formatDate("YYYY/MM/DD", item.booking_time)}
+            </span>
+            <span className="text-xs text-(--muted)">
+              {formatDate("hh:mm A", item.booking_time)}
+            </span>
+          </div>
+        </td>
+        <td className="px-6 py-4">
+          <span
+            className={cn(
+              "inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border border-transparent",
+              status.className,
+            )}
+          >
+            {status.label}
+          </span>
+        </td>
+        <td className="px-6 py-4 text-sm text-right whitespace-nowrap">
+          <div className="flex items-center justify-end gap-1.5">
+            {operations.map((oper) => {
+              const { className: operClassName, ...operRest } = oper.props;
+              return (
+                <oper.component
+                  key={oper.label}
+                  className={cn(
+                    "flex items-center p-2 rounded-md text-sm font-medium border tooltip",
+                    operClassName,
+                  )}
+                  data-tooltip={oper.label}
+                  {...operRest}
+                >
+                  <oper.Icon />
+                </oper.component>
+              );
+            })}
+          </div>
+        </td>
+      </tr>
+    );
+  },
+);
 
 TableRow.displayName = "TableRow";
