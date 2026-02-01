@@ -33,7 +33,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     Parameters<typeof bookingsByAdmin>["1"]
   >({
     page: 1,
-    count: 10,
+    count: 50,
   });
 
   const { data, isLoading, mutate } = useSWR(
