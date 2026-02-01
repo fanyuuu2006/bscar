@@ -97,6 +97,7 @@ export const bookingsByAdmin = async (
     count: number;
     status: SupabaseBooking["status"];
     service_id: SupabaseService["id"];
+    date: string;
   }>,
 ) => {
   const params = new URLSearchParams();

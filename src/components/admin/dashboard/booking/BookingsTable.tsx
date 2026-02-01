@@ -52,7 +52,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   const [query, setQuery] = useState("");
   const [timeAscending, setTimeAscending] = useState<boolean>(false);
-  const [isTodayOnly, setIsTodayOnly] = useState<boolean>(false);
 
   // 防抖 inputQuery -> query
   useEffect(() => {
@@ -82,18 +81,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           return searchFields.some((field) => field?.toLowerCase().includes(q));
         },
       },
-      {
-        enable: isTodayOnly,
-        check: (b: SupabaseBooking) => {
-          const bookingDate = new Date(b.booking_time);
-          const today = new Date();
-          return (
-            bookingDate.getDate() === today.getDate() &&
-            bookingDate.getMonth() === today.getMonth() &&
-            bookingDate.getFullYear() === today.getFullYear()
-          );
-        },
-      },
     ];
 
     // 執行篩選
@@ -107,14 +94,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       const timeB = new Date(b.booking_time).getTime();
       return timeAscending ? timeA - timeB : timeB - timeA;
     });
-  }, [data, query, isTodayOnly, servicesMap, timeAscending]);
+  }, [data, query, servicesMap, timeAscending]);
 
   return (
     <div
-      className={cn(
-        "card rounded-xl overflow-hidden flex flex-col",
-        className,
-      )}
+      className={cn("card rounded-xl overflow-hidden flex flex-col", className)}
       {...rest}
     >
       {/* 篩選列 */}
@@ -133,8 +117,21 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             <label className="select-none flex items-center gap-2 text-sm text-(--muted)">
               <input
                 type="checkbox"
-                checked={isTodayOnly}
-                onChange={(e) => setIsTodayOnly(e.target.checked)}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  const today = new Date();
+                  if (checked) {
+                    setAPIQuery((prev) => ({
+                      ...prev,
+                      date: formatDate("YYYY-MM-DD", today),
+                    }));
+                  } else {
+                    setAPIQuery((prev) => ({
+                      ...prev,
+                      date: undefined,
+                    }));
+                  }
+                }}
               />
               僅顯示今日
             </label>
