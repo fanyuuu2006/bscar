@@ -58,8 +58,7 @@ export const AccountInfoCard = ({
   const handleSave = useCallback(() => {
     if (!token || !admin || !newAdmin) return;
     if (
-      admin.account === newAdmin.account &&
-      admin.password === newAdmin.password
+      JSON.stringify(admin) === JSON.stringify(newAdmin)
     ) {
       alert("資料未變更");
       return;

@@ -30,6 +30,10 @@ export const MainSection = ({
   ...rest
 }: MainSectionProps) => {
   const [newBooking, setNewBooking] = useState<SupabaseBooking | null>(booking);
+  const [origBooking, setOrigBooking] = useState<SupabaseBooking | null>(
+    booking,
+  );
+  const [saving, setSaving] = useState(false);
   const [services, setServices] = useState<SupabaseService[]>([]);
   const { token } = useAdminToken();
   const router = useRouter();
@@ -48,14 +52,32 @@ export const MainSection = ({
   /** 儲存變更：使用 async/await，並在成功後導回列表 */
   const handleSave = useCallback(async () => {
     if (!token || !newBooking) return;
-    const res = await updateBookingByAdmin(token, newBooking);
-    if (res.success) {
-      router.push("/admin/dashboard/booking");
-    } else {
-      // 保持原有的使用者提示行為
-      alert(`保存失敗${res.message ? `：${res.message}` : ""}`);
+    if (
+      origBooking &&
+      JSON.stringify(origBooking) === JSON.stringify(newBooking)
+    ) {
+      alert("資料未變更");
+      return;
     }
-  }, [newBooking, router, token]);
+
+    setSaving(true);
+    try {
+      const res = await updateBookingByAdmin(token, newBooking);
+      if (res.success) {
+        router.push("/admin/dashboard/booking");
+      } else {
+        alert(`保存失敗${res.message ? `：${res.message}` : ""}`);
+      }
+    } finally {
+      setSaving(false);
+    }
+  }, [newBooking, router, token, origBooking]);
+
+  // 當外部 prop 更新時，同步本地狀態（避免第一次 render 後不同步）
+  useEffect(() => {
+    setNewBooking(booking);
+    setOrigBooking(booking);
+  }, [booking]);
 
   /** 一次性取得服務列表 */
   useEffect(() => {
@@ -87,11 +109,12 @@ export const MainSection = ({
         props: {
           type: "button",
           onClick: handleSave,
+          disabled: saving,
           className: "btn primary",
         },
       },
     ];
-  }, [handleSave]);
+  }, [handleSave, saving]);
 
   // 常用表單欄位定義 memo 化，避免每次 render 重建陣列
   const customerFields = useMemo(
