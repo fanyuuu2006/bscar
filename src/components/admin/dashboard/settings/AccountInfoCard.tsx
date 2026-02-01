@@ -6,8 +6,8 @@ import { cn } from "@/utils/className";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { useState, useMemo, useCallback } from "react";
 
-type AccountCardProps = React.HTMLAttributes<HTMLDivElement>;
-export const AccountCard = ({ className, ...rest }: AccountCardProps) => {
+type AccountInfoCardProps = React.HTMLAttributes<HTMLDivElement>;
+export const AccountInfoCard = ({ className, ...rest }: AccountInfoCardProps) => {
   const { admin, refresh } = useAdmin();
   const { token } = useAdminToken();
   const [newAdmin, setNewAdmin] = useState<SupabaseAdmin | null>(admin);
@@ -54,7 +54,14 @@ export const AccountCard = ({ className, ...rest }: AccountCardProps) => {
   );
 
   const handleSave = useCallback(() => {
-    if (!token || !newAdmin) return;
+    if (!token || !admin || !newAdmin) return;
+    if (
+      admin.account === newAdmin.account &&
+      admin.password === newAdmin.password
+    ) {
+      alert("資料未變更");
+      return;
+    }
     updateAdmin(token, newAdmin).then((res) => {
       if (res.success) {
         alert("帳號資料已更新");
@@ -63,7 +70,7 @@ export const AccountCard = ({ className, ...rest }: AccountCardProps) => {
         alert(`更新失敗${res.message ? `：${res.message}` : ""}`);
       }
     });
-  }, [newAdmin, refresh, token]);
+  }, [admin, newAdmin, refresh, token]);
 
   if (!newAdmin) return null;
 

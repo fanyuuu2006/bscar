@@ -13,7 +13,7 @@ type AsideBarProps = React.HTMLAttributes<HTMLElement>;
 
 export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
   const pathname = usePathname();
-  const { admin, logOut, loading } = useAdmin();
+  const { admin, loading } = useAdmin();
 
   const [location, setLocation] = useState<SupabaseLocation | null>(null);
 
@@ -65,15 +65,6 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
             );
           })}
         </nav>
-
-        <div className="pt-4 mt-auto border-t border-(--border) flex items-center justify-center">
-          <button
-            onClick={logOut}
-            className="w-full flex items-center justify-center px-4 py-2 rounded-xl bg-(--accent) text-(--background)"
-          >
-            登出
-          </button>
-        </div>
       </div>
     </aside>
   );

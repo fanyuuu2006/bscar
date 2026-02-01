@@ -86,7 +86,7 @@ export const MainSection = ({
         props: {
           type: "button",
           onClick: handleSave,
-          className: "bg-(--accent) text-(--background) border-(--accent) border",
+          className: "btn primary",
         },
       },
     ];
