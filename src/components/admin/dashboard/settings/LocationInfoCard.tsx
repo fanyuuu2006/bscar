@@ -19,13 +19,23 @@ export const LocationInfoCard = ({
     null,
   );
 
-  const formFields: FieldInputProps["field"][] = useMemo(
+  const formFields: { label: string; fields: FieldInputProps["field"][] }[] = useMemo(
     () => [
-      { id: "city", label: "城市", type: "text" },
-      { id: "branch", label: "分店名稱", type: "text", hint: "不用添加`店`" },
-      { id: "address", label: "地址", type: "text" },
-      { id: "open_time", label: "營業開始時間", type: "text",},
-      { id: "close_time", label: "營業結束時間", type: "text" },
+      {
+        label: "基本資料",
+        fields: [
+          { id: "city", label: "城市", type: "text" },
+          { id: "branch", label: "分店名稱", type: "text", hint: "不用添加`店`" },
+          { id: "address", label: "地址", type: "text" },
+        ],
+      },
+      {
+        label: "營業時間",
+        fields: [
+          { id: "open_time", label: "開始時間", type: "time" },
+          { id: "close_time", label: "結束時間", type: "time" },
+        ],
+      },
     ],
     [],
   );
@@ -39,7 +49,7 @@ export const LocationInfoCard = ({
 
   const onLocationInputChange = useCallback(
     (
-      key: (typeof formFields)[number]["id"],
+      key: string,
       e: React.ChangeEvent<HTMLInputElement>,
     ) => {
       handleLocationChange(
@@ -89,7 +99,7 @@ export const LocationInfoCard = ({
   if (!newLocation)
     return (
       <div className={cn("card p-4 md:p-6 rounded-xl", className)} {...rest}>
-        <h3 className="text-lg font-medium mb-2">所屬店家資訊</h3>
+        <h3 className="text-2xl font-extrabold mb-2">店家資料</h3>
         <p className="text-(--muted)">載入中</p>
       </div>
     );
@@ -106,22 +116,24 @@ export const LocationInfoCard = ({
           </span>
         </div>
 
-        {formFields.map((field) => (
-          <FieldInput
-            field={field}
-            key={field.id}
-            value={
-              newLocation
-                ? newLocation[field.id as keyof SupabaseLocation] || ""
-                : ""
-            }
-            onChange={(e) =>
-              onLocationInputChange(
-                field.id as (typeof formFields)[number]["id"],
-                e,
-              )
-            }
-          />
+        {formFields.map((section) => (
+          <div key={section.label} className="mt-3">
+            <h4 className="text-xl font-semibold">{section.label}</h4>
+            <div className="mt-2 flex flex-col gap-2">
+              {section.fields.map((f) => (
+                <FieldInput
+                  field={f}
+                  key={f.id}
+                  value={
+                    newLocation
+                      ? (newLocation[f.id as keyof SupabaseLocation] as string) || ""
+                      : ""
+                  }
+                  onChange={(e) => onLocationInputChange(f.id, e)}
+                />
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 
