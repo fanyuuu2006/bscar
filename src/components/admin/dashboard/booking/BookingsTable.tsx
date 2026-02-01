@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 type BookingsTableProps = DistributiveOmit<
@@ -50,8 +50,16 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [data]);
 
   // 查詢與篩選狀態
+  // 使用 inputQuery 作為即時輸入，query 為經過防抖處理後的查詢字串
+  const [inputQuery, setInputQuery] = useState("");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | "all">("all");
+
+  // 防抖 inputQuery -> query
+  useEffect(() => {
+    const id = setTimeout(() => setQuery(inputQuery.trim()), 350);
+    return () => clearTimeout(id);
+  }, [inputQuery]);
 
   const filteredBookings = useMemo(() => {
     let list = bookings;
@@ -82,8 +90,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 border-b border-(--border)">
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={inputQuery}
+            onChange={(e) => setInputQuery(e.target.value)}
             placeholder="搜尋顧客、電話、Email、服務或預約編號"
             className="w-full sm:w-80 px-3 py-2 rounded-md border bg-(--surface) text-(--foreground) placeholder:(--muted)"
           />
