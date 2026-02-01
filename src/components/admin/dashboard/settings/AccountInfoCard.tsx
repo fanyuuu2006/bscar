@@ -3,15 +3,17 @@ import { useAdminToken } from "@/hooks/useAdminToken";
 import { SupabaseAdmin } from "@/types";
 import { updateAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
-import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { useState, useMemo, useCallback } from "react";
+import { FieldInput } from "../FieldInput";
 
 type AccountInfoCardProps = React.HTMLAttributes<HTMLDivElement>;
-export const AccountInfoCard = ({ className, ...rest }: AccountInfoCardProps) => {
+export const AccountInfoCard = ({
+  className,
+  ...rest
+}: AccountInfoCardProps) => {
   const { admin, refresh } = useAdmin();
   const { token } = useAdminToken();
   const [newAdmin, setNewAdmin] = useState<SupabaseAdmin | null>(admin);
-  const [showPassword, setShowPassword] = useState(false);
 
   const formFields = useMemo(
     () =>
@@ -78,59 +80,35 @@ export const AccountInfoCard = ({ className, ...rest }: AccountInfoCardProps) =>
     <div className={cn(`card p-4 md:p-6 rounded-xl`, className)} {...rest}>
       <h3 className="text-2xl font-extrabold">帳號資料</h3>
 
-      <div className="mt-2 flex flex-col gap-2">
-        <div className="flex flex-col ">
-          <span className="font-bold">ID</span>
-          <span className="font-light">{newAdmin ? newAdmin.id : ""}</span>
-        </div>
-        {formFields.map((field) => (
-          <div key={field.id} className="flex flex-col">
-            <label className="font-bold mb-1" htmlFor={field.id}>
-              {field.label}
-            </label>
-            <div className="relative">
-              <input
-                required
-                id={field.id}
-                type={
-                  field.id === "password" && showPassword ? "text" : field.type
-                }
-                value={
-                  newAdmin
-                    ? newAdmin[field.id as keyof SupabaseAdmin] || ""
-                    : ""
-                }
-                onChange={(e) =>
-                  onAdminInputChange(
-                    field.id as (typeof formFields)[number]["id"],
-                    e,
-                  )
-                }
-                className={cn(
-                  "w-full p-2 border-(--border) rounded-lg bg-black/5",
-                  field.id === "password" && "pr-10",
-                )}
-              />
-              {field.id === "password" && (
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-(--muted)"
-                >
-                  {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-                </button>
-              )}
+      <div className="mt-4 space-y-4">
+        <div className="grid gap-3">
+          <div>
+            <div className="font-bold text-sm">ID</div>
+            <div className="text-sm text-(--muted) font-mono wrap-break-word">
+              {newAdmin.id}
             </div>
           </div>
-        ))}
-      </div>
-      <div className="mt-4 flex justify-end">
-        <button
-          onClick={handleSave}
-          className="px-4 py-1 rounded-xl btn secondary"
-        >
-          儲存變更
-        </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {formFields.map((field) => (
+            <FieldInput
+              key={field.id}
+              field={field}
+              value={newAdmin[field.id as keyof SupabaseAdmin] as string}
+              onChange={(e) => onAdminInputChange(field.id, e)}
+            />
+          ))}
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 rounded-lg btn secondary"
+          >
+            儲存變更
+          </button>
+        </div>
       </div>
     </div>
   );

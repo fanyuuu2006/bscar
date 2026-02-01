@@ -1,5 +1,7 @@
 import { cn } from "@/utils/className";
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
+import { useState } from "react";
 
 export type FieldInputProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -23,6 +25,8 @@ export const FieldInput = ({
   className,
   ...rest
 }: FieldInputProps) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className={cn("flex flex-col", className)} {...rest}>
       <label className="font-bold mb-1" htmlFor={field.id}>
@@ -33,13 +37,24 @@ export const FieldInput = ({
           </span>
         )}
       </label>
-      <input
-        id={field.id}
-        type={field.type}
-        value={value}
-        onChange={onChange}
-        className={cn("w-full p-2 border-(--border) rounded-lg bg-black/5")}
-      />
+      <div className="relative">
+        <input
+          id={field.id}
+          type={field.type === "password" && showPassword ? "text" : field.type}
+          value={value}
+          onChange={onChange}
+          className={cn("w-full p-2 border-(--border) rounded-lg bg-black/5")}
+        />
+        {field.type === "password" && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-(--muted)"
+          >
+            {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+          </button>
+        )}
+      </div>
     </div>
   );
 };

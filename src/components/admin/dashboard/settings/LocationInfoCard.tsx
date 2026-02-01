@@ -108,40 +108,38 @@ export const LocationInfoCard = ({
     <div className={cn("card p-4 md:p-6 rounded-xl", className)} {...rest}>
       <h3 className="text-2xl font-extrabold">店家資料</h3>
 
-      <div className="mt-2 flex flex-col gap-2">
-        <div className="flex flex-col ">
-          <span className="font-bold">ID</span>
-          <span className="font-light">
-            {newLocation ? newLocation.id : ""}
-          </span>
+      <div className="mt-4 space-y-4">
+        <div className="grid gap-3">
+          <div>
+            <div className="font-bold text-sm">ID</div>
+            <div className="text-sm text-(--muted) font-mono wrap-break-word ">{newLocation.id}</div>
+          </div>
         </div>
 
         {formFields.map((section) => (
-          <div key={section.label} className="mt-3">
-            <h4 className="text-xl font-semibold">{section.label}</h4>
-            <div className="mt-2 flex flex-col gap-2">
+          <section key={section.label} className="mt-2">
+            <h4 className="text-lg font-semibold">{section.label}</h4>
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {section.fields.map((f) => (
                 <FieldInput
                   field={f}
                   key={f.id}
+                  className={cn(
+                    f.id === "address" ? "sm:col-span-2" : undefined,
+                  )}
                   value={
-                    newLocation
-                      ? (newLocation[f.id as keyof SupabaseLocation] as string) || ""
-                      : ""
+                    (newLocation[f.id as keyof SupabaseLocation] as string) || ""
                   }
                   onChange={(e) => onLocationInputChange(f.id, e)}
                 />
               ))}
             </div>
-          </div>
+          </section>
         ))}
       </div>
 
-      <div className="mt-4 flex justify-end">
-        <button
-          onClick={handleSave}
-          className="px-4 py-1 rounded-xl btn secondary"
-        >
+      <div className="mt-6 flex justify-end">
+        <button onClick={handleSave} className="px-4 py-2 rounded-lg btn secondary">
           儲存變更
         </button>
       </div>
