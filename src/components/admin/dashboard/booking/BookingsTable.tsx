@@ -79,6 +79,26 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     return () => clearTimeout(id);
   }, [inputQuery]);
 
+  // 頁碼輸入狀態與防抖
+  const [inputPage, setInputPage] = useState<string>("1");
+
+  // 當 query.page 改變時（例如透過上一頁/下一頁按鈕），更新 inputPage
+  useEffect(() => {
+    const timer = setTimeout(() => setInputPage(String(query?.page || 1)), 0);
+    return () => clearTimeout(timer);
+  }, [query?.page]);
+
+  // 防抖 inputPage -> query.page
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const val = parseInt(inputPage);
+      if (!isNaN(val) && val >= 1 && val !== (query?.page || 1)) {
+        setQuery((prev) => ({ ...prev, page: val }));
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [inputPage, query?.page]);
+
   const filteredBookings = useMemo(() => {
     // 確保有資料
     if (!data?.data) return [];
@@ -369,9 +389,23 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             >
               上一頁
             </button>
-            <span className="text-xs font-medium min-w-12 text-center">
-              第 {query?.page || 1} 頁
-            </span>
+            <div className="flex items-center gap-1.5 text-xs text-(--muted)">
+              <span>第</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={inputPage}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // 僅允許輸入數字
+                  if (val === "" || /^\d+$/.test(val)) {
+                    setInputPage(val);
+                  }
+                }}
+                className="w-10 p-1.5 text-center font-medium text-(--foreground) rounded-md border border-(--border) bg-gray-50/50 outline-none"
+              />
+              <span>頁</span>
+            </div>
             <button
               onClick={() =>
                 setQuery((prev) => ({ ...prev, page: (prev?.page || 1) + 1 }))
