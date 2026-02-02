@@ -42,8 +42,14 @@
     height: 100%;
     color: var(--foreground);
     background: var(--background);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-      Arial, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -178,10 +184,9 @@
   }
 
   .animate-appear {
-    animation: appear var(--transition-normal)
-      cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation: appear 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
-  
+
   @keyframes appear {
     from {
       opacity: 0;

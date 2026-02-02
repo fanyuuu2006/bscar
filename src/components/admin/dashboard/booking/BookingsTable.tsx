@@ -139,7 +139,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap">
             {/* 服務篩選 */}
             <div className="relative min-w-0">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">

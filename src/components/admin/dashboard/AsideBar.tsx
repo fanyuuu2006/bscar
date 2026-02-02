@@ -76,7 +76,7 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
             </h2>
           </div>
 
-          <nav className="w-full flex flex-col gap-2">
+          <nav className="w-full flex flex-col">
             {routes.map((route) => {
               const href = `/admin/dashboard${route.url}`;
               const isActive = route.isActive
@@ -88,9 +88,11 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
                   key={route.url}
                   href={href}
                   className={cn(
-                    "font-medium text-sm text-(--muted) flex items-center",
+                    "font-medium text-sm text-(--muted) flex items-center p-2 rounded-lg",
                     {
-                      "text-(--foreground)": isActive,
+                      "text-(--background) bg-(--primary)": isActive,
+                      "hover:text-(--foreground)":
+                        !isActive,
                     },
                   )}
                 >
