@@ -39,7 +39,12 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
     const el = ref.current;
     if (!el) return;
 
-  }, []);
+    if (collapse) {
+      el.style.maxWidth = "0px";
+    } else {
+      el.style.maxWidth = `${el.scrollWidth}px`;
+    }
+  }, [collapse]);
 
   return (
     <aside className={cn("relative", className)} {...rest}>
@@ -62,10 +67,7 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
       </div>
       <div
         ref={ref}
-        className="h-full will-change-[max-width] overflow-hidden"
-        style={{
-          maxWidth: collapse ? "0" : undefined,
-        }}
+        className="h-full will-change-[max-width] overflow-hidden transition-[max-width] duration-300 ease-in-out"
       >
         <div className="h-full flex flex-col bg-(--background) border-r border-(--border) w-50 p-4">
           <div className="flex items-center mb-4">
