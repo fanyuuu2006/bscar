@@ -124,7 +124,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     <div className={cn("flex flex-col gap-4", className)} {...rest}>
       {/* 篩選工具列 */}
       <div className="card p-4 rounded-xl">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-3">
           {/* 關鍵字搜尋 */}
           <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
@@ -135,11 +135,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               placeholder="搜尋編號、姓名、電話、Email..."
-              className="w-full py-2 pl-9 pr-4 text-sm rounded-lg border border-(--border) bg-gray-50/50 outline-none"
+              className="w-full py-2 pl-9 pr-4 text-xs rounded-lg border border-(--border) bg-gray-50/50 outline-none"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
             {/* 服務篩選 */}
             <div className="relative min-w-0">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
@@ -155,7 +155,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     page: 1,
                   }));
                 }}
-                className="w-full p-2 pl-9 pr-8 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
+                className="w-full py-2 pl-9 pr-8 text-xs rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
               >
                 <option value="all">所有服務</option>
                 {servicesRes?.data?.map((s) => (
@@ -187,7 +187,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     page: 1,
                   }));
                 }}
-                className="w-full p-2 pl-9 pr-8 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
+                className="w-full py-2 pl-9 pr-8 text-xs rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
               >
                 <option value="all">所有狀態</option>
                 {Object.entries(statusMap).map(([key, val]) => (
@@ -202,11 +202,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             </div>
 
             {/* 日期篩選 */}
-            <div className="flex items-center justify-between p-2 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
+            <div className="flex items-center justify-between p-1.5 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
               <input
                 type="date"
                 value={query?.start_date || ""}
-                className="bg-transparent border-none text-sm outline-none cursor-pointer"
+                className="bg-transparent border-none text-xs outline-none cursor-pointer"
                 onChange={(e) => {
                   const val = e.target.value;
                   setQuery((prev) => ({
@@ -220,7 +220,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               <input
                 type="date"
                 value={query?.end_date || ""}
-                className="bg-transparent border-none text-sm outline-none cursor-pointer"
+                className="bg-transparent border-none text-xs outline-none cursor-pointer"
                 onChange={(e) => {
                   const val = e.target.value;
                   setQuery((prev) => ({
