@@ -38,24 +38,26 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
   }, []);
 
   return (
     <aside className={cn("relative", className)} {...rest}>
       {/* 收合按鈕 */}
-      <div className="absolute left-full top-0 h-full flex items-center">
+      <div className="absolute left-full top-0 z-20 flex h-full items-center">
         <button
           onClick={() => setCollapse((prev) => !prev)}
+          className="btn py-4 flex items-center justify-center rounded-r border-l-0"
+          type="button"
         >
           <span className="sr-only">
             {collapse ? "展開側邊欄" : "收合側邊欄"}
           </span>
-          <CaretLeftOutlined  
-            className={cn("text-(--muted) text-lg transition-transform", {
+          <CaretLeftOutlined
+            className={cn("text-(--muted) text-xs transition-transform", {
               "rotate-180": collapse,
             })}
           />
-
         </button>
       </div>
       <div

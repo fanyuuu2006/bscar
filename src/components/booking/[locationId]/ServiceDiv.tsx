@@ -118,7 +118,7 @@ const ServiceCard = ({
         </div>
       </div>
       {/* 服務詳情彈跳窗 */}
-      <modal.Container className="flex items-center justify-center p-4 z-50">
+      <modal.Container className="flex items-center justify-center p-4 z-50 animate-appear">
         <div className="card w-full max-w-lg rounded-2xl flex flex-col max-h-[85vh]">
           {/* 標題與關閉 */}
           <div className="p-4 flex items-center justify-between">

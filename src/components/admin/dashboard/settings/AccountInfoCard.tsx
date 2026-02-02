@@ -138,7 +138,7 @@ export const AccountInfoCard = ({
           </button>
         </div>
       </div>
-      <modal.Container className="bg-black/50 z-50 flex items-center justify-center">
+      <modal.Container className="z-50 flex items-center justify-center p-4 animate-appear">
         <div className="card p-4 rounded-lg max-w-md w-full">
           <h4 className="text-xl font-bold mb-4">變更密碼</h4>
           <form

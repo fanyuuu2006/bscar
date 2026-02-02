@@ -109,7 +109,7 @@
       --background
     ); /* 透明背景讓它更靈活，或者var(--background) */
     color: var(--foreground);
-    border: 1px solid var(--muted); /* 改用稍深的 muted 顏色做邊框，並改為 1px 更精緻 */
+    border: 1px solid var(--border); /* 改用稍深的 muted 顏色做邊框，並改為 1px 更精緻 */
   }
 
   /* Primary Button - 品牌主色 */
@@ -175,5 +175,19 @@
     opacity: 1;
     visibility: visible;
     bottom: 120%;
+  }
+
+  .animate-appear {
+    animation: appear var(--transition-normal)
+      cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  
+  @keyframes appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
