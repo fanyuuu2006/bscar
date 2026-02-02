@@ -43,7 +43,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       status: undefined,
       service_id: undefined,
       start_date: today,
-      end_date: today,
+      end_date: undefined,
     };
   }, []);
 
@@ -202,7 +202,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             </div>
 
             {/* 日期篩選 */}
-            <div className="flex items-center justify-between p-2 bg-gray-50/50 rounded-lg border border-(--border) px-2 gap-1">
+            <div className="flex items-center justify-between p-2 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
               <input
                 type="date"
                 value={query?.start_date || ""}
