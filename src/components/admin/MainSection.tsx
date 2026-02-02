@@ -73,7 +73,7 @@ export const MainSection = () => {
                   onChange={(e) => handleChange(field.id, e.target.value)}
                   placeholder={`請輸入${field.label}`}
                   className={cn(
-                    "w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all disabled:opacity-50 disabled:cursor-not-allowed",
+                    "w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all",
                     field.id === "password" && "pr-10",
                   )}
                 />

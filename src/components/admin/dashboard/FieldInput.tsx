@@ -11,6 +11,7 @@ export type FieldInputProps = OverrideProps<
       label: string;
       hint?: string;
       type: string;
+      required?: boolean;
     };
 
     value: string;
@@ -40,6 +41,7 @@ export const FieldInput = ({
       <div className="relative">
         <input
           id={field.id}
+          required={field.required}
           type={field.type === "password" && showPassword ? "text" : field.type}
           value={value}
           onChange={onChange}
