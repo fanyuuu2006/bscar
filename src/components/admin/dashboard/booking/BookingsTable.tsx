@@ -20,6 +20,7 @@ import {
   FilterOutlined,
   InboxOutlined,
   LoadingOutlined,
+  CaretDownOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
@@ -123,9 +124,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     <div className={cn("flex flex-col gap-4", className)} {...rest}>
       {/* 篩選工具列 */}
       <div className="card p-4 rounded-xl">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* 關鍵字搜尋 */}
-          <div className="relative flex-1 min-w-0">
+          <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
               <SearchOutlined />
             </div>
@@ -134,109 +135,114 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               placeholder="搜尋編號、姓名、電話、Email..."
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-(--border) bg-gray-50/50 outline-none"
+              className="w-full py-2 pl-9 pr-4 text-sm rounded-lg border border-(--border) bg-gray-50/50 outline-none"
             />
           </div>
 
-          {/* 服務篩選 */}
-          <div className="relative min-w-0">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
-              <FilterOutlined />
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* 服務篩選 */}
+            <div className="relative min-w-0">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
+                <FilterOutlined />
+              </div>
+              <select
+                value={query?.service_id || "all"}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setQuery((prev) => ({
+                    ...prev,
+                    service_id: val === "all" ? undefined : val,
+                    page: 1,
+                  }));
+                }}
+                className="w-full p-2 pl-9 pr-8 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
+              >
+                <option value="all">所有服務</option>
+                {servicesRes?.data?.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
+                <CaretDownOutlined />
+              </div>
             </div>
-            <select
-              value={query?.service_id || "all"}
-              onChange={(e) => {
-                const val = e.target.value;
-                setQuery((prev) => ({
-                  ...prev,
-                  service_id: val === "all" ? undefined : val,
-                  page: 1,
-                }));
-              }}
-              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
-            >
-              <option value="all">所有服務</option>
-              {servicesRes?.data?.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
-              ▼
+
+            {/* 狀態篩選 */}
+            <div className="relative min-w-0">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
+                <FilterOutlined />
+              </div>
+              <select
+                value={query?.status || "all"}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setQuery((prev) => ({
+                    ...prev,
+                    status:
+                      val === "all"
+                        ? undefined
+                        : (val as SupabaseBooking["status"]),
+                    page: 1,
+                  }));
+                }}
+                className="w-full p-2 pl-9 pr-8 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
+              >
+                <option value="all">所有狀態</option>
+                {Object.entries(statusMap).map(([key, val]) => (
+                  <option key={key} value={key}>
+                    {val.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
+                <CaretDownOutlined />
+              </div>
+            </div>
+
+            {/* 日期篩選 */}
+            <div className="flex items-center justify-between p-2 bg-gray-50/50 rounded-lg border border-(--border) px-2 gap-1">
+              <input
+                type="date"
+                value={query?.start_date || ""}
+                className="bg-transparent border-none text-sm outline-none cursor-pointer"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setQuery((prev) => ({
+                    ...prev,
+                    start_date: val || undefined,
+                    page: 1,
+                  }));
+                }}
+              />
+              <span className="text-(--muted) px-1">-</span>
+              <input
+                type="date"
+                value={query?.end_date || ""}
+                className="bg-transparent border-none text-sm outline-none cursor-pointer"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setQuery((prev) => ({
+                    ...prev,
+                    end_date: val || undefined,
+                    page: 1,
+                  }));
+                }}
+              />
+            </div>
+
+            {/* 重置按鈕 */}
+            <div>
+              <button
+                onClick={handleReset}
+                className="p-2 flex items-center justify-center text-(--muted) rounded-lg border border-(--border) bg-gray-50/50"
+                title="清除篩選"
+              >
+                <ReloadOutlined />
+              </button>
             </div>
           </div>
-
-          {/* 狀態篩選 */}
-          <div className="relative min-w-0">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
-              <FilterOutlined />
-            </div>
-            <select
-              value={query?.status || "all"}
-              onChange={(e) => {
-                const val = e.target.value;
-                setQuery((prev) => ({
-                  ...prev,
-                  status:
-                    val === "all"
-                      ? undefined
-                      : (val as SupabaseBooking["status"]),
-                  page: 1,
-                }));
-              }}
-              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
-            >
-              <option value="all">所有狀態</option>
-              {Object.entries(statusMap).map(([key, val]) => (
-                <option key={key} value={key}>
-                  {val.label}
-                </option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
-              ▼
-            </div>
-          </div>
-
-          {/* 日期篩選 */}
-          <div className="flex items-center bg-gray-50/50 rounded-lg border border-(--border) p-1">
-            <input
-              type="date"
-              value={query?.start_date || ""}
-              className="border-none text-sm p-1 outline-none cursor-pointer"
-              onChange={(e) => {
-                const val = e.target.value;
-                setQuery((prev) => ({
-                  ...prev,
-                  start_date: val || undefined,
-                  page: 1,
-                }));
-              }}
-            />
-            <span className="text-(--muted) px-1">至</span>
-            <input
-              type="date"
-              value={query?.end_date || ""}
-              className="border-none text-sm p-1 outline-none cursor-pointer"
-              onChange={(e) => {
-                const val = e.target.value;
-                setQuery((prev) => ({
-                  ...prev,
-                  end_date: val || undefined,
-                  page: 1,
-                }));
-              }}
-            />
-          </div>
-
-          <button
-            onClick={handleReset}
-            className="text-(--muted) rounded-lg"
-            title="清除篩選"
-          >
-            <ReloadOutlined />
-          </button>
         </div>
       </div>
 
