@@ -182,7 +182,7 @@ export const MainSection = ({
               <select
                 value={newBooking.service_id}
                 onChange={onServiceChange}
-                className="p-2 border-(--border) rounded-lg bg-black/5"
+                className="p-2 border-(--border) border rounded-lg bg-gray-50/50"
               >
                 {services.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -211,7 +211,7 @@ export const MainSection = ({
               <select
                 value={newBooking.status}
                 onChange={onStatusChange}
-                className="p-2 border-(--border) rounded-lg bg-black/5"
+                className="p-2 border-(--border) border rounded-lg bg-gray-50/50"
               >
                 {Object.entries(statusMap).map(([key, value]) => (
                   <option key={key} value={key}>

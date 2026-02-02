@@ -43,7 +43,7 @@ export const FieldInput = ({
           type={field.type === "password" && showPassword ? "text" : field.type}
           value={value}
           onChange={onChange}
-          className={cn("w-full p-2 border-(--border) rounded-lg bg-black/5")}
+          className={cn("w-full p-2 border-(--border) border rounded-lg bg-gray-50/50")}
         />
         {field.type === "password" && (
           <button

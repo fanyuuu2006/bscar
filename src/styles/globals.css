@@ -82,6 +82,7 @@
   /* 點擊樣式 */
   button:active,
   .btn:active {
+    filter: brightness(0.9);
     transform: scale(0.95);
   }
 
