@@ -124,7 +124,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     <div className={cn("flex flex-col gap-4", className)} {...rest}>
       {/* 篩選工具列 */}
       <div className="card p-4 rounded-xl">
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
           {/* 關鍵字搜尋 */}
           <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
@@ -139,7 +139,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {/* 服務篩選 */}
             <div className="relative min-w-0">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
@@ -265,7 +265,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 <th className="px-5 py-3 font-medium whitespace-nowrap">
                   顧客資訊
                 </th>
-                <th className="px-5 py-3 font-medium whitespace-nowrap">
+                <th className="px-5 py-3 font-medium whitespace-nowrap text-center">
                   服務項目
                 </th>
                 <th
@@ -281,7 +281,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     />
                   </div>
                 </th>
-                <th className="px-5 py-3 font-medium whitespace-nowrap">
+                <th className="px-5 py-3 font-medium whitespace-nowrap text-center">
                   狀態
                 </th>
                 <th className="px-5 py-3 font-medium whitespace-nowrap text-center">
@@ -481,9 +481,11 @@ const TableRow = memo(
           </div>
         </td>
         <td className="px-5 py-3 text-sm">
-          <span className="flex items-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max border-(--border) bg-gray-50/50">
-            {service?.name || "-"}
-          </span>
+          <div className="flex items-center justify-center">
+            <span className="flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max border-(--border) bg-gray-50/50">
+              {service?.name || "-"}
+            </span>
+          </div>
         </td>
         <td className="px-5 py-3">
           <div className="flex flex-col text-sm">
@@ -495,7 +497,7 @@ const TableRow = memo(
             </span>
           </div>
         </td>
-        <td className="px-5 py-3">
+        <td className="px-5 py-3 text-center">
           <span
             className={cn(
               "flex items-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max",
