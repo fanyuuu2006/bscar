@@ -10,7 +10,6 @@ import {
 import { SupabaseAdmin } from "@/types";
 import { getAdminMe, adminLogin } from "@/utils/backend";
 import { useAdminToken } from "@/hooks/useAdminToken";
-import { useRouter } from "next/navigation";
 
 interface AdminContextType {
   admin: SupabaseAdmin | null;
@@ -26,12 +25,10 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [admin, setAdmin] = useState<SupabaseAdmin | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Default loading to true until token check
   const { token, setToken, removeToken, isLoaded } = useAdminToken();
-  const router = useRouter();
 
   const refresh = useCallback(() => {
     if (!token) {
       setAdmin(null);
-      router.replace("/admin");
       setLoading(false);
       return;
     }
@@ -40,17 +37,15 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     getAdminMe(token)
       .then((data) => {
         setAdmin(data.data);
-        router.replace("/admin/dashboard");
       })
       .catch(() => {
         setAdmin(null);
         removeToken();
-        router.replace("/admin");
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [removeToken, router, token]);
+  }, [removeToken, token]);
 
   // 當 token 載入完成或變更時，觸發 refresh
   useEffect(() => {

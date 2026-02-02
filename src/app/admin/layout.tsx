@@ -1,4 +1,5 @@
 import { AdminProvider } from "@/contexts/AdminContext";
+import { AuthGuard } from "@/components/admin/AuthGuard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,5 +12,9 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <AdminProvider>{children}</AdminProvider>;
+  return (
+    <AdminProvider>
+      <AuthGuard>{children}</AuthGuard>
+    </AdminProvider>
+  );
 }
