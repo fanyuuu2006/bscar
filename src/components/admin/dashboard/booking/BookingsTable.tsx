@@ -118,7 +118,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   );
 
   return (
-    <div className={cn("space-y-4", className)} {...rest}>
+    <div className={cn("flex flex-col gap-4", className)} {...rest}>
       {/* 篩選工具列 */}
       <div className="card p-4 rounded-xl">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
@@ -239,7 +239,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       </div>
 
       {/* 表格區塊 */}
-      <div className="card rounded-xl overflow-hidden max-h-full flex flex-col">
+      <div className="card rounded-xl overflow-hidden flex-1 min-h-0 flex flex-col">
         <div className="flex items-center justify-between px-5 py-3">
           <h3 className="font-semibold">預約列表</h3>
           <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
@@ -247,10 +247,10 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="flex-1 overflow-auto min-h-0">
           <table className="w-full text-left border-y border-(--border) border-collapse">
             <thead>
-              <tr className="border-b border-(--border) bg-gray-50/50 text-xs text-(--muted)">
+              <tr className="sticky top-0 z-10 border-b border-(--border) bg-gray-50 text-xs text-(--muted)">
                 <th className="px-5 py-3 font-medium whitespace-nowrap">
                   編號
                 </th>
