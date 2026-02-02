@@ -239,7 +239,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   </select>
                 </div>
               </th>
-              <th className="px-6 py-4 font-medium whitespace-nowrap text-right">
+              <th className="px-6 py-4 font-medium whitespace-nowrap text-center">
                 操作
               </th>
             </tr>
@@ -314,7 +314,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             第 {query?.page || 1} 頁
           </span>
           <button
-            disabled={!data?.data || data.data.length < (query?.count || 10)}
             onClick={() =>
               setQuery((prev) => ({ ...prev, page: (prev?.page || 1) + 1 }))
             }
@@ -446,9 +445,9 @@ const TableRow = memo(
             {status.label}
           </span>
         </td>
-        <td className="px-6 py-4 text-sm text-right whitespace-nowrap">
+        <td className="px-6 py-4 text-sm text-center whitespace-nowrap">
           {/* 操作按鈕群組 */}
-          <div className="flex items-center justify-end gap-1.5">
+          <div className="flex items-center justify-center gap-1.5">
             {operations.map((oper) => {
               const { className: operClassName, ...operRest } = oper.props;
               const Component = oper.component;
