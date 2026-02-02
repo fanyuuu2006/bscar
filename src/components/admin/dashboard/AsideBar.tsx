@@ -42,14 +42,20 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
 
   return (
     <aside className={cn("relative", className)} {...rest}>
-      <div className="absolute left-full top-0 flex items-center">
+      {/* 收合按鈕 */}
+      <div className="absolute left-full top-0 h-full flex items-center">
         <button
           onClick={() => setCollapse((prev) => !prev)}
         >
           <span className="sr-only">
             {collapse ? "展開側邊欄" : "收合側邊欄"}
           </span>
-          <CaretLeftOutlined  />
+          <CaretLeftOutlined  
+            className={cn("text-(--muted) text-lg transition-transform", {
+              "rotate-180": collapse,
+            })}
+          />
+
         </button>
       </div>
       <div

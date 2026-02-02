@@ -18,6 +18,8 @@ import {
   ReloadOutlined,
   SearchOutlined,
   FilterOutlined,
+  InboxOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
@@ -284,27 +286,33 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             <tbody className="divide-y divide-(--border)">
               {isLoading ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="py-16 text-center text-sm text-(--muted)"
-                  >
-                    載入中...
+                  <td colSpan={6} className="py-32 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3 text-(--muted)">
+                      <LoadingOutlined className="text-3xl" />
+                      <span className="text-sm font-medium">
+                        正在載入預約資料...
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ) : filteredBookings.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="py-16 text-center text-sm text-(--muted)"
-                  >
-                    <div className="flex flex-col items-center gap-2">
-                      <span>無符合條件的資料</span>
-                      <button
-                        onClick={handleReset}
-                        className="text-xs hover:underline"
-                      >
-                        重置篩選
-                      </button>
+                  <td colSpan={6} className="py-24 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3 text-(--muted)">
+                      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 border border-(--border)">
+                        <InboxOutlined className="text-2xl opacity-50" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm font-medium">
+                          沒有找到符合條件的預約
+                        </span>
+                        <button
+                          onClick={handleReset}
+                          className="text-xs hover:underline transition-colors"
+                        >
+                          清除篩選條件
+                        </button>
+                      </div>
                     </div>
                   </td>
                 </tr>
