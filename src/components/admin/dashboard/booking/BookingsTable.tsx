@@ -29,22 +29,23 @@ type BookingsTableProps = DistributiveOmit<
   "children"
 >;
 
-// 定義預設查詢參數
-const DEFAULT_QUERY = {
-  page: 1,
-  count: 50,
-  status: undefined,
-  service_id: undefined,
-  start_date: undefined,
-  end_date: undefined,
-};
-
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const { token } = useAdminToken();
 
-  const [query, setQuery] =
-    useState<Parameters<typeof bookingsByAdmin>["1"]>(DEFAULT_QUERY);
+  const defaultQuery = useMemo(() => {
+    const today = formatDate("YYYY-MM-DD", new Date());
+    return {
+      page: 1,
+      count: 50,
+      status: undefined,
+      service_id: undefined,
+      start_date: today,
+      end_date: today,
+    };
+  }, []);
 
+  const [query, setQuery] =
+    useState<Parameters<typeof bookingsByAdmin>["1"]>(defaultQuery);
   const { data, isLoading, mutate } = useSWR(
     token ? ["admin-bookings", token, query] : null,
     () => bookingsByAdmin(token!, query),
@@ -62,7 +63,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   // 使用 inputQuery 作為即時輸入
   const [inputQuery, setInputQuery] = useState("");
 
-  const [timeAscending, setTimeAscending] = useState<boolean>(false);
+  const [timeAscending, setTimeAscending] = useState<boolean>(true);
 
   // 防抖 inputQuery -> query.keyword
   useEffect(() => {
@@ -90,9 +91,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, [data, timeAscending]);
 
   const handleReset = useCallback(() => {
-    setQuery(DEFAULT_QUERY);
+    setQuery(defaultQuery);
     setInputQuery("");
-  }, []);
+  }, [defaultQuery]);
 
   const handleStatusUpdate = useCallback(
     async (booking: SupabaseBooking, newStatus: SupabaseBooking["status"]) => {
@@ -266,12 +267,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   <div className="flex items-center gap-1">
                     <span>預約時間</span>
                     <ArrowDownOutlined
-                      className={cn(
-                        "transition-transform duration-300",
-                        {
-                          "rotate-180": timeAscending,
-                        },
-                      )}
+                      className={cn("transition-transform duration-300", {
+                        "rotate-180": timeAscending,
+                      })}
                     />
                   </div>
                 </th>
@@ -482,7 +480,7 @@ const TableRow = memo(
         <td className="px-6 py-4">
           <span
             className={cn(
-              "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-transparent",
+              "flex items-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max",
               status.className,
             )}
           >
