@@ -8,6 +8,7 @@ import { cn } from "@/utils/className";
 import { useEffect, useRef, useState } from "react";
 import { SupabaseLocation } from "@/types";
 import { getLocationById } from "@/utils/backend";
+import { CaretLeftOutlined } from "@ant-design/icons";
 
 type AsideBarProps = React.HTMLAttributes<HTMLElement>;
 
@@ -45,7 +46,10 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
         <button
           onClick={() => setCollapse((prev) => !prev)}
         >
-          {collapse ? "▶" : "◀"}
+          <span className="sr-only">
+            {collapse ? "展開側邊欄" : "收合側邊欄"}
+          </span>
+          <CaretLeftOutlined  />
         </button>
       </div>
       <div

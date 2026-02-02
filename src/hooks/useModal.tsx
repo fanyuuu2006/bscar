@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/utils/className";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback,  useRef, useState } from "react";
 
 export type ModalContainerProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -64,16 +64,16 @@ export const useModal = ({
     [clickOutsideToClose, handleClose, onClose]
   );
 
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isModalOpen]);
+  // useEffect(() => {
+  //   if (isModalOpen) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "";
+  //   }
+  //   return () => {
+  //     document.body.style.overflow = "";
+  //   };
+  // }, [isModalOpen]);
 
   return {
     Container,

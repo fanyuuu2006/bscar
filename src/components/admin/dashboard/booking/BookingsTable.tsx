@@ -239,7 +239,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       </div>
 
       {/* 表格區塊 */}
-      <div className="card rounded-xl overflow-hidden flex flex-col">
+      <div className="card rounded-xl overflow-hidden max-h-full flex flex-col">
         <div className="flex items-center justify-between px-5 py-3">
           <h3 className="font-semibold">預約列表</h3>
           <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
@@ -248,9 +248,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-y border-(--border) border-collapse">
             <thead>
-              <tr className="border-y border-(--border) bg-gray-50/50 text-xs text-(--muted)">
+              <tr className="border-b border-(--border) bg-gray-50/50 text-xs text-(--muted)">
                 <th className="px-5 py-3 font-medium whitespace-nowrap">
                   編號
                 </th>
