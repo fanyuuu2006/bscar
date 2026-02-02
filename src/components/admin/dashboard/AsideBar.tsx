@@ -49,10 +49,10 @@ export const AsideBar = ({ className, ...rest }: AsideBarProps) => {
   return (
     <aside className={cn("relative", className)} {...rest}>
       {/* 收合按鈕 */}
-      <div className="absolute left-full top-0 z-20 flex h-full items-center">
+      <div className="absolute left-995/1000 top-0 z-20 flex h-full items-center">
         <button
           onClick={() => setCollapse((prev) => !prev)}
-          className="btn py-4 flex items-center justify-center rounded-r border-l-0"
+          className="btn py-4 flex items-center justify-center rounded-r border-l-(--background) bg-(--background)"
           type="button"
         >
           <span className="sr-only">
