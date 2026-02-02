@@ -240,7 +240,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
       {/* 表格區塊 */}
       <div className="card rounded-xl overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center justify-between px-5 py-3">
           <h3 className="font-semibold">預約列表</h3>
           <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
             共 {filteredBookings.length} 筆
@@ -251,17 +251,17 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-y border-(--border) bg-gray-50/50 text-xs text-(--muted)">
-                <th className="px-6 py-4 font-medium whitespace-nowrap">
+                <th className="px-5 py-3 font-medium whitespace-nowrap">
                   編號
                 </th>
-                <th className="px-6 py-4 font-medium whitespace-nowrap">
+                <th className="px-5 py-3 font-medium whitespace-nowrap">
                   顧客資訊
                 </th>
-                <th className="px-6 py-4 font-medium whitespace-nowrap">
+                <th className="px-5 py-3 font-medium whitespace-nowrap">
                   服務項目
                 </th>
                 <th
-                  className="px-6 py-4 font-medium whitespace-nowrap cursor-pointer"
+                  className="px-5 py-3 font-medium whitespace-nowrap cursor-pointer"
                   onClick={() => setTimeAscending((prev) => !prev)}
                 >
                   <div className="flex items-center gap-1">
@@ -273,10 +273,10 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     />
                   </div>
                 </th>
-                <th className="px-6 py-4 font-medium whitespace-nowrap">
+                <th className="px-5 py-3 font-medium whitespace-nowrap">
                   狀態
                 </th>
-                <th className="px-6 py-4 font-medium whitespace-nowrap text-center">
+                <th className="px-5 py-3 font-medium whitespace-nowrap text-center">
                   操作
                 </th>
               </tr>
@@ -452,10 +452,10 @@ const TableRow = memo(
 
     return (
       <tr className={cn("group", className)} {...rest}>
-        <td className="px-6 py-4 text-xs font-mono text-(--muted)">
+        <td className="px-5 py-3 text-xs font-mono text-(--muted)">
           #{item.id.slice(0, 8)}...
         </td>
-        <td className="px-6 py-4">
+        <td className="px-5 py-3">
           <div className="flex flex-col gap-0.5">
             <span className="text-sm font-medium">{item.customer_name}</span>
             <span className="text-xs text-(--muted)">
@@ -466,8 +466,12 @@ const TableRow = memo(
             </span>
           </div>
         </td>
-        <td className="px-6 py-4 text-sm">{service?.name || "-"}</td>
-        <td className="px-6 py-4">
+        <td className="px-5 py-3 text-sm">
+          <span className="flex items-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max border-(--border) bg-gray-50/50">
+            {service?.name || "-"}
+          </span>
+        </td>
+        <td className="px-5 py-3">
           <div className="flex flex-col text-sm">
             <span className="text-(--foreground)">
               {formatDate("YYYY/MM/DD", item.booking_time)}
@@ -477,7 +481,7 @@ const TableRow = memo(
             </span>
           </div>
         </td>
-        <td className="px-6 py-4">
+        <td className="px-5 py-3">
           <span
             className={cn(
               "flex items-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max",
@@ -487,7 +491,7 @@ const TableRow = memo(
             {status.label}
           </span>
         </td>
-        <td className="px-6 py-4 text-sm text-center whitespace-nowrap">
+        <td className="px-5 py-3 text-sm text-center whitespace-nowrap">
           {/* 操作按鈕群組 */}
           <div className="flex items-center justify-center gap-1.5">
             {operations.map((oper) => {
