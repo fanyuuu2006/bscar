@@ -131,7 +131,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               placeholder="搜尋編號、姓名、電話、Email..."
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-(--border) bg-black/5 outline-none"
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-(--border) bg-gray-50/50 outline-none"
             />
           </div>
 
@@ -150,7 +150,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   page: 1,
                 }));
               }}
-              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-black/5 appearance-none outline-none cursor-pointer"
+              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
             >
               <option value="all">所有服務</option>
               {servicesRes?.data?.map((s) => (
@@ -182,7 +182,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   page: 1,
                 }));
               }}
-              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-black/5 appearance-none outline-none cursor-pointer"
+              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
             >
               <option value="all">所有狀態</option>
               {Object.entries(statusMap).map(([key, val]) => (
@@ -197,7 +197,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           </div>
 
           {/* 日期篩選 */}
-          <div className="flex items-center bg-black/5 rounded-lg border border-(--border) p-1">
+          <div className="flex items-center bg-gray-50/50 rounded-lg border border-(--border) p-1">
             <input
               type="date"
               value={query?.start_date || ""}
@@ -238,10 +238,10 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       </div>
 
       {/* 表格區塊 */}
-      <div className="card rounded-xl overflow-hidden border border-(--border) bg-white flex flex-col shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-(--border)">
+      <div className="card rounded-xl overflow-hidden flex flex-col">
+        <div className="flex items-center justify-between px-6 py-4">
           <h3 className="font-semibold">預約列表</h3>
-          <span className="text-xs text-(--muted) bg-gray-100 px-2 py-1 rounded-full">
+          <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
             共 {filteredBookings.length} 筆
           </span>
         </div>
@@ -249,28 +249,27 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-(--border) bg-gray-50/50 text-xs text-(--muted)">
-                <th className="px-6 py-4 font-medium whitespace-nowrap w-30">
+              <tr className="border-y border-(--border) bg-gray-50/50 text-xs text-(--muted)">
+                <th className="px-6 py-4 font-medium whitespace-nowrap">
                   編號
                 </th>
-                <th className="px-6 py-4 font-medium whitespace-nowrap min-w-40">
+                <th className="px-6 py-4 font-medium whitespace-nowrap">
                   顧客資訊
                 </th>
                 <th className="px-6 py-4 font-medium whitespace-nowrap">
                   服務項目
                 </th>
                 <th
-                  className="px-6 py-4 font-medium whitespace-nowrap cursor-pointer hover:text-(--foreground) transition-colors group"
+                  className="px-6 py-4 font-medium whitespace-nowrap cursor-pointer"
                   onClick={() => setTimeAscending((prev) => !prev)}
                 >
                   <div className="flex items-center gap-1">
                     <span>預約時間</span>
                     <ArrowDownOutlined
                       className={cn(
-                        "text-[10px] transition-transform duration-300",
+                        "transition-transform duration-300",
                         {
                           "rotate-180": timeAscending,
-                          "opacity-50 group-hover:opacity-100": true,
                         },
                       )}
                     />
@@ -304,9 +303,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                       <span>無符合條件的資料</span>
                       <button
                         onClick={handleReset}
-                        className="text-(--primary) text-xs hover:underline"
+                        className="text-xs hover:underline"
                       >
-                        重置篩選器
+                        重置篩選
                       </button>
                     </div>
                   </td>
@@ -326,7 +325,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         </div>
 
         {/* 分頁控制 */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-(--border) bg-gray-50/30">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-(--border)">
           <div className="flex items-center gap-2 text-sm text-(--muted)">
             <span>顯示</span>
             <select
@@ -338,7 +337,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   page: 1,
                 }))
               }
-              className="h-8 rounded-md border border-(--border) bg-white px-2 text-xs outline-none focus:border-(--primary)"
+              className="p-2 rounded-md border border-(--border) bg-gray-50/50 px-2 text-xs outline-none cursor-pointer"
             >
               <option value={10}>10</option>
               <option value={20}>20</option>
@@ -354,7 +353,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               onClick={() =>
                 setQuery((prev) => ({ ...prev, page: (prev?.page || 1) - 1 }))
               }
-              className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn py-2 px-3 text-sm rounded-md"
             >
               上一頁
             </button>
@@ -365,10 +364,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               onClick={() =>
                 setQuery((prev) => ({ ...prev, page: (prev?.page || 1) + 1 }))
               }
-              disabled={data?.data?.length !== (query?.count || 50)} // 簡單判斷：如果回傳數量少於每頁數量，通常代表最後一頁 (需視後端 API 而定，如果剛好整除可能會有誤判，但暫時可用)
-              // 更好的判斷是後端回傳 total count，但這裡 data 結構未知，先假設簡單 logic 或 keep it simple
-              // 原程式碼沒有 disabled，我照舊移除 disabled 屬性或者保持"下一頁"總是可點，直到沒資料
-              className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn py-2 px-3 text-sm rounded-md"
             >
               下一頁
             </button>
@@ -463,9 +459,7 @@ const TableRow = memo(
         </td>
         <td className="px-6 py-4">
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-medium">
-              {item.customer_name}
-            </span>
+            <span className="text-sm font-medium">{item.customer_name}</span>
             <span className="text-xs text-(--muted)">
               {item.customer_phone}
             </span>
@@ -474,9 +468,7 @@ const TableRow = memo(
             </span>
           </div>
         </td>
-        <td className="px-6 py-4 text-sm">
-          {service?.name || "-"}
-        </td>
+        <td className="px-6 py-4 text-sm">{service?.name || "-"}</td>
         <td className="px-6 py-4">
           <div className="flex flex-col text-sm">
             <span className="text-(--foreground)">
