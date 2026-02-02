@@ -13,7 +13,7 @@ export const MainSection = () => {
       <LocationInfoCard className="w-full" />
       <button
         onClick={logOut}
-        className="mt-8 rounded-lg bg-(--accent) px-4 py-2 font-bold text-(--background)"
+        className="mt-4 rounded-lg bg-(--accent) px-4 py-2 font-bold text-(--background)"
       >
         登出後台
       </button>

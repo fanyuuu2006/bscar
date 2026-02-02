@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdmin } from "@/contexts/AdminContext";
+import { LoadingOutlined } from "@ant-design/icons";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
@@ -28,7 +29,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   if (loading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <LoadingOutlined className="text-4xl" />
       </div>
     );
   }
