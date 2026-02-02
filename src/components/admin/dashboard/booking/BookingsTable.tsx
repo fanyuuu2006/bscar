@@ -337,8 +337,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         </div>
 
         {/* 分頁控制 */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-(--border)">
-          <div className="flex items-center gap-2 text-sm text-(--muted)">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 border-t border-(--border)">
+          <div className="flex items-center gap-2 text-xs text-(--muted)">
             <span>顯示</span>
             <select
               value={query?.count || 10}
@@ -349,7 +349,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   page: 1,
                 }))
               }
-              className="p-2 rounded-md border border-(--border) bg-gray-50/50 px-2 text-xs outline-none cursor-pointer"
+              className="py-1 px-2 rounded-md border border-(--border) bg-gray-50/50 text-xs outline-none cursor-pointer"
             >
               <option value={10}>10</option>
               <option value={20}>20</option>
@@ -365,18 +365,18 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               onClick={() =>
                 setQuery((prev) => ({ ...prev, page: (prev?.page || 1) - 1 }))
               }
-              className="btn py-2 px-3 text-sm rounded-md"
+              className="btn py-1.5 px-3 text-xs rounded-md"
             >
               上一頁
             </button>
-            <span className="text-sm font-medium min-w-16 text-center">
+            <span className="text-xs font-medium min-w-12 text-center">
               第 {query?.page || 1} 頁
             </span>
             <button
               onClick={() =>
                 setQuery((prev) => ({ ...prev, page: (prev?.page || 1) + 1 }))
               }
-              className="btn py-2 px-3 text-sm rounded-md"
+              className="btn py-1.5 px-3 text-xs rounded-md"
             >
               下一頁
             </button>
