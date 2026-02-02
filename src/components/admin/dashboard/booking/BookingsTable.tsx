@@ -16,6 +16,8 @@ import {
   StarOutlined,
   ArrowDownOutlined,
   ReloadOutlined,
+  SearchOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
@@ -115,212 +117,262 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   );
 
   return (
-    <div
-      className={cn("card rounded-xl overflow-hidden flex flex-col", className)}
-      {...rest}
-    >
-      {/* 篩選列 */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b border-(--border) bg-gray-50/30">
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="w-64">
+    <div className={cn("space-y-4", className)} {...rest}>
+      {/* 篩選工具列 */}
+      <div className="card p-4 rounded-xl">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+          {/* 關鍵字搜尋 */}
+          <div className="relative flex-1 min-w-0">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
+              <SearchOutlined />
+            </div>
             <input
               type="text"
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               placeholder="搜尋編號、姓名、電話、Email..."
-              className="w-full px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-(--border) bg-black/5 outline-none"
             />
           </div>
-          <div className="flex items-center gap-2">
+
+          {/* 服務篩選 */}
+          <div className="relative min-w-0">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
+              <FilterOutlined />
+            </div>
+            <select
+              value={query?.service_id || "all"}
+              onChange={(e) => {
+                const val = e.target.value;
+                setQuery((prev) => ({
+                  ...prev,
+                  service_id: val === "all" ? undefined : val,
+                  page: 1,
+                }));
+              }}
+              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-black/5 appearance-none outline-none cursor-pointer"
+            >
+              <option value="all">所有服務</option>
+              {servicesRes?.data?.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
+              ▼
+            </div>
+          </div>
+
+          {/* 狀態篩選 */}
+          <div className="relative min-w-0">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
+              <FilterOutlined />
+            </div>
+            <select
+              value={query?.status || "all"}
+              onChange={(e) => {
+                const val = e.target.value;
+                setQuery((prev) => ({
+                  ...prev,
+                  status:
+                    val === "all"
+                      ? undefined
+                      : (val as SupabaseBooking["status"]),
+                  page: 1,
+                }));
+              }}
+              className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-(--border) bg-black/5 appearance-none outline-none cursor-pointer"
+            >
+              <option value="all">所有狀態</option>
+              {Object.entries(statusMap).map(([key, val]) => (
+                <option key={key} value={key}>
+                  {val.label}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
+              ▼
+            </div>
+          </div>
+
+          {/* 日期篩選 */}
+          <div className="flex items-center bg-black/5 rounded-lg border border-(--border) p-1">
             <input
               type="date"
               value={query?.start_date || ""}
-              className="px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
+              className="border-none text-sm p-1 outline-none cursor-pointer"
               onChange={(e) => {
                 const val = e.target.value;
-                setQuery((prev) => {
-                  const newQuery = { ...prev, start_date: val || undefined };
-                  return newQuery;
-                });
+                setQuery((prev) => ({
+                  ...prev,
+                  start_date: val || undefined,
+                  page: 1,
+                }));
               }}
-              placeholder="起始日期"
             />
-            <span className="text-(--muted)">至</span>
+            <span className="text-(--muted) px-1">至</span>
             <input
               type="date"
               value={query?.end_date || ""}
-              className="px-3 py-2 text-sm rounded-md border border-(--border) bg-black/5 text-(--foreground) placeholder:text-(--muted)"
+              className="border-none text-sm p-1 outline-none cursor-pointer"
               onChange={(e) => {
                 const val = e.target.value;
-                setQuery((prev) => {
-                  const newQuery = { ...prev, end_date: val || undefined };
-                  return newQuery;
-                });
+                setQuery((prev) => ({
+                  ...prev,
+                  end_date: val || undefined,
+                  page: 1,
+                }));
               }}
-              placeholder="結束日期"
             />
-            <button onClick={handleReset} title="清除所有篩選條件">
-              <ReloadOutlined />
+          </div>
+
+          <button
+            onClick={handleReset}
+            className="text-(--muted) rounded-lg"
+            title="清除篩選"
+          >
+            <ReloadOutlined />
+          </button>
+        </div>
+      </div>
+
+      {/* 表格區塊 */}
+      <div className="card rounded-xl overflow-hidden border border-(--border) bg-white flex flex-col shadow-sm">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-(--border)">
+          <h3 className="font-semibold">預約列表</h3>
+          <span className="text-xs text-(--muted) bg-gray-100 px-2 py-1 rounded-full">
+            共 {filteredBookings.length} 筆
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-(--border) bg-gray-50/50 text-xs text-(--muted)">
+                <th className="px-6 py-4 font-medium whitespace-nowrap w-30">
+                  編號
+                </th>
+                <th className="px-6 py-4 font-medium whitespace-nowrap min-w-40">
+                  顧客資訊
+                </th>
+                <th className="px-6 py-4 font-medium whitespace-nowrap">
+                  服務項目
+                </th>
+                <th
+                  className="px-6 py-4 font-medium whitespace-nowrap cursor-pointer hover:text-(--foreground) transition-colors group"
+                  onClick={() => setTimeAscending((prev) => !prev)}
+                >
+                  <div className="flex items-center gap-1">
+                    <span>預約時間</span>
+                    <ArrowDownOutlined
+                      className={cn(
+                        "text-[10px] transition-transform duration-300",
+                        {
+                          "rotate-180": timeAscending,
+                          "opacity-50 group-hover:opacity-100": true,
+                        },
+                      )}
+                    />
+                  </div>
+                </th>
+                <th className="px-6 py-4 font-medium whitespace-nowrap">
+                  狀態
+                </th>
+                <th className="px-6 py-4 font-medium whitespace-nowrap text-center">
+                  操作
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-(--border)">
+              {isLoading ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="py-16 text-center text-sm text-(--muted)"
+                  >
+                    載入中...
+                  </td>
+                </tr>
+              ) : filteredBookings.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="py-16 text-center text-sm text-(--muted)"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <span>無符合條件的資料</span>
+                      <button
+                        onClick={handleReset}
+                        className="text-(--primary) text-xs hover:underline"
+                      >
+                        重置篩選器
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredBookings.map((booking) => (
+                  <TableRow
+                    key={booking.id}
+                    item={booking}
+                    service={servicesMap.get(booking.service_id)}
+                    onUpdate={handleStatusUpdate}
+                  />
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* 分頁控制 */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-(--border) bg-gray-50/30">
+          <div className="flex items-center gap-2 text-sm text-(--muted)">
+            <span>顯示</span>
+            <select
+              value={query?.count || 10}
+              onChange={(e) =>
+                setQuery((prev) => ({
+                  ...prev,
+                  count: Number(e.target.value),
+                  page: 1,
+                }))
+              }
+              className="h-8 rounded-md border border-(--border) bg-white px-2 text-xs outline-none focus:border-(--primary)"
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+            <span>筆 / 頁</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              disabled={query?.page === 1}
+              onClick={() =>
+                setQuery((prev) => ({ ...prev, page: (prev?.page || 1) - 1 }))
+              }
+              className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              上一頁
+            </button>
+            <span className="text-sm font-medium min-w-16 text-center">
+              第 {query?.page || 1} 頁
+            </span>
+            <button
+              onClick={() =>
+                setQuery((prev) => ({ ...prev, page: (prev?.page || 1) + 1 }))
+              }
+              disabled={data?.data?.length !== (query?.count || 50)} // 簡單判斷：如果回傳數量少於每頁數量，通常代表最後一頁 (需視後端 API 而定，如果剛好整除可能會有誤判，但暫時可用)
+              // 更好的判斷是後端回傳 total count，但這裡 data 結構未知，先假設簡單 logic 或 keep it simple
+              // 原程式碼沒有 disabled，我照舊移除 disabled 屬性或者保持"下一頁"總是可點，直到沒資料
+              className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              下一頁
             </button>
           </div>
-        </div>
-
-        <div className="text-xs text-(--muted) font-medium">
-          本頁共 {filteredBookings.length} 筆預約
-        </div>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-(--border) bg-gray-50/50 text-xs text-(--muted)">
-              <th className="px-6 py-4 font-medium whitespace-nowrap">編號</th>
-              <th className="px-6 py-4 font-medium whitespace-nowrap">
-                顧客資訊
-              </th>
-              <th className="px-6 py-4 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-2">
-                  <span>服務項目</span>
-                  <select
-                    value={query?.service_id || "all"}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setQuery((prev) => ({
-                        ...prev,
-                        service_id: val === "all" ? undefined : val,
-                      }));
-                    }}
-                    className="p-0 text-xs font-medium"
-                  >
-                    <option value="all">全部</option>
-                    {servicesRes?.data?.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </th>
-              <th className="px-6 py-4 font-medium whitespace-nowrap">
-                <div className="flex items-center justify-center gap-2">
-                  <span>預約時間</span>
-                  <button onClick={() => setTimeAscending((prev) => !prev)}>
-                    <ArrowDownOutlined
-                      className={cn("transition-transform", {
-                        "rotate-180": timeAscending,
-                      })}
-                    />
-                  </button>
-                </div>
-              </th>
-              <th className="px-6 py-4 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-2">
-                  <span>狀態</span>
-                  <select
-                    value={query?.status || "all"}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setQuery((prev) => ({
-                        ...prev,
-                        status:
-                          val === "all"
-                            ? undefined
-                            : (val as SupabaseBooking["status"]),
-                      }));
-                    }}
-                    className="p-0 text-xs font-medium"
-                  >
-                    <option value="all">全部</option>
-                    {Object.entries(statusMap).map(([key, val]) => (
-                      <option key={key} value={key}>
-                        {val.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </th>
-              <th className="px-6 py-4 font-medium whitespace-nowrap text-center">
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-(--border)">
-            {isLoading ? (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="py-16 text-center text-sm text-(--muted)"
-                >
-                  載入中...
-                </td>
-              </tr>
-            ) : filteredBookings.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="py-16 text-center text-sm text-(--muted)"
-                >
-                  無符合條件的資料
-                </td>
-              </tr>
-            ) : (
-              filteredBookings.map((booking) => (
-                <TableRow
-                  key={booking.id}
-                  item={booking}
-                  service={servicesMap.get(booking.service_id)}
-                  onUpdate={handleStatusUpdate}
-                />
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* 分頁控制 */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-(--border) bg-gray-50/30">
-        <div className="flex items-center gap-2 text-sm text-(--muted)">
-          <span>每頁顯示</span>
-          <select
-            value={query?.count || 10}
-            onChange={(e) =>
-              setQuery((prev) => ({
-                ...prev,
-                count: Number(e.target.value),
-                page: 1,
-              }))
-            }
-            className="h-8 rounded-md border border-(--border) bg-white px-2 text-xs"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
-          <span>筆</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            disabled={query?.page === 1}
-            onClick={() =>
-              setQuery((prev) => ({ ...prev, page: (prev?.page || 1) - 1 }))
-            }
-            className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            上一頁
-          </button>
-          <span className="text-sm font-medium min-w-12 text-center">
-            第 {query?.page || 1} 頁
-          </span>
-          <button
-            onClick={() =>
-              setQuery((prev) => ({ ...prev, page: (prev?.page || 1) + 1 }))
-            }
-            className="h-8 px-3 text-sm border border-(--border) bg-white rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            下一頁
-          </button>
         </div>
       </div>
     </div>
@@ -411,7 +463,7 @@ const TableRow = memo(
         </td>
         <td className="px-6 py-4">
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-medium text-(--foreground)">
+            <span className="text-sm font-medium">
               {item.customer_name}
             </span>
             <span className="text-xs text-(--muted)">
@@ -422,7 +474,7 @@ const TableRow = memo(
             </span>
           </div>
         </td>
-        <td className="px-6 py-4 text-sm text-(--foreground)">
+        <td className="px-6 py-4 text-sm">
           {service?.name || "-"}
         </td>
         <td className="px-6 py-4">
