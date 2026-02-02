@@ -3,8 +3,9 @@ import { useAdminToken } from "@/hooks/useAdminToken";
 import { SupabaseAdmin } from "@/types";
 import { updateAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { FieldInput } from "../FieldInput";
+import { useModal } from "@/hooks/useModal";
 
 type AccountInfoCardProps = React.HTMLAttributes<HTMLDivElement>;
 export const AccountInfoCard = ({
@@ -13,24 +14,9 @@ export const AccountInfoCard = ({
 }: AccountInfoCardProps) => {
   const { admin, refresh } = useAdmin();
   const { token } = useAdminToken();
+  const modal = useModal({});
   const [newAdmin, setNewAdmin] = useState<SupabaseAdmin | null>(admin);
 
-  const formFields = useMemo(
-    () =>
-      [
-        {
-          id: "account",
-          label: "帳號",
-          type: "text",
-        },
-        {
-          id: "password",
-          label: "密碼",
-          type: "password",
-        },
-      ] as const,
-    [],
-  );
   /**
    * 通用的欄位更新器，使用 functional update，避免依賴外部可變物件
    * 使用泛型確保 key 與 value 的型別相符
@@ -42,24 +28,9 @@ export const AccountInfoCard = ({
     [],
   );
 
-  const onAdminInputChange = useCallback(
-    (
-      key: (typeof formFields)[number]["id"],
-      e: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-      handleAdminChange(
-        key as keyof SupabaseAdmin,
-        e.target.value as unknown as SupabaseAdmin[keyof SupabaseAdmin],
-      );
-    },
-    [handleAdminChange],
-  );
-
   const handleSave = useCallback(() => {
     if (!token || !admin || !newAdmin) return;
-    if (
-      JSON.stringify(admin) === JSON.stringify(newAdmin)
-    ) {
+    if (JSON.stringify(admin) === JSON.stringify(newAdmin)) {
       alert("資料未變更");
       return;
     }
@@ -90,14 +61,24 @@ export const AccountInfoCard = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {formFields.map((field) => (
-            <FieldInput
-              key={field.id}
-              field={field}
-              value={newAdmin[field.id as keyof SupabaseAdmin] as string}
-              onChange={(e) => onAdminInputChange(field.id, e)}
-            />
-          ))}
+          <FieldInput
+            field={{
+              id: "account",
+              label: "帳號",
+              type: "text",
+            }}
+            value={newAdmin["account"] as string}
+            onChange={(e) => handleAdminChange("account", e.target.value)}
+          />
+          <div>
+            <button
+              type="button"
+              onClick={modal.open}
+              className="btn mt-7 p-2 w-full rounded-lg font-medium"
+            >
+              變更密碼
+            </button>
+          </div>
         </div>
 
         <div className="flex justify-end">
@@ -109,6 +90,46 @@ export const AccountInfoCard = ({
           </button>
         </div>
       </div>
+      <modal.Container className="bg-black/50 z-50 flex items-center justify-center">
+        <div className="card p-4 rounded-lg max-w-md w-full">
+          <h4 className="text-xl font-bold mb-4">變更密碼</h4>
+          <div className="flex flex-col gap-3">
+            {[
+              {
+                id: "currentPassword",
+                label: "舊密碼",
+                type: "password",
+              },
+              {
+                id: "newPassword",
+                label: "新密碼",
+                type: "password",
+              },
+              {
+                id: "confirmNewPassword",
+                label: "確認新密碼",
+                type: "password",
+              },
+            ].map((field) => (
+              <FieldInput
+                key={field.id}
+                field={field}
+                value={""}
+                onChange={() => {}}
+              />
+            ))}
+          </div>
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              onClick={modal.close}
+              className="px-4 py-2 rounded-lg btn secondary"
+            >
+              取消
+            </button>
+            <button className="px-4 py-2 rounded-lg btn primary">儲存</button>
+          </div>
+        </div>
+      </modal.Container>
     </div>
   );
 };
