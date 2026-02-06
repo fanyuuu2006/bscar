@@ -33,7 +33,7 @@ export const Header = ({ className, ...rest }: HeaderProps) => {
       {...rest}
     >
       <div className="container flex w-full items-center justify-between">
-        <Link href="/" className="flex h-12 items-center gap-2">
+        <Link href="/" className="flex h-10 items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/icons/banner.png"
