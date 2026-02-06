@@ -121,7 +121,7 @@ export const NextBookingCard = ({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2 pt-2 border-t border-dashed border-(--border)">
+              <div className="flex flex-col gap-2 pt-2 border-t border-(--border)">
                 <div className="flex items-center gap-2 text-sm text-(--foreground)">
                   <UserOutlined className="text-(--muted)" />
                   <span className="font-medium">
