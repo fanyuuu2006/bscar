@@ -104,7 +104,7 @@ export const NextBookingCard = ({
             <div className="flex flex-col gap-4 mt-1">
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-violet-600 tracking-tight font-mono">
+                  <span className="text-4xl font-bold text-green-600 tracking-tight font-mono">
                     {formatDate("HH:mm", nextBooking.booking_time)}
                   </span>
                   <span className="text-sm font-medium text-(--muted)">
@@ -112,7 +112,7 @@ export const NextBookingCard = ({
                   </span>
                 </div>
                 <div className="mt-1">
-                  <span className="inline-flex items-center rounded-full bg-violet-50 px-2.5 py-0.5 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-700/10">
+                  <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-700/10">
                     {timeDisplay}
                   </span>
                 </div>
