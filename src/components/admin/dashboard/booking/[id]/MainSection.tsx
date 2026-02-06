@@ -7,7 +7,6 @@ import { getServices, updateBookingByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FieldInput, FieldInputProps } from "../../FieldInput";
@@ -69,6 +68,11 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
     }
   }, [newBooking, router, token, origBooking]);
 
+  const handleCancel = useCallback(() => {
+    router.back();
+  }
+    , [router]);
+
   // 當外部 prop 更新時，同步本地狀態（避免第一次 render 後不同步）
   useEffect(() => {
     setNewBooking(booking);
@@ -92,11 +96,10 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
     return [
       {
         label: "取消",
-        component: Link,
+        component: 'button',
         props: {
-          role: "button",
-          href: "/admin/dashboard/booking",
           className: "btn secondary",
+          onClick: handleCancel,
         },
       },
       {
@@ -110,7 +113,7 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
         },
       },
     ];
-  }, [handleSave, saving]);
+  }, [handleCancel, handleSave, saving]);
 
   // 常用表單欄位定義 memo 化，避免每次 render 重建陣列
   const customerFields: FieldInputProps["field"][] = useMemo(

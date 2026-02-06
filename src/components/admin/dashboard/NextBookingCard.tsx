@@ -89,7 +89,7 @@ export const NextBookingCard = ({
 
   return (
     <div className={cn("card rounded-xl p-6", className)} {...rest}>
-      <div className="flex flex-col h-full gap-4">
+      <div className="flex flex-col h-full gap-2">
         <h3 className="text-lg font-bold flex items-center gap-2 text-(--foreground)">
           <ClockCircleOutlined className="text-green-500" />
           下一筆預約
