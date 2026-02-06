@@ -42,7 +42,7 @@ export const PendingCard = ({ className, ...rest }: PendingCardProps) => {
             </div>
           </div>
         )}
-        <div className="pt-2">
+        <div>
           <Link
             href={`/admin/dashboard/booking?status=pending`}
             className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"

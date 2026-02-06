@@ -88,25 +88,15 @@ export const NextBookingCard = ({
   }, [nextBooking]);
 
   return (
-    <div className={cn("card rounded-xl p-5", className)} {...rest}>
-      <div className="flex flex-col h-full relative">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-base font-bold flex items-center gap-2 text-(--foreground)">
-            <ClockCircleOutlined className="text-green-500" />
-            下一筆預約
-          </h3>
-          {nextBooking && !isLoading && (
-             <Link
-              href={`/admin/dashboard/booking/${nextBooking.id}`}
-              className="text-xs text-(--muted) hover:text-green-600 transition-colors flex items-center gap-1"
-            >
-              詳情 <RightOutlined className="text-[10px]" />
-            </Link>
-          )}
-        </div>
+    <div className={cn("card rounded-xl p-6", className)} {...rest}>
+      <div className="flex flex-col h-full gap-4">
+        <h3 className="text-lg font-bold flex items-center gap-2 text-(--foreground)">
+          <ClockCircleOutlined className="text-green-500" />
+          下一筆預約
+        </h3>
 
         {isLoading ? (
-          <div className="animate-pulse space-y-3 mt-1">
+          <div className="flex-1 animate-pulse flex flex-col justify-center space-y-3">
             <div className="h-8 w-24 bg-gray-100 rounded-md" />
             <div className="space-y-1.5">
               <div className="h-3 w-full bg-gray-100 rounded" />
@@ -114,8 +104,7 @@ export const NextBookingCard = ({
             </div>
           </div>
         ) : nextBooking ? (
-          <div className="flex flex-col gap-3">
-            {/* Time Section */}
+          <div className="flex-1 flex flex-col justify-center gap-3">
             <div className="flex items-end justify-between bg-green-50/50 p-3 rounded-lg border border-green-100/50">
               <div className="flex flex-col">
                 <span className="text-3xl font-bold text-green-600 tracking-tight font-mono leading-none">
@@ -130,7 +119,7 @@ export const NextBookingCard = ({
               </span>
             </div>
 
-            {/* Info Section */}
+            {/* 資訊顯示 */}
             <div className="flex flex-col gap-1.5 px-0.5">
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
@@ -146,7 +135,7 @@ export const NextBookingCard = ({
                   </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2 text-xs text-(--muted)">
                 <StarOutlined className="text-[10px]" />
                 <span className="truncate text-gray-500 font-medium">
@@ -156,11 +145,25 @@ export const NextBookingCard = ({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-4 text-(--muted)">
+          <div className="flex-1 flex flex-col items-center justify-center py-4 text-(--muted)">
             <ClockCircleOutlined className="text-3xl mb-2 opacity-20" />
             <span className="text-sm">暫無預約</span>
           </div>
         )}
+
+        <div>
+          {nextBooking ? (
+            <Link
+              href={`/admin/dashboard/booking/${nextBooking.id}`}
+              className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
+            >
+              查看詳情
+              <RightOutlined className="ml-1 transition-transform group-hover:translate-x-1" />
+            </Link>
+          ) : (
+            <div className="h-5" />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -48,7 +48,7 @@ export const TodayCountCard = ({ className, ...rest }: TodayCountCardProps) => {
             </div>
           </div>
         )}
-        <div className="pt-2">
+        <div>
           <Link
             href={`/admin/dashboard/booking?start_date=${strToday}&end_date=${strToday}`}
             className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
