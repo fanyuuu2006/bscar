@@ -7,7 +7,7 @@ import { LocationInfoCard } from "./LocationInfoCard";
 export const MainSection = () => {
   const { logOut } = useAdmin();
   return (
-    <section className="flex w-full flex-col gap-4 px-4 py-6">
+    <section className="flex w-full flex-col gap-4 p-4">
       <h2 className="text-2xl font-bold">設定</h2>
       <AccountInfoCard className="w-full" />
       <LocationInfoCard className="w-full" />

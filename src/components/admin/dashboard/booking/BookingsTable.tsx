@@ -41,6 +41,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  // 控制預約時間的排序方向 (true: 升序, false: 降序)
+  const [timeAscending, setTimeAscending] = useState<boolean>(false);
+
   /**
    * 根據當前 URL 的 Search Params 初始化查詢條件物件。
    * 使用 useMemo 確保只有在網址參數改變時才重新計算。
@@ -123,9 +126,6 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.keyword]);
-
-  // 控制預約時間的排序方向 (true: 升序, false: 降序)
-  const [timeAscending, setTimeAscending] = useState<boolean>(true);
 
   // 防抖處理：當使用者停止輸入 350ms 後，才觸發搜尋（更新 query）
   useEffect(() => {
