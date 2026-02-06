@@ -21,6 +21,7 @@ export const TodayCountCard = ({ className, ...rest }: TodayCountCardProps) => {
       return bookingsByAdmin(token!, {
         start_date: strToday,
         end_date: strToday,
+        status: "confirmed",
       });
     },
   );
