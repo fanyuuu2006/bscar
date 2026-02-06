@@ -509,9 +509,7 @@ const TableRow = memo(
             <span className="text-xs text-(--muted)">
               {item.customer_phone}
             </span>
-            <span className="text-xs text-(--muted)">
-              {item.customer_line}
-            </span>
+            <span className="text-xs text-(--muted)">{item.customer_line}</span>
           </div>
         </td>
         <td className="px-5 py-3 text-sm">
