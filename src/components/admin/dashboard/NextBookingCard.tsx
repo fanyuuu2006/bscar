@@ -33,7 +33,7 @@ export const NextBookingCard = ({
       return bookingsByAdmin(token!, {
         start_date: dateStr,
         status: "confirmed",
-        count: 50, 
+        count: 50,
       });
     },
     {
@@ -105,6 +105,7 @@ export const NextBookingCard = ({
           </div>
         ) : nextBooking ? (
           <div className="flex-1 flex flex-col justify-center gap-3">
+            {/* 時間顯示 */}
             <div className="flex items-end justify-between bg-green-50/50 p-3 rounded-lg border border-green-100/50">
               <div className="flex flex-col">
                 <span className="text-3xl font-bold text-green-600 tracking-tight font-mono leading-none">
@@ -143,6 +144,15 @@ export const NextBookingCard = ({
                 </span>
               </div>
             </div>
+            <div>
+              <Link
+                href={`/admin/dashboard/booking/${nextBooking.id}`}
+                className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
+              >
+                查看詳情
+                <RightOutlined className="ml-1 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center py-4 text-(--muted)">
@@ -150,20 +160,6 @@ export const NextBookingCard = ({
             <span className="text-sm">暫無預約</span>
           </div>
         )}
-
-        <div>
-          {nextBooking ? (
-            <Link
-              href={`/admin/dashboard/booking/${nextBooking.id}`}
-              className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
-            >
-              查看詳情
-              <RightOutlined className="ml-1 transition-transform group-hover:translate-x-1" />
-            </Link>
-          ) : (
-            <div className="h-5" />
-          )}
-        </div>
       </div>
     </div>
   );
