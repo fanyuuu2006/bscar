@@ -24,6 +24,7 @@ import {
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import Link from "next/link";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, useEffect, memo } from "react";
 import useSWR from "swr";
 
@@ -33,79 +34,146 @@ type BookingsTableProps = DistributiveOmit<
 >;
 
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
+  // 取得管理員 Token 以進行需授權的 API 呼叫
   const { token } = useAdminToken();
+  
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const defaultQuery = useMemo(() => {
+  /**
+   * 根據當前 URL 的 Search Params 初始化查詢條件物件。
+   * 使用 useMemo 確保只有在網址參數改變時才重新計算。
+   */
+  const query = useMemo(() => {
     const today = formatDate("YYYY-MM-DD", new Date());
     return {
-      page: 1,
-      count: 50,
-      status: undefined,
-      service_id: undefined,
-      start_date: today,
-      end_date: undefined,
+      page: Number(searchParams.get("page")) || 1,
+      count: Number(searchParams.get("count")) || 50,
+      status:
+        (searchParams.get("status") as SupabaseBooking["status"]) || undefined,
+      service_id: searchParams.get("service_id") || undefined,
+      start_date: searchParams.get("start_date") || today,
+      end_date: searchParams.get("end_date") || undefined,
+      keyword: searchParams.get("keyword") || undefined,
     };
-  }, []);
+  }, [searchParams]);
 
-  const [query, setQuery] =
-    useState<Parameters<typeof bookingsByAdmin>["1"]>(defaultQuery);
-  const { data, isLoading, mutate} = useSWR(
+  /**
+   * 更新查詢條件並同步到網址上的輔助函式。
+   * 
+   * @param updater - 新的查詢參數物件或更新函式
+   */
+  const setQuery = useCallback(
+    (
+      updater:
+        | Parameters<typeof bookingsByAdmin>["1"]
+        | ((
+            prev: Parameters<typeof bookingsByAdmin>["1"],
+          ) => Parameters<typeof bookingsByAdmin>["1"]),
+    ) => {
+      const nextQuery = typeof updater === "function" ? updater(query) : updater;
+      const params = new URLSearchParams();
+
+      // 只將有意義的參數寫入 URL，避免產生過長的空參數
+      if (nextQuery?.page && nextQuery.page !== 1)
+        params.set("page", String(nextQuery.page));
+      if (nextQuery?.count && nextQuery.count !== 50)
+        params.set("count", String(nextQuery.count));
+      if (nextQuery?.status) params.set("status", nextQuery.status);
+      if (nextQuery?.service_id)
+        params.set("service_id", nextQuery.service_id);
+      if (nextQuery?.start_date)
+        params.set("start_date", nextQuery.start_date);
+      if (nextQuery?.end_date) params.set("end_date", nextQuery.end_date);
+      if (nextQuery?.keyword) params.set("keyword", nextQuery.keyword);
+
+      // 使用 replace 更新網址，scroll: false 防止頁面跳動
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, query, router],
+  );
+
+  /**
+   * 使用 SWR 取得預約列表資料。
+   * 依賴於 token 與 query，當這兩者改變時會自動重新抓取資料。
+   */
+  const { data, isLoading, mutate } = useSWR(
     token ? ["admin-bookings", token, query] : null,
     () => bookingsByAdmin(token!, query),
   );
 
+  // 取得所有服務項目資料，用於顯示服務名稱與篩選選單
   const { data: servicesRes } = useSWR("services", getServices);
 
+  // 將服務資料轉換為 Map 結構，方便快速查找
   const servicesMap = useMemo(() => {
     const map = new Map<string, SupabaseService>();
     servicesRes?.data?.forEach((s) => map.set(s.id, s));
     return map;
   }, [servicesRes?.data]);
 
-  // 查詢與篩選狀態
-  // 使用 inputQuery 作為即時輸入
-  const [inputQuery, setInputQuery] = useState("");
+  // --- 本地 UI 狀態與防抖處理 (Debounce) ---
 
+  // 關鍵字搜尋輸入框的本地狀態
+  const [inputQuery, setInputQuery] = useState(query.keyword || "");
+
+  // 當外部 URL 的 keyword 改變時（例如點擊瀏覽器上一頁），同步回輸入框
+  useEffect(() => {
+    if (query.keyword !== inputQuery) {
+      setInputQuery(query.keyword || "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.keyword]);
+
+  // 控制預約時間的排序方向 (true: 升序, false: 降序)
   const [timeAscending, setTimeAscending] = useState<boolean>(true);
 
-  // 防抖 inputQuery -> query.keyword
+  // 防抖處理：當使用者停止輸入 350ms 後，才觸發搜尋（更新 query）
   useEffect(() => {
     const id = setTimeout(() => {
-      setQuery((prev) => ({
-        ...prev,
-        keyword: inputQuery.trim() || undefined,
-      }));
+      // 只有當輸入值與當前 query 不一致時才更新，避免不必要的刷新
+      if ((query.keyword || "") !== inputQuery.trim()) {
+        setQuery((prev) => ({
+          ...prev,
+          keyword: inputQuery.trim() || undefined,
+          page: 1, // 搜尋條件變更時，重置回第一頁
+        }));
+      }
     }, 350);
     return () => clearTimeout(id);
-  }, [inputQuery]);
+  }, [inputQuery, setQuery, query.keyword]);
 
-  // 頁碼輸入狀態與防抖
-  const [inputPage, setInputPage] = useState<string>("1");
+  // 頁碼輸入框的本地狀態
+  const [inputPage, setInputPage] = useState<string>(String(query.page || 1));
 
-  // 當 query.page 改變時（例如透過上一頁/下一頁按鈕），更新 inputPage
+  // 當實際頁碼改變時，同步回頁碼輸入框
   useEffect(() => {
-    const timer = setTimeout(() => setInputPage(String(query?.page || 1)), 0);
-    return () => clearTimeout(timer);
-  }, [query?.page]);
+    setInputPage(String(query.page || 1));
+  }, [query.page]);
 
-  // 防抖 inputPage -> query.page
+  // 防抖處理：當使用者停止輸入頁碼 500ms 後，才觸發換頁
   useEffect(() => {
     const timer = setTimeout(() => {
       const val = parseInt(inputPage);
-      if (!isNaN(val) && val >= 1 && val !== (query?.page || 1)) {
+      if (!isNaN(val) && val >= 1 && val !== (query.page || 1)) {
         setQuery((prev) => ({ ...prev, page: val }));
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [inputPage, query?.page]);
+  }, [inputPage, query.page, setQuery]);
 
+  /**
+   * 對從 API 取得已分頁的資料進行前端排序。
+   * 目前後端分頁已完成，此處主要處理當前頁面內的顯示順序。
+   */
   const filteredBookings = useMemo(() => {
     // 確保有資料
     if (!data?.data) return [];
 
     const result = data.data;
 
-    // 排序
+    // 依據時間升降序重新排列
     return [...result].sort((a, b) => {
       const timeA = new Date(a.booking_time).getTime();
       const timeB = new Date(b.booking_time).getTime();
@@ -113,11 +181,29 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     });
   }, [data, timeAscending]);
 
+  /**
+   * 重置所有篩選條件至預設值。
+   */
   const handleReset = useCallback(() => {
-    setQuery(defaultQuery);
+    const today = formatDate("YYYY-MM-DD", new Date());
+    setQuery({
+      page: 1,
+      count: 50,
+      status: undefined,
+      service_id: undefined,
+      start_date: today,
+      end_date: undefined,
+      keyword: undefined,
+    });
     setInputQuery("");
-  }, [defaultQuery]);
+  }, [setQuery]);
 
+  /**
+   * 處理預約狀態更新的操作。
+   * 
+   * @param booking - 目標預約物件
+   * @param newStatus - 欲變更的新狀態
+   */
   const handleStatusUpdate = useCallback(
     async (booking: SupabaseBooking, newStatus: SupabaseBooking["status"]) => {
       if (!token) return;
@@ -128,7 +214,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         });
 
         if (res.success) {
-          mutate();
+          mutate(); // 更新成功後重新抓取資料
         } else {
           alert("更新失敗");
         }
