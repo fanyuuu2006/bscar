@@ -106,8 +106,8 @@ export const NextBookingCard = ({
         ) : nextBooking ? (
           <div className="flex-1 flex flex-col justify-center gap-3">
             {/* 時間顯示 */}
-            <div className="flex flex-col">
-              <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-baseline gap-2">
                 <span className="text-5xl font-bold text-green-600 tracking-tight font-mono">
                   {formatDate("HH:mm", nextBooking.booking_time)}
                 </span>
