@@ -22,17 +22,17 @@ export const PendingCard = ({ className, ...rest }: PendingCardProps) => {
   const count = data?.data?.length || 0;
 
   return (
-    <div className={cn("card rounded-xl p-4", className)} {...rest}>
-      <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-bold">待處理預約</h3>
-        <div className="flex items-center">
+    <div className={cn("card rounded-xl p-6", className)} {...rest}>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-lg font-bold">待處理預約</h3>
           {isLoading ? (
-            <div className="h-8 w-16 animate-pulse rounded bg-gray-200" />
+            <div className="h-10 w-16 animate-pulse rounded-md bg-gray-200" />
           ) : (
             <p className="text-4xl font-bold text-(--accent)">{count}</p>
           )}
         </div>
-        <div className="mt-4">
+        <div>
           <Link
             href={`/admin/dashboard/booking`}
             className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
