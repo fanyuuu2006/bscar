@@ -118,8 +118,8 @@ export const LocationInfoCard = ({
 
         {formFields.map((section) => (
           <section key={section.label} className="mt-2">
-            <h4 className="text-lg font-semibold">{section.label}</h4>
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <h4 className="text-xl font-semibold">{section.label}</h4>
+            <div className="px-2 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {section.fields.map((f) => (
                 <FieldInput
                   field={f}

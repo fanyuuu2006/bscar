@@ -26,7 +26,6 @@ type MainSectionProps = OverrideProps<
 >;
 export const MainSection = ({
   booking,
-  className,
   ...rest
 }: MainSectionProps) => {
   const [newBooking, setNewBooking] = useState<SupabaseBooking | null>(booking);
@@ -163,7 +162,7 @@ export const MainSection = ({
   if (!newBooking) return null;
 
   return (
-    <section className={cn(className)} {...rest}>
+    <section {...rest}>
       <div className="w-full flex flex-col p-4 gap-4">
         <h2 className="text-3xl font-black">編輯預約</h2>
 
