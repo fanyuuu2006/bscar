@@ -46,14 +46,13 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
    * 使用 useMemo 確保只有在網址參數改變時才重新計算。
    */
   const query = useMemo(() => {
-    const today = formatDate("YYYY-MM-DD", new Date());
     return {
       page: Number(searchParams.get("page")) || 1,
       count: Number(searchParams.get("count")) || 50,
       status:
         (searchParams.get("status") as SupabaseBooking["status"]) || undefined,
       service_id: searchParams.get("service_id") || undefined,
-      start_date: searchParams.get("start_date") || today,
+      start_date: searchParams.get("start_date") || undefined,
       end_date: searchParams.get("end_date") || undefined,
       keyword: searchParams.get("keyword") || undefined,
     };
