@@ -36,7 +36,7 @@ type BookingsTableProps = DistributiveOmit<
 export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   // 取得管理員 Token 以進行需授權的 API 呼叫
   const { token } = useAdminToken();
-  
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -60,7 +60,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   /**
    * 更新查詢條件並同步到網址上的輔助函式。
-   * 
+   *
    * @param updater - 新的查詢參數物件或更新函式
    */
   const setQuery = useCallback(
@@ -71,7 +71,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             prev: Parameters<typeof bookingsByAdmin>["1"],
           ) => Parameters<typeof bookingsByAdmin>["1"]),
     ) => {
-      const nextQuery = typeof updater === "function" ? updater(query) : updater;
+      const nextQuery =
+        typeof updater === "function" ? updater(query) : updater;
       const params = new URLSearchParams();
 
       // 只將有意義的參數寫入 URL，避免產生過長的空參數
@@ -80,10 +81,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       if (nextQuery?.count && nextQuery.count !== 50)
         params.set("count", String(nextQuery.count));
       if (nextQuery?.status) params.set("status", nextQuery.status);
-      if (nextQuery?.service_id)
-        params.set("service_id", nextQuery.service_id);
-      if (nextQuery?.start_date)
-        params.set("start_date", nextQuery.start_date);
+      if (nextQuery?.service_id) params.set("service_id", nextQuery.service_id);
+      if (nextQuery?.start_date) params.set("start_date", nextQuery.start_date);
       if (nextQuery?.end_date) params.set("end_date", nextQuery.end_date);
       if (nextQuery?.keyword) params.set("keyword", nextQuery.keyword);
 
@@ -197,9 +196,99 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     setInputQuery("");
   }, [setQuery]);
 
+  // --- 批次操作狀態與處理 ---
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // 當資料重新載入時（例如換頁），清空選取狀態
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [data]);
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIds = new Set(filteredBookings.map((b) => b.id));
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectRow = useCallback((id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+      return next;
+    });
+  }, []);
+
+  const bulkOperations = useMemo(() => {
+    return [
+      {
+        key: "confirm",
+        label: "確認",
+        icon: CheckOutlined,
+        className: "text-blue-600 bg-blue-50 border-blue-200",
+      },
+      {
+        key: "cancel",
+        label: "取消",
+        icon: CloseOutlined,
+        className: "text-red-600 bg-red-50 border-red-200",
+      },
+    ] as const;
+  }, []);
+
+  const handleBulkAction = async (
+    action: (typeof bulkOperations)[number]["key"],
+  ) => {
+    if (!token || selectedIds.size === 0) return;
+
+    const actionNameMap = {
+      confirm: "確認",
+      cancel: "取消",
+      delete: "刪除",
+    };
+
+    if (
+      !confirm(
+        `確定要批次${actionNameMap[action]}選取的 ${selectedIds.size} 筆預約嗎？`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const promises = Array.from(selectedIds).map(async (id) => {
+        const booking = filteredBookings.find((b) => b.id === id);
+        if (!booking) return;
+
+        const newStatus = action === "confirm" ? "confirmed" : "cancelled";
+        // 如果狀態已經一樣則跳過
+        if (booking.status === newStatus) return;
+
+        return updateBookingByAdmin(token, {
+          ...booking,
+          status: newStatus as SupabaseBooking["status"],
+        });
+      });
+
+      await Promise.all(promises);
+      mutate();
+      setSelectedIds(new Set());
+      alert("批次操作完成");
+    } catch (error) {
+      console.error(error);
+      alert("操作過程中發生錯誤");
+    }
+  };
+
   /**
    * 處理預約狀態更新的操作。
-   * 
+   *
    * @param booking - 目標預約物件
    * @param newStatus - 欲變更的新狀態
    */
@@ -351,6 +440,38 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         </div>
       </div>
 
+      {/* 批次操作工具列 */}
+      {selectedIds.size > 0 && (
+        <div className="card p-3 rounded-xl flex items-center justify-between border border-(--border) animate-fade-in">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">
+              已選取 {selectedIds.size} 筆預約
+            </span>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              className="text-xs text-(--muted) hover:text-(--foreground) underline transition-colors"
+            >
+              取消全選
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            {bulkOperations.map((op) => (
+              <button
+                key={op.key}
+                onClick={() => handleBulkAction(op.key)}
+                className={cn(
+                  "flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs",
+                  op.className,
+                )}
+              >
+                <op.icon />
+                <span>{op.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 表格區塊 */}
       <div className="card rounded-xl overflow-hidden flex-1 min-h-0 flex flex-col">
         <div className="flex items-center justify-between px-5 py-3">
@@ -364,6 +485,17 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           <table className="w-full text-left border-y border-(--border) border-collapse">
             <thead>
               <tr className="sticky top-0 z-10 border-b border-(--border) bg-gray-50 text-xs text-(--muted)">
+                <th className="pl-5 py-3 w-4">
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer align-middle"
+                    checked={
+                      filteredBookings.length > 0 &&
+                      filteredBookings.every((b) => selectedIds.has(b.id))
+                    }
+                    onChange={handleSelectAll}
+                  />
+                </th>
                 <th className="px-5 py-3 font-medium whitespace-nowrap">
                   編號
                 </th>
@@ -397,7 +529,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             <tbody className="divide-y divide-(--border)">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="py-32 text-center">
+                  <td colSpan={7} className="py-32 text-center">
                     <div className="flex flex-col items-center justify-center gap-3 text-(--muted)">
                       <LoadingOutlined className="text-3xl" />
                       <span className="text-sm font-medium">
@@ -408,7 +540,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 </tr>
               ) : filteredBookings.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-24 text-center">
+                  <td colSpan={7} className="py-24 text-center">
                     <div className="flex flex-col items-center justify-center gap-3 text-(--muted)">
                       <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 border border-(--border)">
                         <InboxOutlined className="text-2xl opacity-50" />
@@ -434,6 +566,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     item={booking}
                     service={servicesMap.get(booking.service_id)}
                     onUpdate={handleStatusUpdate}
+                    selected={selectedIds.has(booking.id)}
+                    onSelect={handleSelectRow}
                   />
                 ))
               )}
@@ -515,6 +649,8 @@ type TableRowProps = OverrideProps<
       booking: SupabaseBooking,
       status: SupabaseBooking["status"],
     ) => void;
+    selected: boolean;
+    onSelect: (id: string, checked: boolean) => void;
   }
 >;
 
@@ -526,7 +662,15 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
 };
 
 const TableRow = memo(
-  ({ item, service, onUpdate, className, ...rest }: TableRowProps) => {
+  ({
+    item,
+    service,
+    onUpdate,
+    selected,
+    onSelect,
+    className,
+    ...rest
+  }: TableRowProps) => {
     const status = statusMap[item.status] ?? {
       label: item.status,
       className: "",
@@ -585,6 +729,14 @@ const TableRow = memo(
 
     return (
       <tr className={cn("group", className)} {...rest}>
+        <td className="pl-5 py-3">
+          <input
+            type="checkbox"
+            className="cursor-pointer align-middle"
+            checked={selected}
+            onChange={(e) => onSelect(item.id, e.target.checked)}
+          />
+        </td>
         <td className="px-5 py-3 text-xs font-mono text-(--muted)">
           #{item.id.slice(0, 8)}...
         </td>

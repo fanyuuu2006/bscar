@@ -139,6 +139,21 @@ export const updateBookingByAdmin = async (
   );
 };
 
+// export const deleteBookingByAdmin = async (
+//   token: string,
+//   id: string
+// ) => {
+//   return fetcher<MyResponse<null>>(
+//     `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/booking/${id}`,
+//     {
+//       method: "DELETE",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     },
+//   );
+// };
+
 export const updateAdmin = async (token: string, admin: SupabaseAdmin) => {
   return fetcher<MyResponse<SupabaseAdmin>>(
     `${NEXT_PUBLIC_BACKEND_URL}/v1/admin/me`,
