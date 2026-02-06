@@ -5,7 +5,7 @@ import { bookingsByAdmin, getServices } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import {
-  CalendarOutlined,
+  StarOutlined,
   ClockCircleOutlined,
   PhoneOutlined,
   RightOutlined,
@@ -88,73 +88,77 @@ export const NextBookingCard = ({
   }, [nextBooking]);
 
   return (
-    <div className={cn("card rounded-xl p-6", className)} {...rest}>
-      <div className="flex flex-col h-full gap-4">
-        <div className="flex flex-col gap-1">
-          <h3 className="text-lg font-bold flex items-center gap-2 text-(--foreground)">
+    <div className={cn("card rounded-xl p-5", className)} {...rest}>
+      <div className="flex flex-col h-full relative">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-base font-bold flex items-center gap-2 text-(--foreground)">
             <ClockCircleOutlined className="text-green-500" />
             下一筆預約
           </h3>
-          {isLoading ? (
-            <div className="animate-pulse space-y-4 mt-2">
-              <div className="h-10 w-32 bg-gray-200 rounded-md" />
-              <div className="space-y-2">
-                <div className="h-4 w-full bg-gray-100 rounded" />
-                <div className="h-4 w-2/3 bg-gray-100 rounded" />
-              </div>
-            </div>
-          ) : nextBooking ? (
-            <div className="flex flex-col gap-4 mt-1">
-              <div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-green-600 tracking-tight font-mono">
-                    {formatDate("HH:mm", nextBooking.booking_time)}
-                  </span>
-                  <span className="text-sm font-medium text-(--muted)">
-                    {formatDate("YYYY/MM/DD", nextBooking.booking_time)}
-                  </span>
-                </div>
-                <div className="mt-1">
-                  <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-700/10">
-                    {timeDisplay}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 pt-2 border-t border-(--border)">
-                <div className="flex items-center gap-2 text-sm text-(--foreground)">
-                  <UserOutlined className="text-(--muted)" />
-                  <span className="font-medium">
-                    {nextBooking.customer_name}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-(--muted)">
-                  <PhoneOutlined />
-                  <span>{nextBooking.customer_phone}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-(--muted)">
-                  <CalendarOutlined />
-                  <span>{service?.name || "未知服務"}</span>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-6 text-(--muted)">
-              <ClockCircleOutlined className="text-4xl mb-2 opacity-20" />
-              <span className="text-sm">目前無即將到來的預約</span>
-            </div>
+          {nextBooking && !isLoading && (
+             <Link
+              href={`/admin/dashboard/booking/${nextBooking.id}`}
+              className="text-xs text-(--muted) hover:text-green-600 transition-colors flex items-center gap-1"
+            >
+              詳情 <RightOutlined className="text-[10px]" />
+            </Link>
           )}
         </div>
 
-        {nextBooking && (
-          <div className="mt-auto pt-2">
-            <Link
-              href={`/admin/dashboard/booking/${nextBooking.id}`}
-              className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
-            >
-              查看詳情
-              <RightOutlined className="ml-1 transition-transform group-hover:translate-x-1" />
-            </Link>
+        {isLoading ? (
+          <div className="animate-pulse space-y-3 mt-1">
+            <div className="h-8 w-24 bg-gray-100 rounded-md" />
+            <div className="space-y-1.5">
+              <div className="h-3 w-full bg-gray-100 rounded" />
+              <div className="h-3 w-2/3 bg-gray-100 rounded" />
+            </div>
+          </div>
+        ) : nextBooking ? (
+          <div className="flex flex-col gap-3">
+            {/* Time Section */}
+            <div className="flex items-end justify-between bg-green-50/50 p-3 rounded-lg border border-green-100/50">
+              <div className="flex flex-col">
+                <span className="text-3xl font-bold text-green-600 tracking-tight font-mono leading-none">
+                  {formatDate("HH:mm", nextBooking.booking_time)}
+                </span>
+                <span className="text-xs text-green-600/80 font-medium mt-1">
+                  {formatDate("YYYY/MM/DD", nextBooking.booking_time)}
+                </span>
+              </div>
+              <span className="text-xs font-bold text-green-700 bg-white/80 px-2 py-1 rounded-md shadow-sm border border-green-100">
+                {timeDisplay}
+              </span>
+            </div>
+
+            {/* Info Section */}
+            <div className="flex flex-col gap-1.5 px-0.5">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2">
+                  <UserOutlined className="text-(--muted) text-xs" />
+                  <span className="font-medium text-(--foreground)">
+                    {nextBooking.customer_name}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-(--muted)">
+                  <PhoneOutlined className="text-[10px]" />
+                  <span className="font-mono text-xs">
+                    {nextBooking.customer_phone}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 text-xs text-(--muted)">
+                <StarOutlined className="text-[10px]" />
+                <span className="truncate text-gray-500 font-medium">
+                  {service?.name || "未知服務"}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-4 text-(--muted)">
+            <ClockCircleOutlined className="text-3xl mb-2 opacity-20" />
+            <span className="text-sm">暫無預約</span>
           </div>
         )}
       </div>
