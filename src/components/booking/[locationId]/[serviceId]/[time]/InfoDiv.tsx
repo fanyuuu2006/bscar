@@ -92,7 +92,7 @@ export const InfoDiv = ({
       })
         .then((res) => {
           if (res.success) {
-            router.push(`/booking/confirm/${res.data?.id}`);
+            router.push(`/booking/confirm/${res.data?.id}#top`);
           } else {
             alert(res.message || "預約失敗，請稍後再試。");
           }

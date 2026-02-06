@@ -154,7 +154,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               type="text"
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
-              placeholder="搜尋編號、姓名、電話、Email..."
+              placeholder="搜尋編號、姓名、電話、Line ID..."
               className="w-full py-2 pl-9 pr-4 text-xs rounded-lg border border-(--border) bg-gray-50/50 outline-none"
             />
           </div>

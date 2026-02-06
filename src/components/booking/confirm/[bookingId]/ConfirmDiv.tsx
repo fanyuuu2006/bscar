@@ -101,7 +101,7 @@ export const ConfirmDiv = ({
   ];
 
   return (
-    <div {...rest} className={cn('flex flex-col items-center gap-6',className)}>
+    <div {...rest} className={cn('flex flex-col items-center gap-6 py-8',className)}>
       {/* 頂部成功訊息 */}
       <div className="w-full flex flex-col items-center">
         <div className="flex items-center justify-center p-5 rounded-full bg-green-50 text-green-500 mb-4 shadow-md">
@@ -118,7 +118,7 @@ export const ConfirmDiv = ({
         <div className="flex flex-col items-center gap-1.5 mt-4 w-full">
           <span className="text-sm font-medium text-(--muted)">預約編號</span>
           <div className="flex items-center justify-center gap-3 w-full max-w-lg">
-            <span className="font-mono font-bold text-lg md:text-xl text-(--foreground) break-all text-center leading-snug selection:bg-(--primary) selection:text-white">
+            <span className="font-mono font-bold text-sm md:text-base text-(--foreground) break-all text-center leading-snug selection:bg-(--primary) selection:text-white">
               {bookingData.id}
             </span>
             <div className="shrink-0 relative top-0.5">
