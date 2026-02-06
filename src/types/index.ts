@@ -36,11 +36,11 @@ export type TimeSlot = {
   start_time: `${number}:${number}:${number}`;
 };
 
-export type Info = {
-  name: string;
-  phone: string;
-  email: string;
+type _Info<T> = {
+  [K in keyof T as K extends `customer_${infer R}` ? R : never]:
+    T[K];
 };
+export type Info = _Info<SupabaseBooking>;
 
 export type BookingStep = (typeof bookingSteps)[number]["value"];
 
@@ -58,7 +58,7 @@ export type SupabaseBooking = {
   booking_time: string;
   created_at: string;
   customer_name: string;
-  customer_email: string;
+  customer_line: string;
   customer_phone: string;
   status: "pending" | "confirmed" | "cancelled" | "completed";
 };

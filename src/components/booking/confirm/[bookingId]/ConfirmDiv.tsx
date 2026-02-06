@@ -95,8 +95,8 @@ export const ConfirmDiv = ({
     },
     {
       icon: MailOutlined,
-      label: "電子郵件",
-      value: bookingData.customer_email,
+      label:  "Line ID",
+      value: bookingData.customer_line,
     },
   ];
 

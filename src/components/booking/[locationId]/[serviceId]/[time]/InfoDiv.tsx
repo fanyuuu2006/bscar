@@ -29,7 +29,7 @@ export const InfoDiv = ({
   time,
   ...rest
 }: InfoDivProps) => {
-  const [data, setData] = useState<Info>({ name: "", phone: "", email: "" });
+  const [data, setData] = useState<Info>({ name: "", phone: "", line: "" });
   const router = useRouter();
 
   const items = useMemo(() => {
@@ -70,9 +70,9 @@ export const InfoDiv = ({
       type: "tel",
     },
     {
-      id: "email",
-      label: "電子郵件",
-      type: "email",
+      id: 'line',
+      label: "Line ID",
+      type: "text",
     },
   ] as const;
 

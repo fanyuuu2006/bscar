@@ -510,7 +510,7 @@ const TableRow = memo(
               {item.customer_phone}
             </span>
             <span className="text-xs text-(--muted)">
-              {item.customer_email}
+              {item.customer_line}
             </span>
           </div>
         </td>
