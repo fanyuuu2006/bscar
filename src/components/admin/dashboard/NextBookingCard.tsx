@@ -89,74 +89,69 @@ export const NextBookingCard = ({
 
   return (
     <div className={cn("card rounded-xl p-6", className)} {...rest}>
-      <div className="flex flex-col h-full justify-between gap-4">
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col h-full gap-4">
+        <div className="flex flex-col gap-1">
           <h3 className="text-lg font-bold">下一筆預約</h3>
-          {nextBooking && (
-            <Link
-              href={`/admin/dashboard/booking/${nextBooking.id}`}
-              className="text-xs text-blue-600 hover:underline flex items-center gap-1"
-            >
-              查看詳情 <RightOutlined />
-            </Link>
+          {isLoading ? (
+            <div className="animate-pulse space-y-4 mt-2">
+              <div className="h-10 w-32 bg-gray-200 rounded-md" />
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-gray-100 rounded" />
+                <div className="h-4 w-2/3 bg-gray-100 rounded" />
+              </div>
+            </div>
+          ) : nextBooking ? (
+            <div className="flex flex-col gap-4 mt-1">
+              <div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-bold text-blue-600 tracking-tight font-mono">
+                    {formatDate("HH:mm", nextBooking.booking_time)}
+                  </span>
+                  <span className="text-sm font-medium text-(--muted)">
+                    {formatDate("YYYY/MM/DD", nextBooking.booking_time)}
+                  </span>
+                </div>
+                <div className="mt-1">
+                  <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                    {timeDisplay}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2 border-t border-dashed border-(--border)">
+                <div className="flex items-center gap-2 text-sm text-(--foreground)">
+                  <UserOutlined className="text-(--muted)" />
+                  <span className="font-medium">
+                    {nextBooking.customer_name}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-(--muted)">
+                  <PhoneOutlined />
+                  <span>{nextBooking.customer_phone}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-(--muted)">
+                  <CalendarOutlined />
+                  <span>{service?.name || "未知服務"}</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-6 text-(--muted)">
+              <ClockCircleOutlined className="text-4xl mb-2 opacity-20" />
+              <span className="text-sm">目前無即將到來的預約</span>
+            </div>
           )}
         </div>
 
-        {isLoading ? (
-          <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-gray-100 rounded w-1/3"></div>
-            <div className="h-4 bg-gray-100 rounded w-1/2"></div>
-            <div className="h-16 bg-gray-100 rounded w-full"></div>
-          </div>
-        ) : nextBooking ? (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="text-2xl font-bold text-blue-600 font-mono">
-                  {formatDate("HH:mm", nextBooking.booking_time)}
-                </div>
-                <div className="text-xs font-medium mt-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full w-fit">
-                  {timeDisplay}
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-sm font-medium">
-                  {formatDate("YYYY/MM/DD", nextBooking.booking_time)}
-                </div>
-                <div
-                  className={cn(
-                    "text-xs px-2 py-0.5 rounded-full inline-block mt-1",
-                    nextBooking.status === "confirmed"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700",
-                  )}
-                >
-                  {nextBooking.status === "confirmed" ? "已確認" : "待處理"}
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-dashed border-(--border) my-1"></div>
-
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-sm">
-                <UserOutlined className="text-(--muted)" />
-                <span className="font-medium">{nextBooking.customer_name}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <PhoneOutlined className="text-(--muted)" />
-                <span>{nextBooking.customer_phone}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <CalendarOutlined className="text-(--muted)" />
-                <span>{service?.name || "未知服務"}</span>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-6 text-(--muted)">
-            <ClockCircleOutlined className="text-4xl mb-2 opacity-20" />
-            <span className="text-sm">目前無即將到來的預約</span>
+        {nextBooking && (
+          <div className="mt-auto pt-2">
+            <Link
+              href={`/admin/dashboard/booking/${nextBooking.id}`}
+              className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
+            >
+              查看詳情
+              <RightOutlined className="ml-1 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
         )}
       </div>
