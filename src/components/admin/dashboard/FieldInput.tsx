@@ -10,7 +10,7 @@ export type FieldInputProps = OverrideProps<
       id: string;
       label: string;
       hint?: string;
-      type: string;
+      type: React.HTMLInputTypeAttribute;
       required?: boolean;
     };
 

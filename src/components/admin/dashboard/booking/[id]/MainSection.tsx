@@ -10,7 +10,7 @@ import { OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FieldInput } from "../../FieldInput";
+import { FieldInput, FieldInputProps } from "../../FieldInput";
 
 export type OperationItem<T extends React.ElementType = React.ElementType> = {
   label: string;
@@ -24,10 +24,7 @@ type MainSectionProps = OverrideProps<
     booking: SupabaseBooking | null;
   }
 >;
-export const MainSection = ({
-  booking,
-  ...rest
-}: MainSectionProps) => {
+export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
   const [newBooking, setNewBooking] = useState<SupabaseBooking | null>(booking);
   const [origBooking, setOrigBooking] = useState<SupabaseBooking | null>(
     booking,
@@ -116,13 +113,12 @@ export const MainSection = ({
   }, [handleSave, saving]);
 
   // 常用表單欄位定義 memo 化，避免每次 render 重建陣列
-  const customerFields = useMemo(
-    () =>
-      [
-        { id: "customer_name", label: "姓名", type: "text" },
-        { id: "customer_phone", label: "電話", type: "text" },
-        { id: "customer_email", label: "電子郵件", type: "email" },
-      ] as const,
+  const customerFields: FieldInputProps["field"][] = useMemo(
+    () => [
+      { id: "customer_name", label: "姓名", type: "text" },
+      { id: "customer_phone", label: "電話", type: "phone" },
+      { id: "customer_line", label: "Line ID", type: "text" },
+    ],
     [],
   );
 
