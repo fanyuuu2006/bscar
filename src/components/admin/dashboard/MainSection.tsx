@@ -1,4 +1,4 @@
-import { NextBookingCard } from "./NextBooking";
+import { NextBookingCard } from "./NextBookingCard";
 import { PendingCard } from "./PendingCard";
 import { TodayCountCard } from "./TodayCountCard";
 
