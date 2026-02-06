@@ -91,7 +91,10 @@ export const NextBookingCard = ({
     <div className={cn("card rounded-xl p-6", className)} {...rest}>
       <div className="flex flex-col h-full gap-4">
         <div className="flex flex-col gap-1">
-          <h3 className="text-lg font-bold">下一筆預約</h3>
+          <h3 className="text-lg font-bold flex items-center gap-2 text-(--foreground)">
+            <ClockCircleOutlined className="text-green-500" />
+            下一筆預約
+          </h3>
           {isLoading ? (
             <div className="animate-pulse space-y-4 mt-2">
               <div className="h-10 w-32 bg-gray-200 rounded-md" />

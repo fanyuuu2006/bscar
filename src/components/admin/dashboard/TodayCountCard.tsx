@@ -3,7 +3,7 @@ import { useAdminToken } from "@/hooks/useAdminToken";
 import { bookingsByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
-import { RightOutlined } from "@ant-design/icons";
+import { CalendarOutlined, RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMemo } from "react";
 import useSWR from "swr";
@@ -29,18 +29,23 @@ export const TodayCountCard = ({ className, ...rest }: TodayCountCardProps) => {
 
   return (
     <div className={cn("card rounded-xl p-6", className)} {...rest}>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col h-full gap-4">
         <div className="flex flex-col gap-1">
-          <h3 className="text-lg font-bold">今日預約總數</h3>
+          <h3 className="text-lg font-bold flex items-center gap-2 text-(--foreground)">
+            <CalendarOutlined className="text-blue-500" />
+            今日預約總數
+          </h3>
           {isLoading ? (
-            <div className="h-10 w-16 animate-pulse rounded-md bg-gray-200" />
+            <div className="h-12 w-16 animate-pulse rounded-md bg-gray-200 mt-2" />
           ) : (
-            <p className="text-5xl font-bold text-blue-600 tracking-tight">
-              {count}
-            </p>
+            <div className="mt-1">
+              <span className="text-5xl font-bold text-blue-600 tracking-tight font-mono">
+                {count}
+              </span>
+            </div>
           )}
         </div>
-        <div>
+        <div className="mt-auto pt-2">
           <Link
             href={`/admin/dashboard/booking?start_date=${strToday}&end_date=${strToday}`}
             className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"

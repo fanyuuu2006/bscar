@@ -2,7 +2,7 @@
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { bookingsByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
-import { RightOutlined } from "@ant-design/icons";
+import { AlertOutlined, RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import useSWR from "swr";
 
@@ -23,18 +23,23 @@ export const PendingCard = ({ className, ...rest }: PendingCardProps) => {
 
   return (
     <div className={cn("card rounded-xl p-6", className)} {...rest}>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col h-full gap-4">
         <div className="flex flex-col gap-1">
-          <h3 className="text-lg font-bold">待處理預約</h3>
+          <h3 className="text-lg font-bold flex items-center gap-2 text-(--foreground)">
+            <AlertOutlined className="text-red-500" />
+            待處理預約
+          </h3>
           {isLoading ? (
-            <div className="h-10 w-16 animate-pulse rounded-md bg-gray-200" />
+            <div className="h-12 w-16 animate-pulse rounded-md bg-gray-200 mt-2" />
           ) : (
-            <p className="text-5xl font-bold text-red-600 tracking-tight">
-              {count}
-            </p>
+            <div className="mt-1">
+              <span className="text-5xl font-bold text-red-600 tracking-tight font-mono">
+                {count}
+              </span>
+            </div>
           )}
         </div>
-        <div>
+        <div className="mt-auto pt-2">
           <Link
             href={`/admin/dashboard/booking?status=pending`}
             className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
