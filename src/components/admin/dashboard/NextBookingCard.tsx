@@ -106,16 +106,18 @@ export const NextBookingCard = ({
         ) : nextBooking ? (
           <div className="flex-1 flex flex-col justify-center gap-3">
             {/* 時間顯示 */}
-            <div className="flex items-end justify-between bg-green-50/50 p-3 rounded-lg border border-green-100/50">
-              <div className="flex flex-col">
-                <span className="text-3xl font-bold text-green-600 tracking-tight font-mono leading-none">
+            <div className="flex flex-col">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-5xl font-bold text-green-600 tracking-tight font-mono">
                   {formatDate("HH:mm", nextBooking.booking_time)}
                 </span>
-                <span className="text-xs text-green-600/80 font-medium mt-1">
+
+                <span className="text-sm text-(--muted) font-medium mt-1">
                   {formatDate("YYYY/MM/DD", nextBooking.booking_time)}
                 </span>
               </div>
-              <span className="text-xs font-bold text-green-700 bg-white/80 px-2 py-1 rounded-md shadow-sm border border-green-100">
+
+              <span className="text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
                 {timeDisplay}
               </span>
             </div>
