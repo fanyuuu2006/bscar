@@ -35,7 +35,9 @@ export const TodayCountCard = ({ className, ...rest }: TodayCountCardProps) => {
           {isLoading ? (
             <div className="h-10 w-16 animate-pulse rounded-md bg-gray-200" />
           ) : (
-            <p className="text-4xl font-bold text-(--accent)">{count}</p>
+            <p className="text-5xl font-bold text-blue-600 tracking-tight">
+              {count}
+            </p>
           )}
         </div>
         <div>
