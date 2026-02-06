@@ -2,7 +2,7 @@
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { bookingsByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
-import { RightOutlined, SnippetsOutlined } from "@ant-design/icons";
+import { RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import useSWR from "swr";
 
@@ -12,7 +12,7 @@ export const PendingCard = ({ className, ...rest }: PendingCardProps) => {
   const { token } = useAdminToken();
 
   const { data, isLoading } = useSWR(
-    token ? ["admin-stats-pending", token] : null,
+    token ? ["admin-booking-pending", token] : null,
     () =>
       bookingsByAdmin(token!, {
         status: "pending",
@@ -22,27 +22,26 @@ export const PendingCard = ({ className, ...rest }: PendingCardProps) => {
   const count = data?.data?.length || 0;
 
   return (
-    <div
-      className={cn(
-        "card relative flex flex-col justify-between overflow-hidden rounded-3xl p-6",
-        className,
-      )}
-      {...rest}
-    >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-(--muted)">待處理預約</p>
-          <p className="mt-2 text-4xl font-bold text-(--accent)">
-            {isLoading ? "-" : count}
-          </p>
+    <div className={cn("card rounded-xl p-4", className)} {...rest}>
+      <div className="flex flex-col gap-2">
+        <h3 className="text-xl font-bold">待處理預約</h3>
+        <div className="flex items-center">
+          {isLoading ? (
+            <div className="h-8 w-16 animate-pulse rounded bg-gray-200" />
+          ) : (
+            <p className="text-4xl font-bold text-(--accent)">{count}</p>
+          )}
         </div>
-        <div className="rounded-full bg-orange-50 p-3 text-(--accent)">
-          <SnippetsOutlined className="text-xl" />
+        <div className="mt-4">
+          <Link
+            href={`/admin/dashboard/booking`}
+            className="group flex items-center text-sm font-medium text-(--muted) transition-colors duration-300 hover:text-(--primary)"
+          >
+            查看詳情
+            <RightOutlined className="ml-1 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
       </div>
-      <Link href={`/admin/dashboard/booking`} className="mt-4 flex items-center text-sm text-(--muted) hover:text-(--primary) transition-colors duration-300">
-        查看詳情 <RightOutlined className="ml-1 text-xs" />
-      </Link>
     </div>
   );
 };
