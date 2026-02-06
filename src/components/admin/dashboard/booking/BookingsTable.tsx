@@ -183,13 +183,12 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
    * 重置所有篩選條件至預設值。
    */
   const handleReset = useCallback(() => {
-    const today = formatDate("YYYY-MM-DD", new Date());
     setQuery({
       page: 1,
       count: 50,
       status: undefined,
       service_id: undefined,
-      start_date: today,
+      start_date: undefined,
       end_date: undefined,
       keyword: undefined,
     });
@@ -228,18 +227,24 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const bulkOperations = useMemo(() => {
     return [
       {
-        key: "confirm",
+        key: "confirmed",
         label: "確認",
         icon: CheckOutlined,
         className: "text-blue-600 bg-blue-50 border-blue-200",
       },
       {
-        key: "cancel",
+        key: "cancelled",
         label: "取消",
         icon: CloseOutlined,
         className: "text-red-600 bg-red-50 border-red-200",
       },
-    ] as const;
+      {
+        key: "completed",
+        label: "完成",
+        icon: StarOutlined,
+        className: "text-green-600 bg-green-50 border-green-200",
+      }
+    ] as const satisfies { key: SupabaseBooking['status']; label: string; icon: React.ElementType; className: string }[];
   }, []);
 
   const handleBulkAction = async (
@@ -247,39 +252,23 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   ) => {
     if (!token || selectedIds.size === 0) return;
 
-    const actionNameMap = {
-      confirm: "確認",
-      cancel: "取消",
-      delete: "刪除",
-    };
-
-    if (
-      !confirm(
-        `確定要批次${actionNameMap[action]}選取的 ${selectedIds.size} 筆預約嗎？`,
-      )
-    ) {
-      return;
-    }
-
     try {
       const promises = Array.from(selectedIds).map(async (id) => {
         const booking = filteredBookings.find((b) => b.id === id);
         if (!booking) return;
 
-        const newStatus = action === "confirm" ? "confirmed" : "cancelled";
         // 如果狀態已經一樣則跳過
-        if (booking.status === newStatus) return;
+        if (booking.status === action) return;
 
         return updateBookingByAdmin(token, {
           ...booking,
-          status: newStatus as SupabaseBooking["status"],
+          status: action as SupabaseBooking["status"],
         });
       });
 
       await Promise.all(promises);
       mutate();
       setSelectedIds(new Set());
-      alert("批次操作完成");
     } catch (error) {
       console.error(error);
       alert("操作過程中發生錯誤");
