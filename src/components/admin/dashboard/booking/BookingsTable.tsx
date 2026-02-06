@@ -49,7 +49,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
   const [query, setQuery] =
     useState<Parameters<typeof bookingsByAdmin>["1"]>(defaultQuery);
-  const { data, isLoading, mutate } = useSWR(
+  const { data, isLoading, mutate} = useSWR(
     token ? ["admin-bookings", token, query] : null,
     () => bookingsByAdmin(token!, query),
   );
