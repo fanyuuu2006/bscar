@@ -243,8 +243,13 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         label: "完成",
         icon: StarOutlined,
         className: "text-green-600 bg-green-50 border-green-200",
-      }
-    ] as const satisfies { key: SupabaseBooking['status']; label: string; icon: React.ElementType; className: string }[];
+      },
+    ] as const satisfies {
+      key: SupabaseBooking["status"];
+      label: string;
+      icon: React.ElementType;
+      className: string;
+    }[];
   }, []);
 
   const handleBulkAction = async (
@@ -717,7 +722,7 @@ const TableRow = memo(
     );
 
     return (
-      <tr className={cn("group", className)} {...rest}>
+      <tr id={item.id} className={cn("group", className)} {...rest}>
         <td className="pl-5 py-3">
           <input
             type="checkbox"
