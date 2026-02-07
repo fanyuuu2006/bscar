@@ -28,8 +28,44 @@ export const formatDate = (
 
   return format.replace(
     /YYYY|MM|DD|HH|hh|mm|ss|A/g,
-    (token) => map[token as DateFormatToken]
+    (token) => map[token as DateFormatToken],
   );
+};
+
+export const formatDateNode = (
+  format: React.ReactNode,
+  ...args: ConstructorParameters<typeof Date>
+): React.ReactNode => {
+  const date = new Date(...args);
+
+  const _pad = (n: number) => String(n).padStart(2, "0");
+  const hours = date.getHours();
+  const map: Record<DateFormatToken, string> = {
+    YYYY: String(date.getFullYear()),
+    MM: _pad(date.getMonth() + 1),
+    DD: _pad(date.getDate()),
+    HH: _pad(hours),
+    hh: _pad(hours % 12 || 12),
+    mm: _pad(date.getMinutes()),
+    ss: _pad(date.getSeconds()),
+    A: hours >= 12 ? "PM" : "AM",
+  };
+  if (typeof format === "string") {
+    return format.replace(
+      /YYYY|MM|DD|HH|hh|mm|ss|A/g,
+      (token) => map[token as DateFormatToken],
+    );
+  }
+  const formatStr = format as React.ReactNode[];
+  return formatStr.map((part) => {
+    if (typeof part === "string") {
+      return part.replace(
+        /YYYY|MM|DD|HH|hh|mm|ss|A/g,
+        (token) => map[token as DateFormatToken],
+      );
+    }
+    return part;
+  });
 };
 
 /**
