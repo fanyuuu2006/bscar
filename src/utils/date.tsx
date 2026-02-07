@@ -1,4 +1,5 @@
-type DateFormatToken = "YYYY" | "MM" | "DD" | "HH" | "hh" | "mm" | "ss" | "A";
+
+export type DateFormatToken = "YYYY" | "MM" | "DD" | "HH" | "hh" | "mm" | "ss" | "A";
 
 /**
  * 格式化日期字串
@@ -32,53 +33,68 @@ export const formatDate = (
   );
 };
 
-/**
- * 格式化日期為 React 節點，允許在格式字串中夾雜 React 元素
- * @param format 格式字串或陣列 (字串部分同 formatDate，非字串部分將原樣輸出)
- * @param args Date 建構參數
- * @returns 格式化後的 React 節點
- * 
- * @example
- * formatDateNode(<strong key="date">YYYY/MM/DD</strong>, 2024, 5, 1)
- * // 輸出: <strong>2024/06/01</strong>
- */
-export const formatDateNode = (
-  format: React.ReactNode,
-  ...args: ConstructorParameters<typeof Date>
-): React.ReactNode => {
-  const date = new Date(...args);
+// /**
+//  * 格式化日期為 React 節點，允許在格式字串中夾雜 React 元素
+//  * @param format 格式字串或陣列 (字串部分同 formatDate，非字串部分將原樣輸出)
+//  * @param args Date 建構參數
+//  * @returns 格式化後的 React 節點
+//  * 
+//  * @example
+//  * formatDateNode(<strong key="date">YYYY/MM/DD</strong>, 2024, 5, 1)
+//  * // 輸出: <strong>2024/06/01</strong>
+//  */
+// export const formatDateNode = (
+//   format: React.ReactNode,
+//   ...args: ConstructorParameters<typeof Date>
+// ): React.ReactNode => {
+//   const date = new Date(...args);
 
-  const _pad = (n: number) => String(n).padStart(2, "0");
-  const hours = date.getHours();
-  const map: Record<DateFormatToken, string> = {
-    YYYY: String(date.getFullYear()),
-    MM: _pad(date.getMonth() + 1),
-    DD: _pad(date.getDate()),
-    HH: _pad(hours),
-    hh: _pad(hours % 12 || 12),
-    mm: _pad(date.getMinutes()),
-    ss: _pad(date.getSeconds()),
-    A: hours >= 12 ? "PM" : "AM",
-  };
+//   const _pad = (n: number) => String(n).padStart(2, "0");
+//   const hours = date.getHours();
+//   const map: Record<DateFormatToken, string> = {
+//     YYYY: String(date.getFullYear()),
+//     MM: _pad(date.getMonth() + 1),
+//     DD: _pad(date.getDate()),
+//     HH: _pad(hours),
+//     hh: _pad(hours % 12 || 12),
+//     mm: _pad(date.getMinutes()),
+//     ss: _pad(date.getSeconds()),
+//     A: hours >= 12 ? "PM" : "AM",
+//   };
 
-  const replacer = (str: string) =>
-    str.replace(
-      /YYYY|MM|DD|HH|hh|mm|ss|A/g,
-      (token) => map[token as DateFormatToken],
-    );
+//   const replacer = (str: string) =>
+//     str.replace(
+//       /YYYY|MM|DD|HH|hh|mm|ss|A/g,
+//       (token) => map[token as DateFormatToken],
+//     );
 
-  if (typeof format === "string") {
-    return replacer(format);
-  }
+//   const processNode = (node: React.ReactNode): React.ReactNode => {
+//     if (typeof node === "string") {
+//       return replacer(node);
+//     }
 
-  if (Array.isArray(format)) {
-    return format.map((part) =>
-      typeof part === "string" ? replacer(part) : part,
-    );
-  }
+//     if (React.isValidElement<React.HTMLAttributes<HTMLElement>>(node)) {
+//       const { children, ...props } = node.props;
 
-  return format;
-};
+//       if (children !== undefined) {
+//         return React.cloneElement(
+//           node,
+//           { ...props },
+//           processNode(children)
+//         );
+//       }
+//       return node;
+//     }
+
+//     if (Array.isArray(node)) {
+//       return React.Children.map(node, processNode);
+//     }
+
+//     return node;
+//   };
+
+//   return processNode(format);
+// };
 
 /**
  * 取得該月份有幾天
