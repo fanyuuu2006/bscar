@@ -13,7 +13,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 type NextBookingCardProps = React.HTMLAttributes<HTMLDivElement>;
@@ -23,6 +23,16 @@ export const NextBookingCard = ({
   ...rest
 }: NextBookingCardProps) => {
   const { token } = useAdminToken();
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    // 每秒更新一次時間，讓倒數計時保持準確
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   // 1. 獲取預約資料
   const { data: bookingsRequest, isLoading } = useSWR(
@@ -57,7 +67,6 @@ export const NextBookingCard = ({
   const nextBooking = useMemo(() => {
     if (!bookingsRequest?.data) return null;
 
-    const now = new Date();
     const validBookings = bookingsRequest.data.filter((b) => {
       const bookingTime = new Date(b.booking_time);
       return bookingTime > now;
@@ -70,15 +79,15 @@ export const NextBookingCard = ({
     );
 
     return validBookings[0] || null;
-  }, [bookingsRequest]);
+  }, [bookingsRequest, now]);
 
   const service = nextBooking ? servicesMap.get(nextBooking.service_id) : null;
 
   // 4. 計算相對時間顯示 (例如：2 小時後)
   const timeDisplay = useMemo(() => {
     if (!nextBooking) return "";
-    return formatRelativeTime(nextBooking.booking_time);
-  }, [nextBooking]);
+    return formatRelativeTime(nextBooking.booking_time, now);
+  }, [nextBooking, now]);
 
   return (
     <div className={cn("card rounded-xl p-6", className)} {...rest}>
@@ -124,28 +133,22 @@ export const NextBookingCard = ({
                 {
                   icon: UserOutlined,
                   value: nextBooking.customer_name || "-",
-                  textClass: "font-medium truncate max-w-[6rem]",
-                  wrapperClass: "",
                 },
                 {
                   icon: PhoneOutlined,
                   value: nextBooking.customer_phone || "-",
-                  textClass: "font-medium font-mono",
-                  wrapperClass: "",
                 },
                 {
                   icon: StarOutlined,
                   value: service ? service.name : "-",
-                  textClass: "font-medium truncate",
-                  wrapperClass: "col-span-2",
                 },
               ].map((item, i) => (
                 <div
                   key={i}
-                  className={cn("flex items-center gap-1.5", item.wrapperClass)}
+                  className={cn("flex items-center gap-1.5")}
                 >
                   <item.icon className="shrink-0 text-[10px]" />
-                  <span className={item.textClass} title={item.value}>
+                  <span className={"font-medium font-mono truncate max-w-[7em]"} title={item.value}>
                     {item.value}
                   </span>
                 </div>
