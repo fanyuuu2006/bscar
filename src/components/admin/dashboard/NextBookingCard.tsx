@@ -123,28 +123,36 @@ export const NextBookingCard = ({
             </div>
 
             {/* 資訊顯示 */}
-            <div className="flex flex-col gap-1.5 px-0.5">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <UserOutlined className="text-(--muted) text-xs" />
-                  <span className="font-medium text-(--foreground)">
-                    {nextBooking.customer_name}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 text-(--muted)">
-                  <PhoneOutlined className="text-[10px]" />
-                  <span className="font-mono text-xs">
-                    {nextBooking.customer_phone}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 text-xs text-(--muted)">
-                <StarOutlined className="text-[10px]" />
-                <span className="truncate text-gray-500 font-medium">
-                  {service?.name || "未知服務"}
-                </span>
-              </div>
+            <div className="grid grid-col-1 md:grid-cols-2 gap-2 ">
+              {
+                [
+                  {
+                    label: "顧客姓名",
+                    value: nextBooking.customer_name || "-",
+                    icon: UserOutlined,
+                  },
+                  {
+                    label: "顧客電話",
+                    value: nextBooking.customer_phone || "-",
+                    icon: PhoneOutlined,
+                  },
+                  {
+                    label: "服務項目",
+                    value: service ? service.name : "-",
+                    icon: StarOutlined,
+                  },
+                ].map((info) => {
+                  return (
+                    <div
+                      key={info.label}
+                      className="flex items-center gap-2 text-xs text-(--muted)"
+                    >
+                      {info.icon && <info.icon className="text-[10px]" />}
+                      <span className="font-medium">{info.value}</span>
+                    </div>
+                  );
+                })
+              }
             </div>
             <div>
               <Link
