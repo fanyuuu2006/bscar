@@ -404,7 +404,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   }));
                 }}
               />
-              <span className="text-(--muted) px-1">-</span>
+              <span className="text-(--muted) px-1">至</span>
               <input
                 type="date"
                 value={query?.end_date || ""}

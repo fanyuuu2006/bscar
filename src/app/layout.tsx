@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-Hant">
-        <body className="flex min-h-screen flex-col overflow-hidden">
+        <body className="flex min-h-screen flex-col">
           <Header className="sticky top-0 z-50" />
           <main className="h-full w-full overflow-y-auto">{children}</main>
         </body>
