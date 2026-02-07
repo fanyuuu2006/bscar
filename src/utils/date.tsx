@@ -40,7 +40,7 @@ export const formatDate = (
  * 
  * @example
  * formatDateNode(<strong key="date">YYYY/MM/DD</strong>, 2024, 5, 1)
- * // 輸出: 今天是 <strong>2024/06/01</strong>
+ * // 輸出: <strong>2024/06/01</strong>
  */
 export const formatDateNode = (
   format: React.ReactNode,
