@@ -32,6 +32,16 @@ export const formatDate = (
   );
 };
 
+/**
+ * 格式化日期為 React 節點，允許在格式字串中夾雜 React 元素
+ * @param format 格式字串或陣列 (字串部分同 formatDate，非字串部分將原樣輸出)
+ * @param args Date 建構參數
+ * @returns 格式化後的 React 節點
+ * 
+ * @example
+ * formatDateNode(<strong key="date">YYYY/MM/DD</strong>, 2024, 5, 1)
+ * // 輸出: 今天是 <strong>2024/06/01</strong>
+ */
 export const formatDateNode = (
   format: React.ReactNode,
   ...args: ConstructorParameters<typeof Date>
@@ -50,22 +60,24 @@ export const formatDateNode = (
     ss: _pad(date.getSeconds()),
     A: hours >= 12 ? "PM" : "AM",
   };
-  if (typeof format === "string") {
-    return format.replace(
+
+  const replacer = (str: string) =>
+    str.replace(
       /YYYY|MM|DD|HH|hh|mm|ss|A/g,
       (token) => map[token as DateFormatToken],
     );
+
+  if (typeof format === "string") {
+    return replacer(format);
   }
-  const formatStr = format as React.ReactNode[];
-  return formatStr.map((part) => {
-    if (typeof part === "string") {
-      return part.replace(
-        /YYYY|MM|DD|HH|hh|mm|ss|A/g,
-        (token) => map[token as DateFormatToken],
-      );
-    }
-    return part;
-  });
+
+  if (Array.isArray(format)) {
+    return format.map((part) =>
+      typeof part === "string" ? replacer(part) : part,
+    );
+  }
+
+  return format;
 };
 
 /**
