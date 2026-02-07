@@ -10,6 +10,7 @@ import { OverrideProps } from "fanyucomponents";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FieldInput, FieldInputProps } from "../../FieldInput";
+import { FormatDateNode } from "@/components/FormatDateNode";
 
 export type OperationItem<T extends React.ElementType = React.ElementType> = {
   label: string;
@@ -70,8 +71,7 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
 
   const handleCancel = useCallback(() => {
     router.back();
-  }
-    , [router]);
+  }, [router]);
 
   // 當外部 prop 更新時，同步本地狀態（避免第一次 render 後不同步）
   useEffect(() => {
@@ -96,7 +96,7 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
     return [
       {
         label: "取消",
-        component: 'button',
+        component: "button",
         props: {
           className: "btn secondary",
           onClick: handleCancel,
@@ -192,9 +192,12 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
 
             <div className="flex flex-col">
               <span className="font-bold">預約時間</span>
-              <span className="font-light">
-                {formatDate("YYYY/MM/DD hh:mm A", newBooking.booking_time)}
-              </span>
+              <FormatDateNode
+                date={[newBooking.booking_time]}
+                className="font-light"
+              >
+                YYYY/MM/DD hh:mm A
+              </FormatDateNode>
               <TimeSlotSelector
                 className="mt-2 flex flex-col md:flex-row text-xs"
                 locationId={newBooking.location_id}

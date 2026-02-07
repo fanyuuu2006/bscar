@@ -113,7 +113,7 @@ export const NextBookingCard = ({
                 </span>
               </FormatDateNode>
 
-              <span className="text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
+              <span className="text-xs font-bold text-green-700 bg-green-50 border border-green-900/15 px-2.5 py-1 rounded-full">
                 {timeDisplay}
               </span>
             </div>

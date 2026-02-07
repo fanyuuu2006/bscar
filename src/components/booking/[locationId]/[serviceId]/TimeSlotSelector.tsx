@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Calender } from "./Calender";
 import { getAvailableSlots } from "@/utils/backend";
 import { LoadingOutlined } from "@ant-design/icons";
+import { FormatDateNode } from "@/components/FormatDateNode";
 
 type TimeSlotSelectorProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -96,7 +97,7 @@ export const TimeSlotSelector = ({
                     },
                   )}
                 >
-                  {formatDate("hh:mm A", slotDate)}
+                  <FormatDateNode date={[slotDate]}>hh:mm A</FormatDateNode>
                 </button>
               );
             })}

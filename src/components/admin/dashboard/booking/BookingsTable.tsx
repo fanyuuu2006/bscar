@@ -1,4 +1,5 @@
 "use client";
+import { FormatDateNode } from "@/components/FormatDateNode";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { statusMap } from "@/libs/booking";
 import { SupabaseBooking, SupabaseService } from "@/types";
@@ -8,7 +9,6 @@ import {
   updateBookingByAdmin,
 } from "@/utils/backend";
 import { cn } from "@/utils/className";
-import { formatDate } from "@/utils/date";
 import {
   EditOutlined,
   CloseOutlined,
@@ -731,7 +731,7 @@ const TableRow = memo(
             onChange={(e) => onSelect(item.id, e.target.checked)}
           />
         </td>
-        <td className="px-5 py-3 text-xs font-mono text-(--muted)">
+        <td className="px-5 py-3 text-xs font-mono text-(--muted)" title={item.id}>
           #{item.id.slice(0, 8)}...
         </td>
         <td className="px-5 py-3">
@@ -751,14 +751,14 @@ const TableRow = memo(
           </div>
         </td>
         <td className="px-5 py-3">
-          <div className="flex flex-col text-sm">
+          <FormatDateNode date={[item.booking_time]} className="flex flex-col text-sm">
             <span className="text-(--foreground)">
-              {formatDate("YYYY/MM/DD", item.booking_time)}
+              YYYY/MM/DD
             </span>
             <span className="text-xs text-(--muted)">
-              {formatDate("hh:mm A", item.booking_time)}
+              hh:mm A
             </span>
-          </div>
+          </FormatDateNode>
         </td>
         <td className="px-5 py-3 text-center">
           <span
