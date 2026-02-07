@@ -33,6 +33,77 @@ export const formatDate = (
   );
 };
 
+/**
+ * 格式化相對時間 (例如：2 分鐘前, 明天 10:00, 3 天後)
+ * @param target 目標時間
+ * @param base 基準時間 (預設：現在)
+ * @returns 相對時間字串
+ */
+export const formatRelativeTime = (
+  target: Date | string | number,
+  base: Date | string | number = new Date(),
+): string => {
+  const targetDate = new Date(target);
+  const baseDate = new Date(base);
+
+  const diffMs = targetDate.getTime() - baseDate.getTime();
+  const diffSecs = Math.floor(diffMs / 1000);
+  const diffMins = Math.floor(diffSecs / 60);
+  const diffHours = Math.floor(diffMins / 60);
+
+  const isFuture = diffMs > 0;
+  const absDiffMins = Math.abs(diffMins);
+  const absDiffHours = Math.abs(diffHours);
+
+  // 1. 小於 1 分鐘
+  if (Math.abs(diffSecs) < 60) {
+    return isFuture ? "即將到來" : "剛才";
+  }
+
+  // 2. 小於 1 小時
+  if (absDiffMins < 60) {
+    return `${absDiffMins} 分鐘${isFuture ? "後" : "前"}`;
+  }
+
+  // 3. 小於 24 小時 (且為當天或跨天但在24小時內)
+  if (absDiffHours < 24) {
+    const mins = absDiffMins % 60;
+    const minStr = mins > 0 ? ` ${mins} 分鐘` : "";
+    return `${absDiffHours} 小時${minStr}${isFuture ? "後" : "前"}`;
+  }
+
+  // 4. 計算日期差異 (無視時間，只看日曆天)
+  const targetDay = new Date(targetDate);
+  targetDay.setHours(0, 0, 0, 0);
+  const baseDay = new Date(baseDate);
+  baseDay.setHours(0, 0, 0, 0);
+
+  const diffDayTime = targetDay.getTime() - baseDay.getTime();
+  const diffDays = Math.round(diffDayTime / (1000 * 60 * 60 * 24));
+  const timeStr = formatDate("HH:mm", targetDate);
+
+  if (diffDays === 0) {
+    return `今天 ${timeStr}`;
+  }
+  if (diffDays === 1) {
+    return `明天 ${timeStr}`;
+  }
+  if (diffDays === 2) {
+    return `後天 ${timeStr}`;
+  }
+  if (diffDays === -1) {
+    return `昨天 ${timeStr}`;
+  }
+
+  // 5. 其他範圍
+  if (diffDays > 0 && diffDays <= 7) {
+    return `${diffDays} 天後 (${timeStr})`;
+  }
+
+  // 6. 超過範圍顯示完整日期
+  return formatDate("YYYY/MM/DD HH:mm", targetDate);
+};
+
 // /**
 //  * 格式化日期為 React 節點，允許在格式字串中夾雜 React 元素
 //  * @param format 格式字串或陣列 (字串部分同 formatDate，非字串部分將原樣輸出)

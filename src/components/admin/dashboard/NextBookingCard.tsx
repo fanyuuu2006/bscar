@@ -4,7 +4,7 @@ import { useAdminToken } from "@/hooks/useAdminToken";
 import { SupabaseService } from "@/types";
 import { bookingsByAdmin, getServices } from "@/utils/backend";
 import { cn } from "@/utils/className";
-import { formatDate } from "@/utils/date";
+import { formatDate, formatRelativeTime } from "@/utils/date";
 import {
   StarOutlined,
   ClockCircleOutlined,
@@ -77,15 +77,7 @@ export const NextBookingCard = ({
   // 4. 計算相對時間顯示 (例如：2 小時後)
   const timeDisplay = useMemo(() => {
     if (!nextBooking) return "";
-    const bookingTime = new Date(nextBooking.booking_time);
-    const now = new Date();
-    const diffMs = bookingTime.getTime() - now.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-
-    if (diffMins < 60) return `${diffMins} 分鐘後`;
-    if (diffHours < 24) return `${diffHours} 小時 ${diffMins % 60} 分鐘後`;
-    return formatDate("MM/DD HH:mm", bookingTime);
+    return formatRelativeTime(nextBooking.booking_time);
   }, [nextBooking]);
 
   return (
