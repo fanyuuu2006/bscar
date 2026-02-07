@@ -123,36 +123,37 @@ export const NextBookingCard = ({
             </div>
 
             {/* 資訊顯示 */}
-            <div className="grid grid-col-1 md:grid-cols-2 gap-2 ">
-              {
-                [
-                  {
-                    label: "顧客姓名",
-                    value: nextBooking.customer_name || "-",
-                    icon: UserOutlined,
-                  },
-                  {
-                    label: "顧客電話",
-                    value: nextBooking.customer_phone || "-",
-                    icon: PhoneOutlined,
-                  },
-                  {
-                    label: "服務項目",
-                    value: service ? service.name : "-",
-                    icon: StarOutlined,
-                  },
-                ].map((info) => {
-                  return (
-                    <div
-                      key={info.label}
-                      className="flex items-center gap-2 text-xs text-(--muted)"
-                    >
-                      {info.icon && <info.icon className="text-[10px]" />}
-                      <span className="font-medium">{info.value}</span>
-                    </div>
-                  );
-                })
-              }
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-(--muted)">
+              {[
+                {
+                  icon: UserOutlined,
+                  value: nextBooking.customer_name || "-",
+                  textClass: "font-medium truncate max-w-[6rem]",
+                  wrapperClass: "",
+                },
+                {
+                  icon: PhoneOutlined,
+                  value: nextBooking.customer_phone || "-",
+                  textClass: "font-medium font-mono",
+                  wrapperClass: "",
+                },
+                {
+                  icon: StarOutlined,
+                  value: service ? service.name : "-",
+                  textClass: "font-medium truncate",
+                  wrapperClass: "col-span-2",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className={cn("flex items-center gap-1.5", item.wrapperClass)}
+                >
+                  <item.icon className="shrink-0 text-[10px]" />
+                  <span className={item.textClass} title={item.value}>
+                    {item.value}
+                  </span>
+                </div>
+              ))}
             </div>
             <div>
               <Link
