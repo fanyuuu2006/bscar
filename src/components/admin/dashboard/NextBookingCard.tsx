@@ -1,4 +1,5 @@
 "use client";
+import { FormatDateNode } from "@/components/FormatDateNode";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { SupabaseService } from "@/types";
 import { bookingsByAdmin, getServices } from "@/utils/backend";
@@ -107,15 +108,18 @@ export const NextBookingCard = ({
           <div className="flex-1 flex flex-col justify-center gap-3">
             {/* 時間顯示 */}
             <div className="flex flex-col gap-2">
-              <div className="flex flex-wrap items-baseline gap-2">
+              <FormatDateNode
+                date={[nextBooking.booking_time]}
+                className="flex flex-wrap items-baseline gap-2"
+              >
                 <span className="text-5xl font-bold text-green-600 tracking-tight font-mono">
-                  {formatDate("HH:mm", nextBooking.booking_time)}
+                  HH:mm
                 </span>
 
                 <span className="text-sm text-(--muted) font-medium mt-1">
-                  {formatDate("YYYY/MM/DD", nextBooking.booking_time)}
+                  YYYY/MM/DD
                 </span>
-              </div>
+              </FormatDateNode>
 
               <span className="text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
                 {timeDisplay}

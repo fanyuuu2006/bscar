@@ -1,6 +1,6 @@
 import { DateFormatToken } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
-import React, { useMemo } from "react";
+import React, { forwardRef, useMemo } from "react";
 
 /**
  * 確保數字至少有兩位數，不足時在前方補零。
@@ -44,72 +44,71 @@ type FormatDateNodeProps = OverrideProps<
  * </FormatDateNode>
  * ```
  */
-export const FormatDateNode: React.FC<FormatDateNodeProps> = ({
-  dateTime,
-  date,
-  children,
-  ...rest
-}) => {
-  // 緩存日期數值以防止重新計算。
-  // 使用 JSON.stringify(date) 確保穩定性，即使 'date' 陣列 prop 在每次渲染時都是新的參考 (例如: inline literal)。
-  const { map, isoString } = useMemo(() => {
-    const d = new Date(...date);
-    const hours = d.getHours();
+export const FormatDateNode = forwardRef<HTMLTimeElement, FormatDateNodeProps>(
+  ({ dateTime, date, children, ...rest }, ref) => {
+    // 緩存日期數值以防止重新計算。
+    // 使用 JSON.stringify(date) 確保穩定性，即使 'date' 陣列 prop 在每次渲染時都是新的參考 (例如: inline literal)。
+    const { map, isoString } = useMemo(() => {
+      const d = new Date(...date);
+      const hours = d.getHours();
 
-    const map: Record<DateFormatToken, string> = {
-      YYYY: String(d.getFullYear()),
-      MM: _pad(d.getMonth() + 1),
-      DD: _pad(d.getDate()),
-      HH: _pad(hours),
-      hh: _pad(hours % 12 || 12),
-      mm: _pad(d.getMinutes()),
-      ss: _pad(d.getSeconds()),
-      A: hours >= 12 ? "PM" : "AM",
-    };
+      const map: Record<DateFormatToken, string> = {
+        YYYY: String(d.getFullYear()),
+        MM: _pad(d.getMonth() + 1),
+        DD: _pad(d.getDate()),
+        HH: _pad(hours),
+        hh: _pad(hours % 12 || 12),
+        mm: _pad(d.getMinutes()),
+        ss: _pad(d.getSeconds()),
+        A: hours >= 12 ? "PM" : "AM",
+      };
 
-    return { map, isoString: d.toISOString() };
-  }, [date]);
+      return { map, isoString: d.toISOString() };
+    }, [date]);
 
-  // 緩存遞迴處理後的子節點，以避免不必要的樹狀結構遍歷。
-  const processedChildren = useMemo(() => {
-    const replacer = (str: string) =>
-      str.replace(
-        /YYYY|MM|DD|HH|hh|mm|ss|A/g,
-        (token) => map[token as DateFormatToken],
-      );
-
-    const processNode = (node: React.ReactNode): React.ReactNode => {
-      // 處理文字節點
-      if (typeof node === "string") {
-        return replacer(node);
-      }
-
-      // 處理 React 元素 (遞迴處理其子節點)
-      if (React.isValidElement<React.HTMLAttributes<HTMLElement>>(node)) {
-        const { children, ...props } = node.props;
-
-        return React.cloneElement(
-          node,
-          { ...props },
-          children !== undefined ? processNode(children) : children,
+    // 緩存遞迴處理後的子節點，以避免不必要的樹狀結構遍歷。
+    const processedChildren = useMemo(() => {
+      const replacer = (str: string) =>
+        str.replace(
+          /YYYY|MM|DD|HH|hh|mm|ss|A/g,
+          (token) => map[token as DateFormatToken],
         );
-      }
 
-      // 處理節點陣列 (Fragments 或列表)
-      if (Array.isArray(node)) {
-        return React.Children.map(node, processNode);
-      }
+      const processNode = (node: React.ReactNode): React.ReactNode => {
+        // 處理文字節點
+        if (typeof node === "string") {
+          return replacer(node);
+        }
 
-      // 其他類型 (null, boolean, number 等) 原樣返回
-      return node;
-    };
+        // 處理 React 元素 (遞迴處理其子節點)
+        if (React.isValidElement<React.HTMLAttributes<HTMLElement>>(node)) {
+          const { children, ...props } = node.props;
 
-    return processNode(children);
-  }, [children, map]);
+          return React.cloneElement(
+            node,
+            { ...props },
+            children !== undefined ? processNode(children) : children,
+          );
+        }
 
-  return (
-    <time dateTime={dateTime ?? isoString} {...rest}>
-      {processedChildren}
-    </time>
-  );
-};
+        // 處理節點陣列 (Fragments 或列表)
+        if (Array.isArray(node)) {
+          return React.Children.map(node, processNode);
+        }
+
+        // 其他類型 (null, boolean, number 等) 原樣返回
+        return node;
+      };
+
+      return processNode(children);
+    }, [children, map]);
+
+    return (
+      <time ref={ref} dateTime={dateTime ?? isoString} {...rest}>
+        {processedChildren}
+      </time>
+    );
+  },
+);
+
+FormatDateNode.displayName = "FormatDateNode";
