@@ -35,7 +35,7 @@ export const MainSection = () => {
     token ? ["admin-booking-pending", token] : null,
     () =>
       bookingsByAdmin(token!, {
-        status: "pending",
+        status: ["pending"],
       }),
   );
   const strToday = useMemo(() => formatDate("YYYY-MM-DD", new Date()), []);
@@ -46,7 +46,7 @@ export const MainSection = () => {
       return bookingsByAdmin(token!, {
         start_date: strToday,
         end_date: strToday,
-        status: "confirmed",
+        status: ["confirmed", "completed"],
       });
     },
   );
@@ -57,7 +57,7 @@ export const MainSection = () => {
     () => {
       return bookingsByAdmin(token!, {
         start_date: strToday,
-        status: "confirmed",
+        status: ["confirmed"],
         count: 50,
       });
     },

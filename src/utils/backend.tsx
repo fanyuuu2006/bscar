@@ -98,8 +98,8 @@ export const bookingsByAdmin = async (
   query?: Partial<{
     page: number;
     count: number;
-    status: SupabaseBooking["status"];
-    service_id: SupabaseService["id"];
+    status: SupabaseBooking["status"][];
+    service_id: SupabaseService["id"][];
     start_date: string;
     end_date: string;
     keyword: string;
@@ -107,7 +107,11 @@ export const bookingsByAdmin = async (
 ) => {
   const params = new URLSearchParams();
   Object.entries(query || {}).forEach(([k, v]) => {
-    if (v || (v != null && v !== "")) params.append(k, String(v));
+    if (Array.isArray(v)) {
+      v.forEach((val) => params.append(k, String(val)));
+    } else if (v || (v != null && v !== "")) {
+      params.append(k, String(v));
+    }
   });
 
   return fetcher<MyResponse<SupabaseBooking[]>>(
