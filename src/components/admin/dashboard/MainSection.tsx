@@ -126,7 +126,7 @@ export const MainSection = () => {
       {
         label: "今日預約總數",
         Icon: CalendarOutlined,
-        href: `/admin/dashboard/booking?start_date=${strToday}&end_date=${strToday}`,
+        href: `/admin/dashboard/booking?start_date=${strToday}&end_date=${strToday}&status=confirmed&status=completed`,
         children: todayIsLoading ? (
           <div className="flex-1 flex flex-col justify-center">
             <div className="h-12 w-16 animate-pulse rounded-md bg-gray-200" />

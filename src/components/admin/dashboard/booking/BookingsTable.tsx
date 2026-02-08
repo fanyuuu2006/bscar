@@ -49,12 +49,17 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
    * 使用 useMemo 確保只有在網址參數改變時才重新計算。
    */
   const query = useMemo(() => {
+    const statusStr = searchParams.getAll("status");
+    const serviceIdStr = searchParams.getAll("service_id");
+
     return {
       page: Number(searchParams.get("page")) || 1,
       count: Number(searchParams.get("count")) || 50,
       status:
-        (searchParams.get("status") as SupabaseBooking["status"]) || undefined,
-      service_id: searchParams.get("service_id") || undefined,
+        statusStr.length > 0
+          ? (statusStr as SupabaseBooking["status"][])
+          : undefined,
+      service_id: serviceIdStr.length > 0 ? serviceIdStr : undefined,
       start_date: searchParams.get("start_date") || undefined,
       end_date: searchParams.get("end_date") || undefined,
       keyword: searchParams.get("keyword") || undefined,
@@ -83,8 +88,14 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         params.set("page", String(nextQuery.page));
       if (nextQuery?.count && nextQuery.count !== 50)
         params.set("count", String(nextQuery.count));
-      if (nextQuery?.status) params.set("status", nextQuery.status);
-      if (nextQuery?.service_id) params.set("service_id", nextQuery.service_id);
+
+      if (nextQuery?.status && Array.isArray(nextQuery.status)) {
+        nextQuery.status.forEach((s) => params.append("status", s));
+      }
+      if (nextQuery?.service_id && Array.isArray(nextQuery.service_id)) {
+        nextQuery.service_id.forEach((id) => params.append("service_id", id));
+      }
+
       if (nextQuery?.start_date) params.set("start_date", nextQuery.start_date);
       if (nextQuery?.end_date) params.set("end_date", nextQuery.end_date);
       if (nextQuery?.keyword) params.set("keyword", nextQuery.keyword);
@@ -334,12 +345,12 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 <FilterOutlined />
               </div>
               <select
-                value={query?.service_id || "all"}
+                value={query?.service_id?.[0] || "all"}
                 onChange={(e) => {
                   const val = e.target.value;
                   setQuery((prev) => ({
                     ...prev,
-                    service_id: val === "all" ? undefined : val,
+                    service_id: val === "all" ? undefined : [val],
                     page: 1,
                   }));
                 }}
@@ -363,7 +374,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 <FilterOutlined />
               </div>
               <select
-                value={query?.status || "all"}
+                value={query?.status?.[0] || "all"}
                 onChange={(e) => {
                   const val = e.target.value;
                   setQuery((prev) => ({
@@ -371,7 +382,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     status:
                       val === "all"
                         ? undefined
-                        : (val as SupabaseBooking["status"]),
+                        : [(val as SupabaseBooking["status"])],
                     page: 1,
                   }));
                 }}
