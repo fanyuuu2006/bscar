@@ -24,7 +24,7 @@ export const TodayScheduleCard = ({
   return (
     <div
       className={cn(
-        `card rounded-lg p-3 flex items-center gap-4 group cursor-pointer hover:border-primary/50 transition-colors`,
+        `card rounded-lg px-4 py-2 flex items-center gap-4 group cursor-pointer hover:border-primary/50 transition-colors`,
         className,
       )}
       {...props}
