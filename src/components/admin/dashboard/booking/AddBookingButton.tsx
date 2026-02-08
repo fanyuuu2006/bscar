@@ -104,6 +104,11 @@ export const AddBookingButton = ({
         alert("預約建立成功");
         mutate();
         setBooking(defaultValue);
+        if (res.data?.id) {
+          setTimeout(() => {
+            window.location.hash = `#${res.data!.id}`;
+          }, 300);
+        }
       } else {
         alert(res.message || "新增失敗");
       }
@@ -137,21 +142,22 @@ export const AddBookingButton = ({
         {...rest}
       >
         <PlusOutlined />
-        <span className="tooltip-text">新增預約</span>
+        <span>新增</span>
       </button>
 
       <modal.Container className="animate-appear flex items-center justify-center p-4">
         <div className="card p-4 md:p-6 w-full max-w-xl max-h-full rounded-xl flex flex-col">
           <div className="flex justify-between items-center border-b border-(--border) pb-2">
-            <h3 className="text-2xl font-black"><PlusOutlined className="mr-1"/>新增預約</h3>
+            <h3 className="text-2xl font-black">
+              <PlusOutlined className="mr-1" />
+              新增預約
+            </h3>
           </div>
 
           <div className="flex flex-col py-4 max-h-full overflow-y-auto gap-4">
             {/* 預約資訊區塊 */}
             <div className="flex flex-col gap-4">
-              <h4 className="text-xl font-extrabold">
-                預約資訊
-              </h4>
+              <h4 className="text-xl font-extrabold">預約資訊</h4>
               <div className="flex flex-col gap-4 pl-1">
                 <div className="flex flex-col gap-1">
                   <label className="font-bold text-sm">服務項目</label>
@@ -187,12 +193,9 @@ export const AddBookingButton = ({
               </div>
             </div>
 
-
             {/* 顧客資訊區塊 */}
             <div className="flex flex-col gap-4">
-              <h4 className="text-xl font-extrabold">
-                顧客資訊
-              </h4>
+              <h4 className="text-xl font-extrabold">顧客資訊</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {infoFields.map((field) => (
                   <FieldInput

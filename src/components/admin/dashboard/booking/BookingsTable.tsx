@@ -23,7 +23,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import useSWR from "swr";
 import { TableRow } from "./BookingTableRow";
-import { MultiSelectFilter } from "./MultiSelectFilter";
+import { MultiSelect } from "../MultiSelect";
 import { AddBookingButton } from "./AddBookingButton";
 
 type BookingsTableProps = DistributiveOmit<
@@ -336,7 +336,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         </div>
 
         {/* 服務篩選 */}
-        <MultiSelectFilter
+        <MultiSelect
           label="服務"
           options={
             servicesRes?.data?.map((s) => ({
@@ -356,7 +356,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         />
 
         {/* 狀態篩選 */}
-        <MultiSelectFilter
+        <MultiSelect
           label="狀態"
           options={Object.entries(statusMap).map(([key, val]) => ({
             label: val.label,

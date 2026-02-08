@@ -1,30 +1,33 @@
 "use client";
 
 import { cn } from "@/utils/className";
-import { CaretDownOutlined, FilterOutlined } from "@ant-design/icons";
+import { CaretDownOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OverrideProps } from "fanyucomponents";
 
-interface MultiSelectFilterProps {
-  label?: string;
-  options: {
-    value: string;
-    label: string;
-  }[];
-  values: string[];
-  onChange: (values: string[]) => void;
-  className?: string;
-  placeholder?: string;
-}
+type MultiSelectProps = OverrideProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  {
+    label?: string;
+    options: {
+      value: string;
+      label: string;
+    }[];
+    values: string[];
+    onChange: (values: string[]) => void;
+    placeholder?: string;
+  }
+>;
 
-export const MultiSelectFilter = ({
-  label = "篩選",
+export const MultiSelect = ({
+  label = "選項",
   options,
   values,
   onChange,
   placeholder,
   className,
-}: MultiSelectFilterProps) => {
+  ...rest
+}: MultiSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -77,17 +80,15 @@ export const MultiSelectFilter = ({
               .join(", ")
           : ""
       }
+      {...rest}
     >
-      <FilterOutlined />
       <span className="truncate">{displayText}</span>
       <CaretDownOutlined
-        className={cn("ms-auto transition-all duration-300", {
-          "rotate-180": isOpen,
-        })}
+        className={cn("ms-auto")}
       />
       {/* 下拉選單內容 */}
       {isOpen && (
-        <div className="absolute z-50 top-full left-0 mt-1 card w-full rounded-lg max-h-60 overflow-y-auto p-1">
+        <div className="absolute z-50 top-full left-0 mt-1 card w-full rounded-lg max-h-60 overflow-y-auto p-2">
           <div className="w-full flex flex-col">
             {[
               {
@@ -106,7 +107,7 @@ export const MultiSelectFilter = ({
                   key={opt.value}
                   value={opt.value}
                   isSelected={isSelected}
-                  className="py-0.5 px-2"
+                  className="p-0.5"
                   onClick={(e) => {
                     e.stopPropagation();
 
@@ -152,7 +153,7 @@ const Option = ({
     >
       <div
         className={cn(
-          "text-(--background) w-[1em] h-[1em] rounded-sm border border-(--border)",
+          "text-(--background) w-[1.2em] h-[1.2em] rounded-sm border border-(--border)",
           {
             "bg-blue-500": isSelected,
           },
