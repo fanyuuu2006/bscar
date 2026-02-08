@@ -40,7 +40,7 @@ export const DateCell = ({ date }: DateCellProps) => {
           <div
             key={booking.id}
             className={cn(
-              "flex items-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 text-xs font-medium",
+              "flex items-center border gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 text-xs font-medium",
               status.className,
             )}
             title={`${formatDate("HH:mm", booking.booking_time)} - ${booking.customer_name} (${status.label})`}
@@ -57,7 +57,7 @@ export const DateCell = ({ date }: DateCellProps) => {
       })}
       {remainingCount > 0 && (
         <div className="mt-auto pb-1 text-center text-[10px] font-medium text-(--muted)">
-          還有 {remainingCount} 筆行程
+          還有 {remainingCount} 筆預約
         </div>
       )}
     </div>
