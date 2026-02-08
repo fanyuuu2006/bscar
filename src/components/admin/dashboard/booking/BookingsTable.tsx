@@ -600,9 +600,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 inputMode="numeric"
                 value={inputPage}
                 onChange={(e) => {
-                  const val = e.target.value;
+                  const val = e.target.value || "0";
                   // 僅允許輸入數字
-                  if (val === "" || /^\d+$/.test(val)) {
+                  if (/^\d+$/.test(val)) {
                     setInputPage(val);
                   }
                 }}
