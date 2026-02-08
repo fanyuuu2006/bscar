@@ -72,7 +72,7 @@ export const MainSection = () => {
   );
 
   return (
-    <section className="flex h-full w-full flex-col gap-4 p-4">
+    <section className="flex w-full flex-col gap-4 p-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">日程表</h1>
         <div className="flex flex-wrap gap-3">
