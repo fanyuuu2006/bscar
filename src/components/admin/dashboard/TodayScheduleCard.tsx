@@ -2,7 +2,7 @@ import { SupabaseBooking, SupabaseService } from "@/types";
 import { cn } from "@/utils/className";
 import { OverrideProps } from "fanyucomponents";
 import { statusMap } from "@/libs/booking";
-import { UserOutlined, PhoneOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 
 type TodayScheduleCardProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -22,43 +22,45 @@ export const TodayScheduleCard = ({
   
   const statusInfo = statusMap[booking.status];
 
-
   return (
     <div
       className={cn(
-        `card rounded-xl p-4 flex justify-between items-center group cursor-pointer hover:border-primary/50`,
+        `card rounded-lg p-3 flex items-center gap-4 group cursor-pointer hover:border-primary/50 transition-colors`,
         className,
       )}
       {...props}
     >
-      <div className="flex flex-col gap-1.5">
-        <h3 className="font-bold text-(--foreground) text-lg truncate flex items-center gap-2">
-            {service?.name || "未知服務"}
-        </h3>
-        <div className="flex flex-col gap-1 text-xs text-(--muted)">
-             <div className="flex items-center gap-1.5">
-                <UserOutlined className="text-[10px]" />
-                <span>{booking.customer_name}</span>
-             </div>
-             <div className="flex items-center gap-1.5">
-                <PhoneOutlined className="text-[10px]" />
-                <span className="font-mono">{booking.customer_phone}</span>
-             </div>
-        </div>
-      </div>
-      
-      <div className="flex flex-col items-end gap-2">
-        <span className="text-sm font-bold font-mono text-(--foreground)">
+      {/* 1. 時間區塊 - 強調顯示 */}
+      <div className="flex items-center justify-center bg-gray-50 border border-gray-100 rounded-md px-3 py-2 min-w-20 shrink-0">
+         <span className="text-xl font-bold font-mono text-(--foreground) tracking-tight">
           {startTime.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
           })}
         </span>
+      </div>
 
+      {/* 2. 資訊區塊 - 佔用剩餘空間 */}
+      <div className="flex-1 flex flex-col justify-center min-w-0 px-2">
+        <h3 className="font-bold text-(--foreground) text-xl truncate leading-tight">
+            {service?.name || "未知服務"}
+        </h3>
+        <div className="flex items-center gap-3 text-sm text-(--muted) truncate mt-1">
+             <div className="flex items-center gap-1.5 font-medium text-gray-600">
+                <UserOutlined />
+                <span>{booking.customer_name}</span>
+             </div>
+             <span className="text-gray-300">|</span>
+             <span className="font-mono text-gray-500">{booking.customer_phone}</span>
+        </div>
+      </div>
+      
+      {/* 3. 狀態標籤 - 固定在右側 */}
+      <div className="shrink-0 flex items-center">
         <span
           className={cn(
-            "px-2.5 py-0.5 text-xs font-medium rounded-full border",
+            "px-2.5 py-1 text-xs font-bold rounded-md border",
             statusInfo.className,
           )}
         >
