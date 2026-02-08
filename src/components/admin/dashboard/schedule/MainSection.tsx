@@ -34,7 +34,6 @@ export const MainSection = () => {
 
   const bookings = useMemo(() => resp?.data || [], [resp]);
 
-  // Group bookings by date
   const bookingsMap = useMemo(() => {
     const map: Record<string, SupabaseBooking[]> = {};
     bookings.forEach((b) => {
@@ -61,9 +60,9 @@ export const MainSection = () => {
             return <BookingBadge key={booking.id} booking={booking} />;
           })}
           {remainingCount > 0 && (
-            <div className="mt-auto pb-1 text-center font-medium text-(--muted)">
+            <button className="text-(--muted) flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium">
               還有 {remainingCount} 筆預約
-            </div>
+            </button>
           )}
         </div>
       );

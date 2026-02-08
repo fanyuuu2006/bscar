@@ -85,7 +85,7 @@ export const Calender = ({
   return (
     <div
       className={cn(
-        "card flex flex-col gap-2 p-4 md:p-6 rounded-2xl",
+        "card flex flex-col gap-2 p-4 rounded-xl",
         className,
       )}
       {...rest}
