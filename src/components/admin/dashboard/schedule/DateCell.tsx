@@ -8,6 +8,7 @@ import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { FormatDateNode } from "@/components/FormatDateNode";
 
+const MAX_VISIBLE = 3;
 export const DateCell = ({ date }: DateCellProps) => {
   const { token } = useAdminToken();
   const { data: resp } = useSWR(
@@ -28,7 +29,6 @@ export const DateCell = ({ date }: DateCellProps) => {
     a.booking_time.localeCompare(b.booking_time),
   );
 
-  const MAX_VISIBLE = 3;
   const visibleBookings = sortedBookings.slice(0, MAX_VISIBLE);
   const remainingCount = sortedBookings.length - MAX_VISIBLE;
 
