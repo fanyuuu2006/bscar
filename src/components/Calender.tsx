@@ -11,6 +11,13 @@ import { useMemo, useRef, useState } from "react";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
+type CustomComponentProps = {
+  date: Date;
+  isSelected: boolean;
+  isToday: boolean;
+  isDisabled: boolean;
+};
+
 type CalenderProps = OverrideProps<
   DistributiveOmit<React.HTMLAttributes<HTMLDivElement>, "children">,
   {
@@ -28,6 +35,7 @@ type CalenderProps = OverrideProps<
         today?: React.CSSProperties;
       };
     };
+    customComponent?: React.FC<CustomComponentProps>;
   }
 >;
 
@@ -37,6 +45,7 @@ export const Calender = ({
   className,
   pastDateDisabled = true,
   styles,
+  customComponent: CustomComponent,
   ...rest
 }: CalenderProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(value ?? new Date());
@@ -150,31 +159,41 @@ export const Calender = ({
           return (
             <div
               key={date.toISOString()}
-              className="flex items-center justify-center"
+              className="w-full grid grid-cols-1 items-center justify-center"
             >
-              <button
-                type="button"
-                disabled={isDisabled}
-                className={cn(
-                  "tabular-nums font-mono relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
-                  "text-[1em] font-medium",
-                  {
-                    "border-(--primary) border-2": isSelected,
-                    "font-black text-(--primary)": isToday,
-                  },
-                )}
-                onClick={() => {
-                  setSelectedDate(date);
-                  onChange?.(date);
-                }}
-                style={{
-                  ...styles?.day?.default,
-                  ...(isSelected ? styles?.day?.selected : {}),
-                  ...(isToday ? styles?.day?.today : {}),
-                }}
-              >
-                <span>{date.getDate()}</span>
-              </button>
+              <div className="flex justify-center items-center">
+                <button
+                  type="button"
+                  disabled={isDisabled}
+                  className={cn(
+                    "tabular-nums font-mono relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
+                    "text-[1em] font-medium",
+                    {
+                      "border-(--primary) border-2": isSelected,
+                      "font-black text-(--primary)": isToday,
+                    },
+                  )}
+                  onClick={() => {
+                    setSelectedDate(date);
+                    onChange?.(date);
+                  }}
+                  style={{
+                    ...styles?.day?.default,
+                    ...(isSelected ? styles?.day?.selected : {}),
+                    ...(isToday ? styles?.day?.today : {}),
+                  }}
+                >
+                  <span>{date.getDate()}</span>
+                </button>
+              </div>
+              {CustomComponent && (
+                <CustomComponent
+                  date={date}
+                  isSelected={isSelected}
+                  isToday={isToday}
+                  isDisabled={isDisabled}
+                />
+              )}
             </div>
           );
         })}
