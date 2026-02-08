@@ -1,11 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/className";
-import {
-  CaretDownOutlined,
-  CheckOutlined,
-  FilterOutlined,
-} from "@ant-design/icons";
+import { CaretDownOutlined, FilterOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OverrideProps } from "fanyucomponents";
 
@@ -121,7 +117,7 @@ export const MultiSelectFilter = ({
                     }
                   }}
                 >
-                  {opt.label}
+                  <span>{opt.label}</span>
                 </Option>
               );
             })}
@@ -155,16 +151,13 @@ const Option = ({
       {...rest}
     >
       <div
-        className={cn("text-[0.8em] p-0.5 aspect-square rounded-sm border", {
-          "bg-blue-500": isSelected,
-        })}
-      >
-        <CheckOutlined
-          className={cn("transition-all duration-300", {
-            "opacity-0": !isSelected,
-          })}
-        />
-      </div>
+        className={cn(
+          "text-(--background) w-[1em] h-[1em] rounded-sm border border-(--border)",
+          {
+            "bg-blue-500": isSelected,
+          },
+        )}
+      />
       {children}
     </div>
   );
