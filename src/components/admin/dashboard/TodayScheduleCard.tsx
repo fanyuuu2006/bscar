@@ -24,44 +24,41 @@ export const TodayScheduleCard = ({
   return (
     <div
       className={cn(
-        // 恢復 card 樣式，移除 p-0 改為適當 padding
-        `card rounded-xl p-3 flex items-center gap-4`,
+        `card rounded-lg p-3 flex items-center gap-4 group cursor-pointer hover:border-primary/50 transition-colors`,
         className,
       )}
       {...props}
     >
-      {/* 1. 時間 */}
-      <div className="shrink-0 w-16 text-center">
+      {/* 1. 時間區塊 - 使用 FormatDateNode 保持一致性 */}
+      <div className="shrink-0 w-18 flex justify-center border-r border-gray-100 pr-4 my-1">
         <FormatDateNode
           date={[booking.booking_time]}
-          className="text-xl font-bold font-mono text-(--foreground) tracking-tight"
+          className="text-2xl font-bold font-mono text-(--foreground) tracking-tight"
         >
           HH:mm
         </FormatDateNode>
       </div>
 
-      {/* 2. 資訊區域 - 與時間在同一行 */}
-      <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-3 gap-1">
-        {/* 服務名稱 */}
-        <h3 className="font-bold text-(--foreground) text-lg truncate leading-none">
+      {/* 2. 資訊區域 */}
+      <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
+        <h3 className="font-bold text-(--foreground) text-lg truncate leading-tight">
           {service?.name || "未知服務"}
         </h3>
-
-        {/* 顧客資訊 - 在大螢幕時接在服務名稱後面 */}
-        <div className="flex items-center gap-2 text-sm text-(--muted) truncate">
-          <span className="hidden md:inline text-gray-300">|</span>
-          <div className="flex items-center gap-1.5">
-            <UserOutlined className="text-[12px]" />
-            <span>{booking.customer_name}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <PhoneOutlined className="text-[12px]" />
-            <span className="font-mono">{booking.customer_phone}</span>
-          </div>
+        
+        <div className="flex items-center gap-3 text-sm text-(--muted) truncate">
+           <div className="flex items-center gap-1.5 min-w-0">
+              <UserOutlined className="shrink-0" />
+              <span className="truncate">{booking.customer_name}</span>
+           </div>
+           <span className="text-gray-200">|</span>
+           <div className="flex items-center gap-1.5 min-w-0">
+             <PhoneOutlined className="shrink-0" />
+             <span className="font-mono truncate">{booking.customer_phone}</span>
+           </div>
         </div>
       </div>
 
-      {/* 3. 狀態標籤 - 靠右 */}
+      {/* 3. 狀態標籤 - 使用原有樣式 */}
       <div className="shrink-0 pl-2">
         <span
           className={cn(
