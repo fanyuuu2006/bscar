@@ -376,11 +376,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         />
 
         {/* 日期篩選 */}
-        <div className="col-span-2 md:col-span-3 lg:col-span-3 flex items-center justify-between p-1.5 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
+        <div className="col-span-2 md:col-span-3 lg:col-span-3 flex items-center justify-between p-2 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
           <input
             type="date"
             value={query?.start_date || ""}
-            className="border-none text-xs outline-none cursor-pointer"
+            className="text-xs outline-none cursor-pointer"
             onChange={(e) => {
               const val = e.target.value;
               setQuery((prev) => ({
@@ -390,11 +390,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               }));
             }}
           />
-          <span className="text-(--muted) px-1">至</span>
+          <span className="text-(--muted) text-xs">至</span>
           <input
             type="date"
             value={query?.end_date || ""}
-            className="border-none text-xs outline-none cursor-pointer"
+            className="text-xs outline-none cursor-pointer"
             onChange={(e) => {
               const val = e.target.value;
               setQuery((prev) => ({
