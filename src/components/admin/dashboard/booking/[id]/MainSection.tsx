@@ -163,7 +163,7 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
   return (
     <section {...rest}>
       <div className="w-full flex flex-col p-4 gap-4">
-        <h2 className="text-3xl font-black">編輯預約</h2>
+        <h2 className="text-2xl font-black">編輯預約</h2>
 
         {/* ===== 預約資訊 ===== */}
         <div className="card p-4 md:p-6 rounded-xl">

@@ -141,12 +141,12 @@ export const AddBookingButton = ({
       </button>
 
       <modal.Container className="animate-appear flex items-center justify-center p-4">
-        <div className="card p-4 md:p-6 w-full max-w-xl rounded-xl max-h-[90vh] overflow-y-auto flex flex-col gap-6">
+        <div className="card p-4 md:p-6 w-full max-w-xl rounded-xl flex flex-col gap-6">
           <div className="flex justify-between items-center">
             <h3 className="text-2xl font-extrabold">新增預約</h3>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 overflow-y-auto max-h-[70vh]">
             {/* 服務選擇 */}
             <div className="flex flex-col gap-2">
               <label className="font-bold">服務</label>
@@ -183,13 +183,14 @@ export const AddBookingButton = ({
             {/* 預約時間選擇 */}
             <div className="flex flex-col gap-2">
               <label className="font-bold">預約時間</label>
-              <div className="bg-gray-50 p-2 rounded-lg">
+              <div className="p-2 rounded-lg">
                 {booking.location_id && booking.service_id ? (
                   <TimeSlotSelector
                     locationId={booking.location_id}
                     serviceId={booking.service_id}
                     value={booking.time ? new Date(booking.time) : null}
                     onChange={handleDateChange}
+                    className="text-sm"
                   />
                 ) : (
                   <p className="text-gray-500">請先選擇服務</p>
@@ -198,7 +199,7 @@ export const AddBookingButton = ({
             </div>
           </div>
 
-          <div className="flex justify-end gap-4 mt-2">
+          <div className="flex justify-end gap-2">
             <button
               onClick={modal.close}
               className="btn secondary px-6 py-2 rounded-xl font-medium"
