@@ -4,7 +4,7 @@ import { SupabaseAdmin } from "@/types";
 import { updateAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { useState, useCallback } from "react";
-import { FieldInput } from "../FieldInput";
+import { FieldInput } from "../../../FieldInput";
 import { useModal } from "@/hooks/useModal";
 
 type AccountInfoCardProps = React.HTMLAttributes<HTMLDivElement>;

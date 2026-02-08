@@ -5,7 +5,7 @@ import { SupabaseLocation } from "@/types";
 import { getLocationById, updateLocationByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { FieldInput, FieldInputProps } from "../FieldInput";
+import { FieldInput, FieldInputProps } from "../../../FieldInput";
 
 type LocationInfoCardProps = React.HTMLAttributes<HTMLDivElement>;
 export const LocationInfoCard = ({

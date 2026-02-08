@@ -23,7 +23,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import useSWR from "swr";
 import { TableRow } from "./BookingTableRow";
-import { MultiSelect } from "../MultiSelect";
+import { MultiSelect } from "../../../MultiSelect";
 import { AddBookingButton } from "./AddBookingButton";
 
 type BookingsTableProps = DistributiveOmit<

@@ -12,6 +12,8 @@ export type FieldInputProps = OverrideProps<
       hint?: string;
       type: React.HTMLInputTypeAttribute;
       required?: boolean;
+      placeholder?: string;
+      disabled?: boolean;
     };
 
     value: string;
@@ -30,7 +32,13 @@ export const FieldInput = ({
 
   return (
     <div className={cn("flex flex-col", className)} {...rest}>
-      <label className="font-bold mb-1" htmlFor={field.id}>
+      <label
+        className={cn("font-bold mb-1", {
+          "after:content-['*'] after:ml-0.5 after:text-(--accent)":
+            field.required,
+        })}
+        htmlFor={field.id}
+      >
         {field.label}
         {field.hint && (
           <span className="text-[0.75em] text-(--muted) ml-2">
@@ -40,13 +48,17 @@ export const FieldInput = ({
       </label>
       <div className="relative">
         <input
+          disabled={field.disabled}
           id={field.id}
           name={field.id}
           required={field.required}
           type={field.type === "password" && showPassword ? "text" : field.type}
           value={value}
+          placeholder={field.placeholder}
           onChange={onChange}
-          className={cn("w-full p-2 border-(--border) border rounded-lg bg-gray-50/50")}
+          className={cn(
+            "w-full p-2 border-(--border) border outline-none rounded-lg bg-gray-50/50",
+          )}
         />
         {field.type === "password" && (
           <button

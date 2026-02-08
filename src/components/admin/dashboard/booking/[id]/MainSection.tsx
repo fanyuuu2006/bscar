@@ -9,7 +9,7 @@ import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FieldInput, FieldInputProps } from "../../FieldInput";
+import { FieldInput, FieldInputProps } from "../../../../FieldInput";
 import { FormatDateNode } from "@/components/FormatDateNode";
 
 export type OperationItem<T extends React.ElementType = React.ElementType> = {
@@ -118,9 +118,9 @@ export const MainSection = ({ booking, ...rest }: MainSectionProps) => {
   // 常用表單欄位定義 memo 化，避免每次 render 重建陣列
   const customerFields: FieldInputProps["field"][] = useMemo(
     () => [
-      { id: "customer_name", label: "姓名", type: "text" },
-      { id: "customer_phone", label: "電話", type: "phone" },
-      { id: "customer_line", label: "Line ID", type: "text" },
+      {required: true,  id: "customer_name", label: "姓名", type: "text" },
+      {required: true,  id: "customer_phone", label: "電話", type: "tel" },
+      {required: true,  id: "customer_line", label: "Line ID", type: "text" },
     ],
     [],
   );

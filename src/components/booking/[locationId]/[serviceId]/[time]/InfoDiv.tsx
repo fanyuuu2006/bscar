@@ -12,6 +12,7 @@ import { postBooking } from "@/utils/backend";
 import { formatDate } from "@/utils/date";
 import { Info, SupabaseLocation, SupabaseService } from "@/types";
 import { useRouter } from "next/navigation";
+import { FieldInput } from "@/components/FieldInput";
 
 type InfoDivProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -60,19 +61,25 @@ export const InfoDiv = ({
 
   const formFields = [
     {
+      required: true,
       id: "name",
       label: "姓名",
       type: "text",
+      placeholder: "請輸入您的姓名",
     },
     {
+      required: true,
       id: "phone",
       label: "電話",
       type: "tel",
+      placeholder: "請輸入您的電話",
     },
     {
+      required: true,
       id: 'line',
       label: "Line ID",
       type: "text",
+      placeholder: "請輸入您的 Line ID",
     },
   ] as const;
 
@@ -156,27 +163,14 @@ export const InfoDiv = ({
         </h2>
         <div className="flex flex-col gap-4">
           {formFields.map((field) => (
-            <div key={field.id} className="flex flex-col gap-2">
-              <label
-                htmlFor={field.id}
-                className={cn(
-                  "text-sm font-medium text-(--foreground)",
-                  "after:content-['*'] after:ml-0.5 after:text-(--accent)",
-                )}
-              >
-                {field.label}
-              </label>
-              <input
-                required
-                id={field.id}
-                name={field.id}
-                type={field.type}
-                value={data[field.id]}
-                onChange={(e) => handleInfoChange(field.id, e.target.value)}
-                placeholder={`請輸入您的${field.label}`}
-                className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--background) text-(--foreground) focus:outline-hidden focus:border-(--primary) transition-all"
-              />
-            </div>
+            <FieldInput
+              key={field.id}
+              field={field}
+              value={data[field.id as keyof Info]}
+              onChange={(e) =>
+                handleInfoChange(field.id as keyof Info, e.target.value)
+              }
+            />
           ))}
           <button
             type="submit"

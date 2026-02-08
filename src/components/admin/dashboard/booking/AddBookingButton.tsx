@@ -9,7 +9,7 @@ import { formatDate } from "@/utils/date";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FieldInput, FieldInputProps } from "../FieldInput";
+import { FieldInput, FieldInputProps } from "../../../FieldInput";
 
 type AddBookingButtonProps = OverrideProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -122,9 +122,9 @@ export const AddBookingButton = ({
 
   const infoFields: FieldInputProps["field"][] = useMemo(
     () => [
-      { require: true, id: "name", label: "姓名", type: "text" },
-      { require: true, id: "phone", label: "電話", type: "tel" },
-      { require: true, id: "line", label: "Line ID", type: "text" },
+      { required: true, id: "name", label: "姓名", type: "text" },
+      { required: true, id: "phone", label: "電話", type: "tel" },
+      { required: true, id: "line", label: "Line ID", type: "text" },
     ],
     [],
   );

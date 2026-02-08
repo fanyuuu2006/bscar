@@ -22,7 +22,7 @@ export const MainSection = () => {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    const interval = 60 * 1000; // 每分鐘更新一次
+    const interval = 1000; // 每分鐘更新一次
     // 每更新一次時間，讓倒數計時保持準確
     const timer = setInterval(() => {
       setNow(new Date());
@@ -147,7 +147,7 @@ export const MainSection = () => {
         Icon: ClockCircleOutlined,
         href: nextBooking
           ? `/admin/dashboard/booking/${nextBooking.id}`
-          : "/admin/dashboard/booking", // Fallback link
+          : "/admin/dashboard/booking", 
         children: nextBookingIsLoading ? (
           <div className="flex-1 animate-pulse flex flex-col justify-center space-y-3">
             <div className="h-8 w-24 bg-gray-100 rounded-md" />
