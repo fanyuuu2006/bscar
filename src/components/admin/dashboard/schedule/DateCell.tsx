@@ -33,16 +33,15 @@ export const DateCell = ({ date }: DateCellProps) => {
   const remainingCount = sortedBookings.length - MAX_VISIBLE;
 
   return (
-    <div className="flex h-28 w-full flex-col gap-1 overflow-hidden px-1 py-1">
+    <div className="flex h-28 w-full flex-col gap-1 overflow-hidden p-1">
       {visibleBookings.map((booking) => {
         const status = statusMap[booking.status];
         return (
           <div
             key={booking.id}
             className={cn(
-              "group flex items-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 text-[11px] font-medium",
+              "flex items-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 text-xs font-medium",
               status.className,
-              "border-0", // Remove border to reduce visual noise
             )}
             title={`${formatDate("HH:mm", booking.booking_time)} - ${booking.customer_name} (${status.label})`}
           >
