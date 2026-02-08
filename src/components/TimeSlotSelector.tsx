@@ -4,7 +4,7 @@ import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
 import { useCallback, useState } from "react";
-import { Calender } from "./Calender";
+import { Calendar } from "./Calendar";
 import { getAvailableSlots } from "@/utils/backend";
 import { LoadingOutlined } from "@ant-design/icons";
 import { FormatDateNode } from "@/components/FormatDateNode";
@@ -48,7 +48,7 @@ export const TimeSlotSelector = ({
   return (
     <div className={cn(className)} {...rest}>
       {/* 月曆 */}
-      <Calender
+      <Calendar
         pastDateDisabled
         className="w-full text-[1em]"
         value={viewDate}

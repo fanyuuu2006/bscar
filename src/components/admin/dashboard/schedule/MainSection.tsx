@@ -1,5 +1,5 @@
 ﻿"use client";
-import { Calender, DateCellProps } from "@/components/Calender";
+import { Calendar, DateCellProps } from "@/components/Calendar";
 import { statusMap } from "@/libs/booking";
 import { cn } from "@/utils/className";
 import { useState, useMemo, useCallback } from "react";
@@ -9,7 +9,7 @@ import { bookingsByAdmin, getServices } from "@/utils/backend";
 import { formatDate, getDaysInMonth } from "@/utils/date";
 import { SupabaseBooking, SupabaseService } from "@/types";
 import { BookingBadge } from "./BookingBadge";
-import { ClockCircleOutlined } from "@ant-design/icons";
+import { CalendarOutlined } from "@ant-design/icons";
 import { ScheduleCard } from "../ScheduleCard";
 import { FormatDateNode } from "@/components/FormatDateNode";
 
@@ -118,7 +118,7 @@ export const MainSection = () => {
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* ===== 日曆 ===== */}
         <div className="w-full">
-          <Calender
+          <Calendar
             className="text-md"
             pastDateDisabled={false}
             value={viewDate}
@@ -152,7 +152,7 @@ export const MainSection = () => {
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-4 text-(--muted)">
-                <ClockCircleOutlined className="text-3xl mb-2" />
+                <CalendarOutlined className="text-3xl mb-2" />
                 <span className="text-sm">暫無預約</span>
               </div>
             )}

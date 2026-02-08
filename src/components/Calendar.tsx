@@ -18,7 +18,7 @@ export type DateCellProps = {
   isDisabled: boolean;
 };
 
-type CalenderProps = OverrideProps<
+type CalendarProps = OverrideProps<
   DistributiveOmit<React.HTMLAttributes<HTMLDivElement>, "children">,
   {
     value?: Date;
@@ -43,7 +43,7 @@ type CalenderProps = OverrideProps<
   }
 >;
 
-export const Calender = ({
+export const Calendar = ({
   value,
   onChange,
   className,
@@ -51,7 +51,7 @@ export const Calender = ({
   styles,
   DateCell,
   ...rest
-}: CalenderProps) => {
+}: CalendarProps) => {
   const [viewDate, setViewDate] = useState<Date>(value ?? new Date());
   const inputRef = useRef<HTMLInputElement>(null);
 
