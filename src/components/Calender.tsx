@@ -21,8 +21,8 @@ export type DateCellProps = {
 type CalenderProps = OverrideProps<
   DistributiveOmit<React.HTMLAttributes<HTMLDivElement>, "children">,
   {
-    value: Date;
-    onChange: (date: Date) => void;
+    value?: Date;
+    onChange?: (date: Date) => void;
     pastDateDisabled?: boolean;
     styles?: {
       weekday?: {
@@ -155,7 +155,7 @@ export const Calender = ({
         {days.map((date, i) => {
           if (!date) return <div key={`empty-${i}`} />;
 
-          const isSelected = value ? isSameDate(date, value) : false;
+          const isSelected = isSameDate(date, viewDate);
           const isToday = isSameDate(date, today);
           const isDisabled =
             pastDateDisabled && date.getTime() < today.getTime();
