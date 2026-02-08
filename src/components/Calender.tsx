@@ -7,7 +7,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
@@ -72,7 +72,15 @@ export const Calender = ({
       1,
     );
     setViewDate(newDate);
+    onChange?.(newDate);
   };
+
+  useEffect(() => {
+    if (value && !isSameDate(value, viewDate)) {
+      const timer = setTimeout(() => setViewDate(value), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [value, viewDate]);
 
   return (
     <div
@@ -190,16 +198,14 @@ export const Calender = ({
                   <span>{date.getDate()}</span>
                 </button>
               </div>
-              {
-                DateCell ? (
-                    <DateCell
-                      date={date}
-                      isSelected={isSelected}
-                      isToday={isToday}
-                      isDisabled={isDisabled}
-                    />
-                ) : null
-              }
+              {DateCell ? (
+                <DateCell
+                  date={date}
+                  isSelected={isSelected}
+                  isToday={isToday}
+                  isDisabled={isDisabled}
+                />
+              ) : null}
             </div>
           );
         })}
