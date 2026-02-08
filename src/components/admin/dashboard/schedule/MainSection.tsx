@@ -12,7 +12,7 @@ import { BookingBadge } from "./BookingBadge";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { ScheduleCard } from "../ScheduleCard";
 
-const MAX_VISIBLE = 3;
+const MAX_VISIBLE = 2;
 
 export const MainSection = () => {
   const { token } = useAdminToken();
@@ -67,7 +67,7 @@ export const MainSection = () => {
       const remainingCount = sortedBookings.length - MAX_VISIBLE;
 
       return (
-        <div className="text-xs flex h-28 w-full flex-col gap-1 overflow-hidden p-1">
+        <div className="text-xs flex w-full h-20 flex-col gap-1 overflow-hidden p-1">
           {visibleBookings.map((booking) => {
             return (
               <BookingBadge
@@ -92,7 +92,7 @@ export const MainSection = () => {
   );
 
   return (
-    <section className="flex w-full flex-col gap-4 p-4">
+    <section className="w-full flex flex-col gap-4 p-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">日程表</h1>
         <div className="flex flex-wrap gap-3">
@@ -106,34 +106,37 @@ export const MainSection = () => {
           ))}
         </div>
       </div>
-      <div className="w-full">
-        <Calender
-          className="text-md"
-          pastDateDisabled={false}
-          value={viewDate}
-          onChange={setViewDate}
-          DateCell={DateCell}
-        />
-      </div>
-      {/* ===== 行程列表 ===== */}
-      <div id="schedule-list" className="w-full flex flex-col gap-2">
-        {bookingsMap[formatDate("YYYY-MM-DD", viewDate)]?.length ? (
-          bookingsMap[formatDate("YYYY-MM-DD", viewDate)].map((b) => {
-            return (
-              <ScheduleCard
-                key={b.id}
-                booking={b}
-                service={servicesMap.get(b.service_id)}
-                mutate={mutate}
-              />
-            );
-          })
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center py-4 text-(--muted)">
-            <ClockCircleOutlined className="text-3xl mb-2 opacity-20" />
-            <span className="text-sm">暫無預約</span>
-          </div>
-        )}
+      <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* ===== 日曆 ===== */}
+        <div className="w-full">
+          <Calender
+            className="text-md"
+            pastDateDisabled={false}
+            value={viewDate}
+            onChange={setViewDate}
+            DateCell={DateCell}
+          />
+        </div>
+        {/* ===== 行程列表 ===== */}
+        <div id="schedule-list" className="w-full flex flex-col gap-2">
+          {bookingsMap[formatDate("YYYY-MM-DD", viewDate)]?.length ? (
+            bookingsMap[formatDate("YYYY-MM-DD", viewDate)].map((b) => {
+              return (
+                <ScheduleCard
+                  key={b.id}
+                  booking={b}
+                  service={servicesMap.get(b.service_id)}
+                  mutate={mutate}
+                />
+              );
+            })
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center py-4 text-(--muted)">
+              <ClockCircleOutlined className="text-3xl mb-2 opacity-20" />
+              <span className="text-sm">暫無預約</span>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
