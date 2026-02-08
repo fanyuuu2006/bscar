@@ -23,8 +23,8 @@ export const MultiSelectFilter = ({
   options,
   selectedValues,
   onChange,
-  className,
   placeholder,
+  className,
 }: MultiSelectFilterProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,28 +63,28 @@ export const MultiSelectFilter = ({
       : placeholder || `所有${label}`;
 
   return (
-    <div ref={containerRef} className={cn("relative", className)}>
-      <div
-        className="w-full relative flex items-center bg-gray-50/50 border border-(--border) rounded-lg py-2 pl-9 pr-8 cursor-pointer text-xs select-none hover:bg-gray-100 transition-colors"
-        onClick={() => setIsOpen(!isOpen)}
-        title={
-          selectedValues.length > 0
-            ? options
-                .filter((o) => selectedValues.includes(o.value))
-                .map((o) => o.label)
-                .join(", ")
-            : ""
-        }
-      >
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
-          <FilterOutlined />
-        </div>
-        <span className="truncate">{displayText}</span>
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
-          <CaretDownOutlined rotate={isOpen ? 180 : 0} />
-        </div>
+    <div
+      className={cn(
+        "relative flex items-center bg-gray-50/50 border border-(--border) rounded-lg py-2 pl-9 pr-8 cursor-pointer text-xs select-none hover:bg-gray-100 transition-colors",
+        className,
+      )}
+      onClick={() => setIsOpen(!isOpen)}
+      title={
+        selectedValues.length > 0
+          ? options
+              .filter((o) => selectedValues.includes(o.value))
+              .map((o) => o.label)
+              .join(", ")
+          : ""
+      }
+    >
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
+        <FilterOutlined />
       </div>
-
+      <span className="truncate">{displayText}</span>
+      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
+        <CaretDownOutlined rotate={isOpen ? 180 : 0} />
+      </div>
       {/* 下拉選單內容 */}
       {isOpen && (
         <div className="absolute z-50 top-full left-0 mt-1 w-full bg-white border border-(--border) rounded-lg shadow-lg max-h-60 overflow-y-auto p-1">
