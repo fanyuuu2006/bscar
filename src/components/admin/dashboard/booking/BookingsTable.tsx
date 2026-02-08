@@ -40,7 +40,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   const searchParams = useSearchParams();
 
   // 控制預約時間的排序方向 (true: 升序, false: 降序)
-  const [timeAscending, setTimeAscending] = useState<boolean>(false);
+  const [timeAscending, setTimeAscending] = useState<boolean>(true);
 
   /**
    * 根據當前 URL 的 Search Params 初始化查詢條件物件。
