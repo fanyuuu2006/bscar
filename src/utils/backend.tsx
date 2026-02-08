@@ -47,6 +47,27 @@ export const getBookingById = async (id: SupabaseBooking["id"]) => {
   );
 };
 
+/**
+ * @example
+ * postBooking({
+ * location_id: "location-123",
+ * service_id: "service-456",
+ * time: "2024-01-01 10:00:00",
+ * info: {
+ *   name: "John Doe",
+ *   phone: "123456789",
+ *  line: "john_line_id",
+ * },})
+ * .then(res => {
+ *   if (res.success) {
+ *    console.log("Booking created:", res.data);
+ *  } else {
+ *   console.error("Failed to create booking:", res.error);
+ * }})
+ * .catch(err => {
+ *   console.error("Error creating booking:", err);
+ * });
+ */
 export const postBooking = async (body: {
   location_id: SupabaseLocation["id"];
   service_id: SupabaseService["id"];
