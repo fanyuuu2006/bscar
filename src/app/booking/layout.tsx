@@ -1,5 +1,4 @@
 import { MainSection } from "@/components/booking/MainSection";
-import { BookingProvider } from "@/contexts/BookingContext";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,8 +12,6 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <BookingProvider>
       <MainSection>{children}</MainSection>
-    </BookingProvider>
   );
 }
