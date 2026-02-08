@@ -61,7 +61,7 @@ export const MainSection = () => {
           })}
           {remainingCount > 0 && (
             <button className="text-(--muted) flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium">
-              還有 {remainingCount} 筆預約
+              (+{remainingCount} 筆預約)
             </button>
           )}
         </div>
