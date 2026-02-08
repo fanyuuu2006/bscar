@@ -120,6 +120,7 @@ export const MainSection = () => {
                 key={b.id}
                 booking={b}
                 service={servicesMap.get(b.service_id)}
+                mutate={mutate}
               />
             );
           })

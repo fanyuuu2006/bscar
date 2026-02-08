@@ -4,12 +4,14 @@ import { OverrideProps } from "fanyucomponents";
 import { statusMap } from "@/libs/booking";
 import { PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { FormatDateNode } from "@/components/FormatDateNode";
+import { useBookingModal } from "@/contexts/BookingModalContext";
 
 type ScheduleCardProps = OverrideProps<
-  React.HTMLAttributes<HTMLDivElement>,
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
   {
     booking: SupabaseBooking;
     service?: SupabaseService;
+    mutate: () => void;
   }
 >;
 
@@ -17,17 +19,20 @@ export const ScheduleCard = ({
   booking,
   service,
   className,
+  mutate,
   ...props
 }: ScheduleCardProps) => {
   const statusInfo = statusMap[booking.status];
+  const modal = useBookingModal();
 
   return (
-    <div
+    <button
       className={cn(
-        `card rounded-lg px-4 py-2 flex items-center gap-4 group cursor-pointer hover:border-primary/50 transition-colors`,
+        `card rounded-lg px-4 py-2 flex items-center gap-4`,
         className,
       )}
       {...props}
+      onClick={() => modal.open(booking, { onSuccess: mutate })}
     >
       {/* 1. 時間區塊 - 使用 FormatDateNode 保持一致性 */}
       <div className="shrink-0 w-18 flex justify-center border-r border-gray-100 pr-4 my-1">
@@ -69,6 +74,6 @@ export const ScheduleCard = ({
           {statusInfo.label}
         </span>
       </div>
-    </div>
+    </button>
   );
 };

@@ -41,7 +41,7 @@ export const MainSection = () => {
   );
   const strToday = useMemo(() => formatDate("YYYY-MM-DD", new Date()), []);
 
-  const { data: todayRes, isLoading: todayIsLoading } = useSWR(
+  const { data: todayRes, isLoading: todayIsLoading, mutate: todayMutate} = useSWR(
     token ? ["admin-booking-today", token] : null,
     () => {
       return bookingsByAdmin(token!, {
@@ -261,6 +261,7 @@ export const MainSection = () => {
                 key={booking.id}
                 booking={booking}
                 service={servicesMap.get(booking.service_id)}
+                mutate={todayMutate}
               />
             ))
           ) : (
