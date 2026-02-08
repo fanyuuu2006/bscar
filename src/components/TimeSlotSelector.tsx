@@ -1,13 +1,14 @@
 "use client";
-import { SupabaseLocation, SupabaseService, TimeSlot } from "@/types";
+import { SupabaseLocation, SupabaseService } from "@/types";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Calender } from "./Calender";
 import { getAvailableSlots } from "@/utils/backend";
 import { LoadingOutlined } from "@ant-design/icons";
 import { FormatDateNode } from "@/components/FormatDateNode";
+import useSWR from "swr";
 
 type TimeSlotSelectorProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -28,8 +29,13 @@ export const TimeSlotSelector = ({
 }: TimeSlotSelectorProps) => {
   const [viewDate, setViewDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<Date | null>(value || null);
-  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { data: response, isLoading } = useSWR(
+    [formatDate("YYYY-MM-DD", viewDate), locationId, serviceId],
+    ([date, locationId, serviceId]) =>
+      getAvailableSlots(date, locationId, serviceId),
+  );
+  const timeSlots = response?.data || [];
 
   const handlerChange = useCallback(
     (date: Date) => {
@@ -38,26 +44,6 @@ export const TimeSlotSelector = ({
     },
     [onChange],
   );
-
-  useEffect(() => {
-    const fetchTimeSlots = async () => {
-      setIsLoading(true);
-      try {
-        const { data } = await getAvailableSlots(
-          formatDate("YYYY-MM-DD", viewDate),
-          locationId,
-          serviceId,
-        );
-        setTimeSlots(data || []);
-      } catch (error) {
-        console.error(error);
-        setTimeSlots([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchTimeSlots();
-  }, [locationId, serviceId, viewDate]);
 
   return (
     <div className={cn(className)} {...rest}>
