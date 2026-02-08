@@ -17,7 +17,6 @@ import {
   SearchOutlined,
   InboxOutlined,
   LoadingOutlined,
-  PlusOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit } from "fanyucomponents";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -25,6 +24,7 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import useSWR from "swr";
 import { TableRow } from "./BookingTableRow";
 import { MultiSelectFilter } from "./MultiSelectFilter";
+import { AddBookingButton } from "./AddBookingButton";
 
 type BookingsTableProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -454,10 +454,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         <div className="flex items-center justify-between px-5 py-3">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold">預約列表</h3>
-            <button className="btn flex items-center gap-1 p-1.5 text-xs rounded-md">
-              <PlusOutlined />
-              <span className="tooltip-text">新增預約</span>
-            </button>
+            <AddBookingButton mutate={mutate} />
           </div>
           <div>
             <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
