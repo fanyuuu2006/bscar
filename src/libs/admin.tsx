@@ -11,6 +11,10 @@ export const routes: Route[] = [
     url: "/booking",
   },
   {
+    label: "日程表",
+    url: "/schedule"
+  },
+  {
     label: "設定",
     url: "/settings",
   },
