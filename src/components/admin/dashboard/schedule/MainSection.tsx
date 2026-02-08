@@ -56,6 +56,14 @@ export const MainSection = () => {
     return map;
   }, [bookings]);
 
+  const selectedBookings = useMemo(() => {
+    const dateStr = formatDate("YYYY-MM-DD", viewDate);
+    if (!bookingsMap[dateStr]) return [];
+    return bookingsMap[dateStr].sort((a, b) =>
+      a.booking_time.localeCompare(b.booking_time),
+    );
+  }, [bookingsMap, viewDate]);
+
   const DateCell = useCallback(
     ({ date }: DateCellProps) => {
       const dateStr = formatDate("YYYY-MM-DD", date);
@@ -119,23 +127,35 @@ export const MainSection = () => {
         </div>
         {/* ===== 行程列表 ===== */}
         <div id="schedule-list" className="w-full flex flex-col gap-2">
-          {bookingsMap[formatDate("YYYY-MM-DD", viewDate)]?.length ? (
-            bookingsMap[formatDate("YYYY-MM-DD", viewDate)].map((b) => {
-              return (
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-(--foreground) flex items-center gap-2">
+              <span>{formatDate("MM月DD日", viewDate)}</span>
+              <span className="text-(--muted) font-normal text-sm">
+                行程列表
+              </span>
+            </h2>
+            <span className="text-xs text-(--muted) bg-(--background) px-2 py-1 rounded-full border border-(--border)">
+              {selectedBookings.length} 筆預約
+            </span>
+          </div>
+
+          <div className="custom-scrollbar flex flex-col gap-3 max-h-[calc(100vh-12rem)] overflow-y-auto pr-1">
+            {selectedBookings.length > 0 ? (
+              selectedBookings.map((b) => (
                 <ScheduleCard
                   key={b.id}
                   booking={b}
                   service={servicesMap.get(b.service_id)}
                   mutate={mutate}
                 />
-              );
-            })
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center py-4 text-(--muted)">
-              <ClockCircleOutlined className="text-3xl mb-2 opacity-20" />
-              <span className="text-sm">暫無預約</span>
-            </div>
-          )}
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-4 text-(--muted)">
+                <ClockCircleOutlined className="text-3xl mb-2" />
+                <span className="text-sm">暫無預約</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
