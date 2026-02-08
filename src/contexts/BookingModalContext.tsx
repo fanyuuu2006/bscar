@@ -35,63 +35,29 @@ export type OperationItem<T extends React.ElementType = React.ElementType> = {
   props: React.ComponentProps<T>;
 };
 
-const BookingEditForm = ({
-  booking,
-  onClose,
+
+export const BookingModalProvider = ({
+  children,
 }: {
-  booking: SupabaseBooking;
-  onClose: () => void;
+  children: React.ReactNode;
 }) => {
-  const [newBooking, setNewBooking] = useState<SupabaseBooking | null>(booking);
-  const [origBooking, setOrigBooking] = useState<SupabaseBooking | null>(
-    booking
-  );
+  const [booking, setBooking] = useState<SupabaseBooking | null>(null);
+  const [newBooking, setNewBooking] = useState<SupabaseBooking | null>(null);
   const [saving, setSaving] = useState(false);
   const [services, setServices] = useState<SupabaseService[]>([]);
   const { token } = useAdminToken();
   const router = useRouter();
+  const modal = useModal({});
 
-  /**
-   * 通用的欄位更新器，使用 functional update，避免依賴外部可變物件
-   * 使用泛型確保 key 與 value 的型別相符
-   */
-  const handleChange = useCallback(
-    <T extends keyof SupabaseBooking>(key: T, value: SupabaseBooking[T]) => {
-      setNewBooking((prev) => (prev ? { ...prev, [key]: value } : prev));
-    },
+  // 常用表單欄位定義
+  const customerFields: FieldInputProps["field"][] = useMemo(
+    () => [
+      { required: true, id: "customer_name", label: "姓名", type: "text" },
+      { required: true, id: "customer_phone", label: "電話", type: "tel" },
+      { required: true, id: "customer_line", label: "Line ID", type: "text" },
+    ],
     []
   );
-
-  /** 儲存變更：使用 async/await，並在成功後導回列表 */
-  const handleSave = useCallback(async () => {
-    if (!token || !newBooking) return;
-    if (
-      origBooking &&
-      JSON.stringify(origBooking) === JSON.stringify(newBooking)
-    ) {
-      alert("資料未變更");
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const res = await updateBookingByAdmin(token, newBooking);
-      if (res.success) {
-        router.refresh();
-        onClose();
-      } else {
-        alert(`保存失敗${res.message ? `：${res.message}` : ""}`);
-      }
-    } finally {
-      setSaving(false);
-    }
-  }, [newBooking, router, token, origBooking, onClose]);
-
-  // 當外部 prop 更新時，同步本地狀態（實際上在 modal 中 booking prop 應該是固定的，但保留此邏輯無妨）
-  useEffect(() => {
-    setNewBooking(booking);
-    setOrigBooking(booking);
-  }, [booking]);
 
   /** 一次性取得服務列表 */
   useEffect(() => {
@@ -106,40 +72,34 @@ const BookingEditForm = ({
     };
   }, []);
 
-  const buttons: OperationItem[] = useMemo(() => {
-    return [
-      {
-        label: "取消",
-        component: "button",
-        props: {
-          className: "btn secondary",
-          onClick: onClose,
-        },
-      },
-      {
-        label: "保存",
-        component: "button",
-        props: {
-          type: "button",
-          onClick: handleSave,
-          disabled: saving,
-          className: "btn primary",
-        },
-      },
-    ];
-  }, [onClose, handleSave, saving]);
-
-  // 常用表單欄位定義 memo 化，避免每次 render 重建陣列
-  const customerFields: FieldInputProps["field"][] = useMemo(
-    () => [
-      { required: true, id: "customer_name", label: "姓名", type: "text" },
-      { required: true, id: "customer_phone", label: "電話", type: "tel" },
-      { required: true, id: "customer_line", label: "Line ID", type: "text" },
-    ],
+  const handleChange = useCallback(
+    <T extends keyof SupabaseBooking>(key: T, value: SupabaseBooking[T]) => {
+      setNewBooking((prev) => (prev ? { ...prev, [key]: value } : prev));
+    },
     []
   );
 
-  // 專用事件處理器，避免在 JSX 中建立過多匿名函式
+  const handleSave = useCallback(async () => {
+    if (!token || !newBooking) return;
+    if (booking && JSON.stringify(booking) === JSON.stringify(newBooking)) {
+      alert("資料未變更");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await updateBookingByAdmin(token, newBooking);
+      if (res.success) {
+        router.refresh();
+        modal.close();
+      } else {
+        alert(`保存失敗${res.message ? `：${res.message}` : ""}`);
+      }
+    } finally {
+      setSaving(false);
+    }
+  }, [newBooking, router, token, booking, modal]);
+
   const onServiceChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       handleChange("service_id", e.target.value);
@@ -171,127 +131,35 @@ const BookingEditForm = ({
     [handleChange]
   );
 
-  // 若尚無 booking 則不渲染
-  if (!newBooking) return null;
+  const buttons: OperationItem[] = useMemo(() => {
+    return [
+      {
+        label: "取消",
+        component: "button",
+        props: {
+          className: "btn secondary",
+          onClick: modal.close,
+        },
+      },
+      {
+        label: "保存",
+        component: "button",
+        props: {
+          type: "button",
+          onClick: handleSave,
+          disabled: saving,
+          className: "btn primary",
+        },
+      },
+    ];
+  }, [modal.close, handleSave, saving]);
 
-  return (
-    <div className="card p-4 md:p-6 w-full max-w-xl max-h-full rounded-xl flex flex-col">
-      <div className="flex justify-between items-center border-b border-(--border) pb-2">
-        <h3 className="text-2xl font-black">編輯預約</h3>
-      </div>
-
-      <div className="flex flex-col py-4 max-h-full overflow-y-auto gap-4">
-        {/* ===== 預約資訊 ===== */}
-        <div className="flex flex-col gap-4">
-          <h4 className="text-xl font-extrabold">預約資訊</h4>
-
-          <div className="flex flex-col gap-4 pl-1">
-            <div className="flex flex-col gap-1">
-              <span className="font-bold text-sm">預約編號</span>
-              <span className="font-light text-sm">{newBooking.id}</span>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-sm">服務</label>
-              <select
-                value={newBooking.service_id}
-                onChange={onServiceChange}
-                className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
-              >
-                {services.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="font-bold text-sm">預約時間</span>
-              <FormatDateNode
-                date={[newBooking.booking_time]}
-                className="font-light text-sm"
-              >
-                YYYY/MM/DD hh:mm A
-              </FormatDateNode>
-              <TimeSlotSelector
-                className="mt-2 text-sm"
-                locationId={newBooking.location_id}
-                serviceId={newBooking.service_id}
-                value={new Date(newBooking.booking_time)}
-                onChange={onDateChange}
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-sm">狀態</label>
-              <select
-                value={newBooking.status}
-                onChange={onStatusChange}
-                className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
-              >
-                {Object.entries(statusMap).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* ===== 顧客資訊 ===== */}
-        <div className="flex flex-col gap-4">
-          <h4 className="text-xl font-extrabold">顧客資訊</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {customerFields.map((field) => (
-              <FieldInput
-                key={field.id}
-                field={field}
-                value={
-                  (newBooking[field.id as keyof SupabaseBooking] as string) ||
-                  ""
-                }
-                onChange={(e) => onInputChange(field.id, e)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex justify-end gap-3 mt-auto pt-2 border-t border-(--border)">
-        {buttons.map((item) => {
-          const { className: itemClassName, ...itemProps } = item.props;
-          return (
-            <item.component
-              key={item.label}
-              className={cn(
-                "px-6 py-2 rounded-xl font-medium min-w-25 transition-colors",
-                itemClassName
-              )}
-              {...itemProps}
-            >
-              {item.label}
-            </item.component>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-export const BookingModalProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [booking, setBooking] = useState<SupabaseBooking | null>(null);
-  const modal = useModal({});
   const value = useMemo(
     () => ({
       ...modal,
       open: (booking: SupabaseBooking) => {
         setBooking(booking);
+        setNewBooking(booking);
         modal.open();
       },
     }),
@@ -301,11 +169,111 @@ export const BookingModalProvider = ({
   return (
     <bookingModalContext.Provider value={value}>
       {children}
-      <modal.Container
-        className="animate-appear flex items-center justify-center p-4 z-50"
-      >
-        {booking ? (
-          <BookingEditForm booking={booking} onClose={modal.close} />
+      <modal.Container className="animate-appear flex items-center justify-center p-4 z-50">
+        {newBooking ? (
+          <div className="card p-4 md:p-6 w-full max-w-xl max-h-full rounded-xl flex flex-col">
+            <div className="flex justify-between items-center border-b border-(--border) pb-2">
+              <h3 className="text-2xl font-black">編輯預約</h3>
+            </div>
+
+            <div className="flex flex-col py-4 max-h-full overflow-y-auto gap-4">
+              {/* ===== 預約資訊 ===== */}
+              <div className="flex flex-col gap-4">
+                <h4 className="text-xl font-extrabold">預約資訊</h4>
+
+                <div className="flex flex-col gap-4 pl-1">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-bold text-sm">預約編號</span>
+                    <span className="font-light text-sm">{newBooking.id}</span>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-sm">服務</label>
+                    <select
+                      value={newBooking.service_id}
+                      onChange={onServiceChange}
+                      className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
+                    >
+                      {services.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <span className="font-bold text-sm">預約時間</span>
+                    <FormatDateNode
+                      date={[newBooking.booking_time]}
+                      className="font-light text-sm"
+                    >
+                      YYYY/MM/DD hh:mm A
+                    </FormatDateNode>
+                    <TimeSlotSelector
+                      className="mt-2 text-sm"
+                      locationId={newBooking.location_id}
+                      serviceId={newBooking.service_id}
+                      value={new Date(newBooking.booking_time)}
+                      onChange={onDateChange}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-sm">狀態</label>
+                    <select
+                      value={newBooking.status}
+                      onChange={onStatusChange}
+                      className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
+                    >
+                      {Object.entries(statusMap).map(([key, value]) => (
+                        <option key={key} value={key}>
+                          {value.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* ===== 顧客資訊 ===== */}
+              <div className="flex flex-col gap-4">
+                <h4 className="text-xl font-extrabold">顧客資訊</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {customerFields.map((field) => (
+                    <FieldInput
+                      key={field.id}
+                      field={field}
+                      value={
+                        (newBooking[
+                          field.id as keyof SupabaseBooking
+                        ] as string) || ""
+                      }
+                      onChange={(e) => onInputChange(field.id, e)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-auto pt-2 border-t border-(--border)">
+              {buttons.map((item) => {
+                const { className: itemClassName, ...itemProps } = item.props;
+                return (
+                  <item.component
+                    key={item.label}
+                    className={cn(
+                      "px-6 py-2 rounded-xl font-medium min-w-25 transition-colors",
+                      itemClassName
+                    )}
+                    {...itemProps}
+                  >
+                    {item.label}
+                  </item.component>
+                );
+              })}
+            </div>
+          </div>
         ) : null}
       </modal.Container>
     </bookingModalContext.Provider>
