@@ -25,7 +25,7 @@ export const TodayScheduleCard = ({
   return (
     <div
       className={cn(
-        `card rounded-lg p-3 flex items-center gap-4 group cursor-pointer hover:border-primary/50 transition-colors`,
+        `card rounded-xl p-3 flex items-center gap-4`,
         className,
       )}
       {...props}
@@ -42,11 +42,11 @@ export const TodayScheduleCard = ({
       </div>
 
       {/* 2. 資訊區塊 - 佔用剩餘空間 */}
-      <div className="flex-1 flex flex-col justify-center min-w-0 px-2">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-[2fr_1fr] items-center gap-2 min-w-0 px-2">
         <h3 className="font-bold text-(--foreground) text-xl truncate leading-tight">
             {service?.name || "未知服務"}
         </h3>
-        <div className="flex items-center gap-3 text-sm text-(--muted) truncate mt-1">
+        <div className="flex items-center gap-3 text-sm text-(--muted) truncate md:justify-end">
              <div className="flex items-center gap-1.5 font-medium text-gray-600">
                 <UserOutlined />
                 <span>{booking.customer_name}</span>
