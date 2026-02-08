@@ -410,8 +410,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         {/* 重置按鈕 */}
         <button
           onClick={handleReset}
-          className="col-span-2 md:col-span-1 lg:col-span-1 p-2 flex items-center justify-center text-(--muted) rounded-lg border border-(--border) bg-gray-50/50"
-          title="清除篩選"
+          className="tooltip col-span-2 md:col-span-1 lg:col-span-1 p-2 flex items-center justify-center text-(--muted) rounded-lg border border-(--border) bg-gray-50/50"
+          data-tooltip="清除篩選"
         >
           <ReloadOutlined />
         </button>
