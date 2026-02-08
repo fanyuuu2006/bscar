@@ -16,6 +16,7 @@ import { formatDate, formatRelativeTime } from "@/utils/date";
 import { SupabaseService } from "@/types";
 import { FormatDateNode } from "@/components/FormatDateNode";
 import { cn } from "@/utils/className";
+import { TodayScheduleCard } from "./TodayScheduleCard";
 
 export const MainSection = () => {
   const { token } = useAdminToken();
@@ -147,7 +148,7 @@ export const MainSection = () => {
         Icon: ClockCircleOutlined,
         href: nextBooking
           ? `/admin/dashboard/booking/${nextBooking.id}`
-          : "/admin/dashboard/booking", 
+          : "/admin/dashboard/booking",
         children: nextBookingIsLoading ? (
           <div className="flex-1 animate-pulse flex flex-col justify-center space-y-3">
             <div className="h-8 w-24 bg-gray-100 rounded-md" />
@@ -226,14 +227,47 @@ export const MainSection = () => {
     service,
   ]);
 
+  const todaySchedule = useMemo(() => {
+    if (!todayRes?.data) return [];
+    return [...todayRes.data].sort((a, b) => {
+      return (new Date(a.booking_time).getTime() - new Date(b.booking_time).getTime());})
+  }, [todayRes])
+
+
   return (
-    <section className="flex h-full w-full flex-col gap-4 p-4">
+    <section className="flex w-full flex-col gap-4 p-4">
       <h1 className="text-2xl font-bold">主頁</h1>
       {/* ===== 統計卡片 ===== */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
         {summarys.map((summary) => (
           <SummaryCard key={summary.label} {...summary} />
         ))}
+      </div>
+      {/* ===== 今日行程 ===== */}
+      <div className="w-full flex flex-col gap-4">
+        <h2 className="text-xl font-bold">今日行程</h2>
+        <div className="flex flex-col gap-2">
+          {todayIsLoading ? (
+            <div className="w-full animate-pulse space-y-3">
+              <div className="h-8 w-1/3 bg-gray-100 rounded-md" />
+              <div className="h-8 w-1/2 bg-gray-100 rounded-md" />
+              <div className="h-8 w-1/4 bg-gray-100 rounded-md" />
+            </div>
+          ) : todaySchedule.length ? (
+            todaySchedule.map((booking) => (
+              <TodayScheduleCard 
+                key={booking.id} 
+                booking={booking} 
+                service={servicesMap.get(booking.service_id)}
+              />
+            ))
+          ) : (
+            <div className="w-full flex flex-col items-center justify-center py-8 text-(--muted)">
+              <CalendarOutlined className="text-4xl mb-2 opacity-20" />
+              <span className="text-sm">今日無預約</span>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

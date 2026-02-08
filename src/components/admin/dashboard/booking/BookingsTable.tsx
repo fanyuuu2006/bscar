@@ -460,15 +460,15 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         <div className="flex items-center justify-between px-5 py-3">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold">預約列表</h3>
+            <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
+              共 {filteredBookings.length} 筆
+            </span>
+          </div>
+          <div>
             <AddBookingButton
               mutate={mutate}
               services={Array.from(servicesMap.values())}
             />
-          </div>
-          <div>
-            <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
-              共 {filteredBookings.length} 筆
-            </span>
           </div>
         </div>
 
