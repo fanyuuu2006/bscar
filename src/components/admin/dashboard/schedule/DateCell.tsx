@@ -6,10 +6,9 @@ import { statusMap } from "@/libs/booking";
 import { bookingsByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
+import { FormatDateNode } from "@/components/FormatDateNode";
 
-export const DateCell = ({
-  date,
-}: DateCellProps) => {
+export const DateCell = ({ date }: DateCellProps) => {
   const { token } = useAdminToken();
   const { data: resp } = useSWR(
     token ? ["admin-booking-by-date", token, date] : null,
@@ -23,10 +22,10 @@ export const DateCell = ({
   );
 
   const bookings = resp?.data || [];
-  
+
   // Sort bookings by time
-  const sortedBookings = [...bookings].sort((a, b) => 
-    a.booking_time.localeCompare(b.booking_time)
+  const sortedBookings = [...bookings].sort((a, b) =>
+    a.booking_time.localeCompare(b.booking_time),
   );
 
   const MAX_VISIBLE = 3;
@@ -43,13 +42,16 @@ export const DateCell = ({
             className={cn(
               "group flex items-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 text-[11px] font-medium",
               status.className,
-              "border-0" // Remove border to reduce visual noise
+              "border-0", // Remove border to reduce visual noise
             )}
             title={`${formatDate("HH:mm", booking.booking_time)} - ${booking.customer_name} (${status.label})`}
           >
-            <span className="shrink-0 font-bold">
-              {formatDate("HH:mm", booking.booking_time)}
-            </span>
+            <FormatDateNode
+              date={[booking.booking_time]}
+              className="shrink-0 font-bold"
+            >
+              HH:mm
+            </FormatDateNode>
             <span className="truncate">{booking.customer_name}</span>
           </div>
         );
