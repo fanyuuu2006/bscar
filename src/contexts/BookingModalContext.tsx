@@ -175,103 +175,106 @@ const BookingEditForm = ({
   if (!newBooking) return null;
 
   return (
-    <div className="w-full flex flex-col p-4 gap-4 max-h-[90vh] overflow-y-auto">
-      <h2 className="text-2xl font-black">編輯預約</h2>
-
-      {/* ===== 預約資訊 ===== */}
-      <div className="card p-4 md:p-6 rounded-xl">
-        <h3 className="text-2xl font-extrabold">預約資訊</h3>
-
-        <div className="mt-2 flex flex-col gap-2">
-          <div className="flex flex-col">
-            <span className="font-bold">預約編號</span>
-            <span className="font-light">{newBooking.id}</span>
-          </div>
-
-          <div className="flex flex-col">
-            <label className="font-bold">服務</label>
-            <select
-              value={newBooking.service_id}
-              onChange={onServiceChange}
-              className="p-2 border-(--border) border rounded-lg bg-gray-50/50"
-            >
-              {services.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col">
-            <span className="font-bold">預約時間</span>
-            <FormatDateNode
-              date={[newBooking.booking_time]}
-              className="font-light"
-            >
-              YYYY/MM/DD hh:mm A
-            </FormatDateNode>
-            <TimeSlotSelector
-              className="mt-2 flex flex-col md:flex-row text-xs"
-              locationId={newBooking.location_id}
-              serviceId={newBooking.service_id}
-              value={new Date(newBooking.booking_time)}
-              onChange={onDateChange}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="font-bold">狀態</label>
-            <select
-              value={newBooking.status}
-              onChange={onStatusChange}
-              className="p-2 border-(--border) border rounded-lg bg-gray-50/50"
-            >
-              {Object.entries(statusMap).map(([key, value]) => (
-                <option key={key} value={key}>
-                  {value.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+    <div className="card p-4 md:p-6 w-full max-w-xl max-h-full rounded-xl flex flex-col">
+      <div className="flex justify-between items-center border-b border-(--border) pb-2">
+        <h3 className="text-2xl font-black">編輯預約</h3>
       </div>
 
-      {/* ===== 顧客資訊 ===== */}
-      <div className="card p-4 md:p-6 rounded-xl">
-        <h3 className="text-2xl font-extrabold">顧客資訊</h3>
-        <div className="mt-2 flex flex-col gap-2">
-          {customerFields.map((field) => (
-            <FieldInput
-              key={field.id}
-              field={field}
-              value={
-                (newBooking[field.id as keyof SupabaseBooking] as string) || ""
-              }
-              onChange={(e) => onInputChange(field.id, e)}
-            />
-          ))}
-        </div>
-      </div>
+      <div className="flex flex-col py-4 max-h-full overflow-y-auto gap-4">
+        {/* ===== 預約資訊 ===== */}
+        <div className="flex flex-col gap-4">
+          <h4 className="text-xl font-extrabold">預約資訊</h4>
 
-      <div className="w-full flex">
-        <div className="ms-auto text-xl flex items-center gap-4">
-          {buttons.map((item) => {
-            const { className: itemClassName, ...itemProps } = item.props;
-            return (
-              <item.component
-                key={item.label}
-                className={cn(
-                  "px-6 py-2 rounded-xl font-medium",
-                  itemClassName
-                )}
-                {...itemProps}
+          <div className="flex flex-col gap-4 pl-1">
+            <div className="flex flex-col gap-1">
+              <span className="font-bold text-sm">預約編號</span>
+              <span className="font-light text-sm">{newBooking.id}</span>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-sm">服務</label>
+              <select
+                value={newBooking.service_id}
+                onChange={onServiceChange}
+                className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
               >
-                {item.label}
-              </item.component>
-            );
-          })}
+                {services.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="font-bold text-sm">預約時間</span>
+              <FormatDateNode
+                date={[newBooking.booking_time]}
+                className="font-light text-sm"
+              >
+                YYYY/MM/DD hh:mm A
+              </FormatDateNode>
+              <TimeSlotSelector
+                className="mt-2 text-sm"
+                locationId={newBooking.location_id}
+                serviceId={newBooking.service_id}
+                value={new Date(newBooking.booking_time)}
+                onChange={onDateChange}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-sm">狀態</label>
+              <select
+                value={newBooking.status}
+                onChange={onStatusChange}
+                className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
+              >
+                {Object.entries(statusMap).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
+
+        {/* ===== 顧客資訊 ===== */}
+        <div className="flex flex-col gap-4">
+          <h4 className="text-xl font-extrabold">顧客資訊</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {customerFields.map((field) => (
+              <FieldInput
+                key={field.id}
+                field={field}
+                value={
+                  (newBooking[field.id as keyof SupabaseBooking] as string) ||
+                  ""
+                }
+                onChange={(e) => onInputChange(field.id, e)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 mt-auto pt-2 border-t border-(--border)">
+        {buttons.map((item) => {
+          const { className: itemClassName, ...itemProps } = item.props;
+          return (
+            <item.component
+              key={item.label}
+              className={cn(
+                "px-6 py-2 rounded-xl font-medium min-w-25 transition-colors",
+                itemClassName
+              )}
+              {...itemProps}
+            >
+              {item.label}
+            </item.component>
+          );
+        })}
       </div>
     </div>
   );
@@ -299,13 +302,10 @@ export const BookingModalProvider = ({
     <bookingModalContext.Provider value={value}>
       {children}
       <modal.Container
-        data-theme={booking?.id}
         className="animate-appear flex items-center justify-center p-4 z-50"
       >
         {booking ? (
-          <div className="card w-full max-w-2xl bg-white dark:bg-black max-h-[90vh] overflow-hidden flex">
-            <BookingEditForm booking={booking} onClose={modal.close} />
-          </div>
+          <BookingEditForm booking={booking} onClose={modal.close} />
         ) : null}
       </modal.Container>
     </bookingModalContext.Provider>
