@@ -85,7 +85,7 @@ const LocationCard = ({ item, className, ...rest }: LocationCardProps) => {
         </div>
 
         {/* 功能按鈕區 */}
-        <div className="pt-4 mt-auto">
+        <div className="pt-2 mt-auto">
           <Link
             href={`/booking/${item.id}`}
             className="btn primary w-full font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2"

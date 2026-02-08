@@ -98,9 +98,9 @@ const ServiceCard = ({
           </div>
 
           {/* 功能按鈕區 */}
-          <div className="pt-4 mt-auto grid grid-cols-2 gap-3">
+          <div className="pt-2 mt-auto grid grid-cols-2 gap-3">
             <button
-              className="btn font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2"
+              className="btn font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2"
               onClick={() => {
                 modal.open();
               }}
@@ -109,7 +109,7 @@ const ServiceCard = ({
             </button>
 
             <button
-              className="btn primary font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2"
+              className="btn primary font-bold py-2 px-4 rounded-xl flex items-center justify-center gap-2"
               onClick={handleSelectService}
             >
               <span>選擇時間</span>
@@ -128,7 +128,7 @@ const ServiceCard = ({
           {/* 內容區域 */}
           <div className="p-4 overflow-y-auto flex-1">
             {item.image_url && (
-              <div className="w-full aspect-video rounded-xl overflow-hidden mb-4 bg-black/20">
+              <div className="w-full aspect-7/5 rounded-xl overflow-hidden mb-4 bg-black/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.image_url}
