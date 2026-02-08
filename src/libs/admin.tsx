@@ -11,10 +11,6 @@ export const routes: Route[] = [
     url: "/booking",
   },
   {
-    label: "行事曆",
-    url: "/calender"
-  },
-  {
     label: "設定",
     url: "/settings",
   },
