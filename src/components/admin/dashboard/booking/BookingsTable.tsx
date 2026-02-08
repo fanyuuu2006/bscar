@@ -350,10 +350,10 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 setQuery((prev) => ({
                   ...prev,
                   service_id: vals.length > 0 ? vals : undefined,
-                  page: 1,
-                }));
-              }}
-              className="flex-1"
+                    page: 1,
+                    }));
+                }}
+              className="flex-1 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
             />
 
             {/* 狀態篩選 */}
@@ -374,7 +374,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   page: 1,
                 }));
               }}
-              className="flex-1"
+              className="flex-1 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
             />
 
             {/* 日期篩選 */}
@@ -382,7 +382,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               <input
                 type="date"
                 value={query?.start_date || ""}
-                className="bg-transparent border-none text-xs outline-none cursor-pointer"
+                className="border-none text-xs outline-none cursor-pointer"
                 onChange={(e) => {
                   const val = e.target.value;
                   setQuery((prev) => ({
@@ -396,7 +396,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               <input
                 type="date"
                 value={query?.end_date || ""}
-                className="bg-transparent border-none text-xs outline-none cursor-pointer"
+                className="border-none text-xs outline-none cursor-pointer"
                 onChange={(e) => {
                   const val = e.target.value;
                   setQuery((prev) => ({

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/className";
-import { CaretDownOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, FilterOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OverrideProps } from "fanyucomponents";
 
@@ -62,7 +62,7 @@ export const MultiSelectFilter = ({
     <div
       ref={containerRef}
       className={cn(
-        "relative flex items-center cursor-pointer select-none",
+        "relative flex items-center gap-1 cursor-pointer select-none",
         className,
       )}
       onClick={() => setIsOpen(!isOpen)}
@@ -75,6 +75,7 @@ export const MultiSelectFilter = ({
           : ""
       }
     >
+      <FilterOutlined />
       <span className="truncate">{displayText}</span>
       <CaretDownOutlined
         className={cn("ms-auto transition-all duration-300", {
@@ -95,19 +96,19 @@ export const MultiSelectFilter = ({
                 },
               },
               ...options,
-            ].map((option) => (
+            ].map((opt) => (
               <Option
-                key={option.value}
+                key={opt.value}
                 className="py-0.5 px-2"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (option.onClick) {
-                    option.onClick(e);
+                  if (opt.onClick) {
+                    opt.onClick(e);
                   } else {
-                    handleToggleOption(option.value);
+                    handleToggleOption(opt.value);
                   }
                 }}
-                {...option}
+                {...opt}
               />
             ))}
           </div>
@@ -118,7 +119,7 @@ export const MultiSelectFilter = ({
 };
 
 type OptionProps = OverrideProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  React.HTMLAttributes<HTMLDivElement>,
   {
     value: string;
   }
@@ -126,8 +127,8 @@ type OptionProps = OverrideProps<
 
 const Option = ({ value, className, children, ...rest }: OptionProps) => {
   return (
-    <button key={value} className={cn("text-left", className)} {...rest}>
+    <div role="button" key={value} className={cn("text-left", className)} {...rest}>
       {children}
-    </button>
+    </div>
   );
 };
