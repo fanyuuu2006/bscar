@@ -55,7 +55,6 @@ export const ScheduleCard = ({
             <UserOutlined className="shrink-0" />
             <span className="truncate">{booking.customer_name}</span>
           </div>
-          <span className="text-gray-300">|</span>
           <div className="flex items-center gap-1.5 min-w-0">
             <PhoneOutlined className="shrink-0" />
             <span className="font-mono truncate">
