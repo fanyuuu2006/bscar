@@ -1,18 +1,14 @@
 "use client";
 
 import { cn } from "@/utils/className";
-import { CaretDownOutlined, FilterOutlined } from "@ant-design/icons";
+import { CaretDownOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-interface Option {
-  label: string;
-  value: string;
-}
+import { OverrideProps } from "fanyucomponents";
 
 interface MultiSelectFilterProps {
   label?: string;
-  options: Option[];
-  selectedValues: string[];
+  options: OptionProps[];
+  values: string[];
   onChange: (values: string[]) => void;
   className?: string;
   placeholder?: string;
@@ -21,7 +17,7 @@ interface MultiSelectFilterProps {
 export const MultiSelectFilter = ({
   label = "篩選",
   options,
-  selectedValues,
+  values,
   onChange,
   placeholder,
   className,
@@ -48,85 +44,90 @@ export const MultiSelectFilter = ({
 
   const handleToggleOption = useCallback(
     (value: string) => {
-      if (selectedValues.includes(value)) {
-        onChange(selectedValues.filter((v) => v !== value));
+      if (values.includes(value)) {
+        onChange(values.filter((v) => v !== value));
       } else {
-        onChange([...selectedValues, value]);
+        onChange([...values, value]);
       }
     },
-    [selectedValues, onChange],
+    [values, onChange],
   );
 
   const displayText =
-    selectedValues.length > 0
-      ? `${label} (${selectedValues.length})`
+    values.length > 0
+      ? `${label} (${values.length})`
       : placeholder || `所有${label}`;
 
   return (
     <div
+      ref={containerRef}
       className={cn(
-        "relative flex items-center bg-gray-50/50 border border-(--border) rounded-lg py-2 pl-9 pr-8 cursor-pointer text-xs select-none hover:bg-gray-100 transition-colors",
+        "relative flex items-center cursor-pointer select-none",
         className,
       )}
       onClick={() => setIsOpen(!isOpen)}
       title={
-        selectedValues.length > 0
+        values.length > 0
           ? options
-              .filter((o) => selectedValues.includes(o.value))
-              .map((o) => o.label)
+              .filter((o) => values.includes(o.value))
+              .map((o) => o.children)
               .join(", ")
           : ""
       }
     >
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
-        <FilterOutlined />
-      </div>
       <span className="truncate">{displayText}</span>
-      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
-        <CaretDownOutlined rotate={isOpen ? 180 : 0} />
-      </div>
+      <CaretDownOutlined
+        className={cn("ms-auto transition-all duration-300", {
+          "rotate-180": isOpen,
+        })}
+      />
       {/* 下拉選單內容 */}
       {isOpen && (
-        <div className="absolute z-50 top-full left-0 mt-1 w-full bg-white border border-(--border) rounded-lg shadow-lg max-h-60 overflow-y-auto p-1">
-          <div
-            className={cn(
-              "flex items-center gap-2 px-3 py-2 text-xs rounded hover:bg-gray-50 cursor-pointer",
-              selectedValues.length === 0 &&
-                "font-medium text-blue-600 bg-blue-50",
-            )}
-            onClick={() => {
-              onChange([]);
-              setIsOpen(false);
-            }}
-          >
-            <span>所有{label}</span>
-          </div>
-          {options.map((opt) => {
-            const isSelected = selectedValues.includes(opt.value);
-            return (
-              <div
-                key={opt.value}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 text-xs rounded hover:bg-gray-50 cursor-pointer",
-                  isSelected && "bg-blue-50 text-blue-600",
-                )}
+        <div className="absolute z-50 top-full left-0 mt-1 card w-full rounded-lg max-h-60 overflow-y-auto p-1">
+          <div className="w-full flex flex-col">
+            {[
+              {
+                value: "__all__",
+                children: `全部${label}`,
+                onClick: (e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  onChange([]);
+                },
+              },
+              ...options,
+            ].map((option) => (
+              <Option
+                key={option.value}
+                className="py-0.5 px-2"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleToggleOption(opt.value);
+                  if (option.onClick) {
+                    option.onClick(e);
+                  } else {
+                    handleToggleOption(option.value);
+                  }
                 }}
-              >
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  readOnly
-                  className="pointer-events-none"
-                />
-                <span>{opt.label}</span>
-              </div>
-            );
-          })}
+                {...option}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>
+  );
+};
+
+type OptionProps = OverrideProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  {
+    value: string;
+  }
+>;
+
+const Option = ({ value, className, children, ...rest }: OptionProps) => {
+  return (
+    <button key={value} className={cn("text-left", className)} {...rest}>
+      {children}
+    </button>
   );
 };
