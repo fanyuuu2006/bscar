@@ -104,9 +104,9 @@ export const MainSection = () => {
     <section className="w-full flex flex-col gap-4 p-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">日程表</h1>
-        <div className="flex flex-wrap gap-3">
+        <div className="card px-4 py-2 rounded-full flex items-center justify-between gap-2">
           {Object.values(statusMap).map((status) => (
-            <div key={status.label} className="flex items-center gap-1.5">
+            <div key={status.label} className="flex items-center gap-1">
               <span
                 className={cn("h-3 w-3 rounded-full border", status.className)}
               />
