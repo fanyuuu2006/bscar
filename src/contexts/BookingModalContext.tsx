@@ -23,7 +23,10 @@ import { FormatDateNode } from "@/components/FormatDateNode";
 type BookingModalContextType = OverrideProps<
   ReturnType<typeof useModal>,
   {
-    open: (booking: SupabaseBooking) => void;
+    open: (
+      booking: SupabaseBooking,
+      options?: { onSuccess?: () => void }
+    ) => void;
   }
 >;
 
@@ -48,6 +51,7 @@ export const BookingModalProvider = ({
   const { token } = useAdminToken();
   const router = useRouter();
   const modal = useModal({});
+  const [onSuccess, setOnSuccess] = useState<(() => void) | undefined>();
 
   // 常用表單欄位定義
   const customerFields: FieldInputProps["field"][] = useMemo(
@@ -90,6 +94,7 @@ export const BookingModalProvider = ({
     try {
       const res = await updateBookingByAdmin(token, newBooking);
       if (res.success) {
+        if (onSuccess) onSuccess();
         router.refresh();
         modal.close();
       } else {
@@ -98,7 +103,7 @@ export const BookingModalProvider = ({
     } finally {
       setSaving(false);
     }
-  }, [newBooking, router, token, booking, modal]);
+  }, [newBooking, router, token, booking, modal, onSuccess]);
 
   const onServiceChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -157,9 +162,13 @@ export const BookingModalProvider = ({
   const value = useMemo(
     () => ({
       ...modal,
-      open: (booking: SupabaseBooking) => {
+      open: (
+        booking: SupabaseBooking,
+        options?: { onSuccess?: () => void }
+      ) => {
         setBooking(booking);
         setNewBooking(booking);
+        setOnSuccess(() => options?.onSuccess);
         modal.open();
       },
     }),

@@ -19,6 +19,7 @@ type BookingTableRowProps = OverrideProps<
     ) => void;
     selected: boolean;
     onSelect: (id: string, checked: boolean) => void;
+    onEditSuccess?: () => void;
   }
 >;
 
@@ -37,6 +38,7 @@ export const BookingTableRow = memo(
     selected,
     onSelect,
     className,
+    onEditSuccess,
     ...rest
   }: BookingTableRowProps) => {
     const modal = useBookingModal();
@@ -52,7 +54,7 @@ export const BookingTableRow = memo(
           component: "button",
           props: {
             className: "text-violet-600 border-violet-600 bg-violet-100",
-            onClick: () => modal.open(item),
+            onClick: () => modal.open(item, { onSuccess: onEditSuccess }),
           },
           Icon: EditOutlined,
         },
@@ -93,7 +95,7 @@ export const BookingTableRow = memo(
           Icon: CloseOutlined,
         },
       ],
-      [item, modal, onUpdate],
+      [item, modal, onEditSuccess, onUpdate],
     );
 
     return (

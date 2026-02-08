@@ -561,6 +561,9 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     onUpdate={handleStatusUpdate}
                     selected={selectedIds.has(booking.id)}
                     onSelect={handleSelectRow}
+                    onEditSuccess={() => {
+                      mutate();
+                    }}
                   />
                 ))
               )}
