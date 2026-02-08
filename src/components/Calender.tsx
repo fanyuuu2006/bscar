@@ -17,6 +17,17 @@ type CalenderProps = OverrideProps<
     value?: Date;
     onChange?: (date: Date) => void;
     pastDateDisabled?: boolean;
+    styles?: {
+      weekday?: {
+        default?: React.CSSProperties;
+        weekend?: React.CSSProperties;
+      };
+      day?: {
+        default?: React.CSSProperties;
+        selected?: React.CSSProperties;
+        today?: React.CSSProperties;
+      };
+    };
   }
 >;
 
@@ -25,6 +36,7 @@ export const Calender = ({
   onChange,
   className,
   pastDateDisabled = true,
+  styles,
   ...rest
 }: CalenderProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(value ?? new Date());
@@ -44,7 +56,7 @@ export const Calender = ({
     const newDate = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth() + offset,
-      1
+      1,
     );
     setSelectedDate(newDate);
   };
@@ -53,7 +65,7 @@ export const Calender = ({
     <div
       className={cn(
         "card flex flex-col gap-2 p-4 md:p-6 rounded-2xl",
-        className
+        className,
       )}
       {...rest}
     >
@@ -77,9 +89,9 @@ export const Calender = ({
           <input
             ref={inputRef}
             type="month"
-            className="absolute opacity-0 pointer-events-none"
+            className="sr-only"
             value={`${selectedDate.getFullYear()}-${String(
-              selectedDate.getMonth() + 1
+              selectedDate.getMonth() + 1,
             ).padStart(2, "0")}`}
             onChange={(e) => {
               const value = e.target.value || today.toISOString().slice(0, 7);
@@ -110,11 +122,15 @@ export const Calender = ({
             <div
               key={day}
               className={cn(
-                "text-[1.2em] flex items-center justify-center font-extrabold",
+                "text-[0.8em] flex items-center justify-center font-extrabold",
                 {
                   "text-red-700": isWeekend,
-                }
+                },
               )}
+              style={{
+                ...styles?.weekday?.default,
+                ...(isWeekend ? styles?.weekday?.weekend : {}),
+              }}
             >
               {day}
             </div>
@@ -145,11 +161,16 @@ export const Calender = ({
                   {
                     "border-(--primary) border-2": isSelected,
                     "font-black text-(--primary)": isToday,
-                  }
+                  },
                 )}
                 onClick={() => {
                   setSelectedDate(date);
                   onChange?.(date);
+                }}
+                style={{
+                  ...styles?.day?.default,
+                  ...(isSelected ? styles?.day?.selected : {}),
+                  ...(isToday ? styles?.day?.today : {}),
                 }}
               >
                 <span>{date.getDate()}</span>
