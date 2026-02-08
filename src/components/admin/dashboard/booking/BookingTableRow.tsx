@@ -52,7 +52,7 @@ export const BookingTableRow = memo(
           component: "button",
           props: {
             className: "text-violet-600 border-violet-600 bg-violet-100",
-            onClick: () => modal.open(item.id),
+            onClick: () => modal.open(item),
           },
           Icon: EditOutlined,
         },
