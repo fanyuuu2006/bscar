@@ -162,6 +162,8 @@ export const AddBookingButton = ({
                 <div className="flex flex-col gap-1">
                   <label className="font-bold text-sm">服務項目</label>
                   <select
+                    id="service-select"
+                    name="service_id"
                     value={booking.service_id}
                     onChange={(e) => handleChange("service_id", e.target.value)}
                     className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"

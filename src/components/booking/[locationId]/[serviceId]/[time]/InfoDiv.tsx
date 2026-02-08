@@ -169,6 +169,7 @@ export const InfoDiv = ({
               <input
                 required
                 id={field.id}
+                name={field.id}
                 type={field.type}
                 value={data[field.id]}
                 onChange={(e) => handleInfoChange(field.id, e.target.value)}

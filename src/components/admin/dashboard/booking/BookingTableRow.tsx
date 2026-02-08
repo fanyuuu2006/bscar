@@ -98,6 +98,8 @@ export const TableRow = memo(
       <tr id={item.id} className={cn("group", className)} {...rest}>
         <td className="pl-5 py-3">
           <input
+            id={`select-row-${item.id}`}
+            name={`select_row_${item.id}`}
             type="checkbox"
             className="cursor-pointer align-middle"
             checked={selected}

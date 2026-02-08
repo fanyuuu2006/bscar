@@ -327,6 +327,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             <SearchOutlined />
           </div>
           <input
+            id="search-bookings"
+            name="search"
             type="text"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
@@ -379,6 +381,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         {/* 日期篩選 */}
         <div className="col-span-2 md:col-span-3 lg:col-span-3 flex items-center justify-between p-2 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
           <input
+            id="start-date"
+            name="start_date"
             type="date"
             value={query?.start_date || ""}
             className="text-xs outline-none cursor-pointer"
@@ -393,6 +397,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           />
           <span className="text-(--muted) text-xs">至</span>
           <input
+            id="end-date"
+            name="end_date"
             type="date"
             value={query?.end_date || ""}
             className="text-xs outline-none cursor-pointer"
@@ -472,6 +478,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               <tr className="sticky top-0 z-10 border-b border-(--border) bg-gray-50 text-xs text-(--muted)">
                 <th className="pl-5 py-3 w-4">
                   <input
+                    id="select-all-bookings"
+                    name="select_all"
                     type="checkbox"
                     className="cursor-pointer align-middle"
                     checked={
@@ -565,6 +573,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
           <div className="flex items-center gap-2 text-xs text-(--muted)">
             <span>顯示</span>
             <select
+              id="items-per-page"
+              name="items_per_page"
               value={query?.count || 10}
               onChange={(e) =>
                 setQuery((prev) => ({
@@ -596,6 +606,8 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             <div className="flex items-center gap-1.5 text-xs text-(--muted)">
               <span>第</span>
               <input
+                id="page-number"
+                name="page"
                 type="text"
                 inputMode="numeric"
                 value={inputPage}
