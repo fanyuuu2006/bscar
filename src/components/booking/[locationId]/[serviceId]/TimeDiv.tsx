@@ -4,7 +4,7 @@ import { cn } from "@/utils/className";
 import { OverrideProps } from "fanyucomponents";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TimeSlotSelector } from "./TimeSlotSelector";
+import { TimeSlotSelector } from "../../../TimeSlotSelector";
 import { FormatDateNode } from "@/components/FormatDateNode";
 
 type TimeDivProps = OverrideProps<

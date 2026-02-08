@@ -1,5 +1,5 @@
 "use client";
-import { TimeSlotSelector } from "@/components/booking/[locationId]/[serviceId]/TimeSlotSelector";
+import { TimeSlotSelector } from "@/components/TimeSlotSelector";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useModal } from "@/hooks/useModal";
 import { Info, SupabaseService } from "@/types";
