@@ -335,7 +335,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
+          <div className="grid grid-cols-2 sm:flex sm:flex-row sm:items-center gap-2 w-full lg:w-auto">
             {/* 服務篩選 */}
             <MultiSelectFilter
               label="服務"
@@ -353,7 +353,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                     page: 1,
                     }));
                 }}
-              className="flex-1 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
+              className="col-span-1 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
             />
 
             {/* 狀態篩選 */}
@@ -374,11 +374,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   page: 1,
                 }));
               }}
-              className="flex-1 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
+              className="col-span-1 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
             />
 
             {/* 日期篩選 */}
-            <div className="flex items-center justify-between p-1.5 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
+            <div className="col-span-2 sm:w-auto flex items-center justify-between p-1.5 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
               <input
                 type="date"
                 value={query?.start_date || ""}
@@ -409,7 +409,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             </div>
 
             {/* 重置按鈕 */}
-            <div>
+            <div className="col-span-2 sm:w-auto flex justify-end">
               <button
                 onClick={handleReset}
                 className="p-2 flex items-center justify-center text-(--muted) rounded-lg border border-(--border) bg-gray-50/50"
