@@ -16,7 +16,7 @@ import { formatDate, formatRelativeTime } from "@/utils/date";
 import { SupabaseService } from "@/types";
 import { FormatDateNode } from "@/components/FormatDateNode";
 import { cn } from "@/utils/className";
-import { TodayScheduleCard } from "./TodayScheduleCard";
+import { ScheduleCard } from "./ScheduleCard";
 
 export const MainSection = () => {
   const { token } = useAdminToken();
@@ -230,9 +230,11 @@ export const MainSection = () => {
   const todaySchedule = useMemo(() => {
     if (!todayRes?.data) return [];
     return [...todayRes.data].sort((a, b) => {
-      return (new Date(a.booking_time).getTime() - new Date(b.booking_time).getTime());})
-  }, [todayRes])
-
+      return (
+        new Date(a.booking_time).getTime() - new Date(b.booking_time).getTime()
+      );
+    });
+  }, [todayRes]);
 
   return (
     <section className="flex w-full flex-col gap-4 p-4">
@@ -255,9 +257,9 @@ export const MainSection = () => {
             </div>
           ) : todaySchedule.length ? (
             todaySchedule.map((booking) => (
-              <TodayScheduleCard 
-                key={booking.id} 
-                booking={booking} 
+              <ScheduleCard
+                key={booking.id}
+                booking={booking}
                 service={servicesMap.get(booking.service_id)}
               />
             ))

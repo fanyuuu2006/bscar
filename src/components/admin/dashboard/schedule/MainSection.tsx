@@ -5,10 +5,12 @@ import { cn } from "@/utils/className";
 import { useState, useMemo, useCallback } from "react";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import useSWR from "swr";
-import { bookingsByAdmin } from "@/utils/backend";
+import { bookingsByAdmin, getServices } from "@/utils/backend";
 import { formatDate, getDaysInMonth } from "@/utils/date";
-import { SupabaseBooking } from "@/types";
+import { SupabaseBooking, SupabaseService } from "@/types";
 import { BookingBadge } from "./BookingBadge";
+import { ClockCircleOutlined } from "@ant-design/icons";
+import { ScheduleCard } from "../ScheduleCard";
 
 const MAX_VISIBLE = 3;
 
@@ -31,6 +33,16 @@ export const MainSection = () => {
     () =>
       bookingsByAdmin(token!, { start_date: range.start, end_date: range.end }),
   );
+
+  const { data: servicesResp } = useSWR("services", getServices);
+
+  const servicesMap = useMemo(() => {
+    const map = new Map<string, SupabaseService>();
+    if (servicesResp?.data) {
+      servicesResp.data.forEach((s) => map.set(s.id, s));
+    }
+    return map;
+  }, [servicesResp]);
 
   const bookings = useMemo(() => resp?.data || [], [resp]);
 
@@ -57,12 +69,18 @@ export const MainSection = () => {
       return (
         <div className="text-xs flex h-28 w-full flex-col gap-1 overflow-hidden p-1">
           {visibleBookings.map((booking) => {
-            return <BookingBadge key={booking.id} booking={booking} mutate={mutate} />;
+            return (
+              <BookingBadge
+                key={booking.id}
+                booking={booking}
+                mutate={mutate}
+              />
+            );
           })}
           {remainingCount > 0 && (
-            <button className="text-(--muted) flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium">
+            <span className="text-(--muted) flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium">
               (+{remainingCount} 筆預約)
-            </button>
+            </span>
           )}
         </div>
       );
@@ -85,14 +103,32 @@ export const MainSection = () => {
           ))}
         </div>
       </div>
-      <div className="w-full h-full">
+      <div className="w-full">
         <Calender
-          className="text-lg p-4"
+          className="text-md"
           pastDateDisabled={false}
           value={viewDate}
           onChange={setViewDate}
           DateCell={DateCell}
         />
+      </div>
+      <div className="w-full flex flex-col gap-2">
+        {bookingsMap[formatDate("YYYY-MM-DD", viewDate)]?.length ? (
+          bookingsMap[formatDate("YYYY-MM-DD", viewDate)].map((b) => {
+            return (
+              <ScheduleCard
+                key={b.id}
+                booking={b}
+                service={servicesMap.get(b.service_id)}
+              />
+            );
+          })
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center py-4 text-(--muted)">
+            <ClockCircleOutlined className="text-3xl mb-2 opacity-20" />
+            <span className="text-sm">暫無預約</span>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -5,7 +5,7 @@ import { statusMap } from "@/libs/booking";
 import { PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { FormatDateNode } from "@/components/FormatDateNode";
 
-type TodayScheduleCardProps = OverrideProps<
+type ScheduleCardProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
     booking: SupabaseBooking;
@@ -13,12 +13,12 @@ type TodayScheduleCardProps = OverrideProps<
   }
 >;
 
-export const TodayScheduleCard = ({
+export const ScheduleCard = ({
   booking,
   service,
   className,
   ...props
-}: TodayScheduleCardProps) => {
+}: ScheduleCardProps) => {
   const statusInfo = statusMap[booking.status];
 
   return (
