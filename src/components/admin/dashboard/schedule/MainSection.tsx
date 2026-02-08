@@ -78,9 +78,12 @@ export const MainSection = () => {
             );
           })}
           {remainingCount > 0 && (
-            <span className="text-(--muted) flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium">
+            <button
+              onClick={() => setViewDate(date)}
+              className="text-(--muted) flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium"
+            >
               (+{remainingCount} 筆預約)
-            </span>
+            </button>
           )}
         </div>
       );
@@ -112,7 +115,8 @@ export const MainSection = () => {
           DateCell={DateCell}
         />
       </div>
-      <div className="w-full flex flex-col gap-2">
+      {/* ===== 行程列表 ===== */}
+      <div id="schedule-list" className="w-full flex flex-col gap-2">
         {bookingsMap[formatDate("YYYY-MM-DD", viewDate)]?.length ? (
           bookingsMap[formatDate("YYYY-MM-DD", viewDate)].map((b) => {
             return (
