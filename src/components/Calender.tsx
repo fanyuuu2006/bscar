@@ -11,7 +11,7 @@ import { useMemo, useRef, useState } from "react";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
-type CustomComponentProps = {
+export type DateCellProps = {
   date: Date;
   isSelected: boolean;
   isToday: boolean;
@@ -35,7 +35,11 @@ type CalenderProps = OverrideProps<
         today?: React.CSSProperties;
       };
     };
-    customComponent?: React.FC<CustomComponentProps>;
+    /**
+     * 自定義日期單元格內容渲染
+     * 可以用來顯示當日的額外資訊（如：價格、狀態點等）
+     */
+    renderDateCell?: (props: DateCellProps) => React.ReactNode;
   }
 >;
 
@@ -45,10 +49,10 @@ export const Calender = ({
   className,
   pastDateDisabled = true,
   styles,
-  customComponent: CustomComponent,
+  renderDateCell,
   ...rest
 }: CalenderProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(value ?? new Date());
+  const [viewDate, setViewDate] = useState<Date>(value ?? new Date());
   const inputRef = useRef<HTMLInputElement>(null);
 
   const today = useMemo(() => {
@@ -58,16 +62,16 @@ export const Calender = ({
   }, []);
 
   const days = useMemo(() => {
-    return getDaysArray(selectedDate.getFullYear(), selectedDate.getMonth());
-  }, [selectedDate]);
+    return getDaysArray(viewDate.getFullYear(), viewDate.getMonth());
+  }, [viewDate]);
 
   const handleMonthChange = (offset: number) => {
     const newDate = new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth() + offset,
+      viewDate.getFullYear(),
+      viewDate.getMonth() + offset,
       1,
     );
-    setSelectedDate(newDate);
+    setViewDate(newDate);
   };
 
   return (
@@ -99,17 +103,17 @@ export const Calender = ({
             ref={inputRef}
             type="month"
             className="sr-only"
-            value={`${selectedDate.getFullYear()}-${String(
-              selectedDate.getMonth() + 1,
+            value={`${viewDate.getFullYear()}-${String(
+              viewDate.getMonth() + 1,
             ).padStart(2, "0")}`}
             onChange={(e) => {
               const value = e.target.value || today.toISOString().slice(0, 7);
               const [year, month] = value.split("-").map(Number);
-              setSelectedDate(new Date(year, month - 1, 1));
+              setViewDate(new Date(year, month - 1, 1));
             }}
           />
           <h2 className="text-[1.5em] font-bold tracking-tight">
-            {`${selectedDate.getFullYear()} 年 ${selectedDate.getMonth() + 1} 月`}
+            {`${viewDate.getFullYear()} 年 ${viewDate.getMonth() + 1} 月`}
           </h2>
           <CaretDownOutlined />
         </button>
@@ -174,7 +178,7 @@ export const Calender = ({
                     },
                   )}
                   onClick={() => {
-                    setSelectedDate(date);
+                    setViewDate(date);
                     onChange?.(date);
                   }}
                   style={{
@@ -186,14 +190,12 @@ export const Calender = ({
                   <span>{date.getDate()}</span>
                 </button>
               </div>
-              {CustomComponent && (
-                <CustomComponent
-                  date={date}
-                  isSelected={isSelected}
-                  isToday={isToday}
-                  isDisabled={isDisabled}
-                />
-              )}
+              {renderDateCell?.({
+                date,
+                isSelected,
+                isToday,
+                isDisabled,
+              })}
             </div>
           );
         })}
