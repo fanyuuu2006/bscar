@@ -341,7 +341,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               label="服務"
               options={
                 servicesRes?.data?.map((s) => ({
-                  children: s.name,
+                  label: s.name,
                   value: s.id,
                 })) || []
               }
@@ -360,7 +360,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             <MultiSelectFilter
               label="狀態"
               options={Object.entries(statusMap).map(([key, val]) => ({
-                children: val.label,
+                label: val.label,
                 value: key,
               }))}
               values={query?.status || []}

@@ -1,13 +1,20 @@
 "use client";
 
 import { cn } from "@/utils/className";
-import { CaretDownOutlined, FilterOutlined } from "@ant-design/icons";
+import {
+  CaretDownOutlined,
+  CheckOutlined,
+  FilterOutlined,
+} from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OverrideProps } from "fanyucomponents";
 
 interface MultiSelectFilterProps {
   label?: string;
-  options: OptionProps[];
+  options: {
+    value: string;
+    label: string;
+  }[];
   values: string[];
   onChange: (values: string[]) => void;
   className?: string;
@@ -70,7 +77,7 @@ export const MultiSelectFilter = ({
         values.length > 0
           ? options
               .filter((o) => values.includes(o.value))
-              .map((o) => o.children)
+              .map((o) => o.label)
               .join(", ")
           : ""
       }
@@ -89,28 +96,35 @@ export const MultiSelectFilter = ({
             {[
               {
                 value: "__all__",
-                children: `全部${label}`,
-                onClick: (e: React.MouseEvent) => {
-                  e.stopPropagation();
-                  onChange([]);
-                },
+                label: `全部${label}`,
               },
               ...options,
-            ].map((opt) => (
-              <Option
-                key={opt.value}
-                className="py-0.5 px-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (opt.onClick) {
-                    opt.onClick(e);
-                  } else {
-                    handleToggleOption(opt.value);
-                  }
-                }}
-                {...opt}
-              />
-            ))}
+            ].map((opt) => {
+              const isSelected =
+                opt.value === "__all__"
+                  ? values.length === 0
+                  : values.includes(opt.value);
+
+              return (
+                <Option
+                  key={opt.value}
+                  value={opt.value}
+                  isSelected={isSelected}
+                  className="py-0.5 px-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    if (opt.value === "__all__") {
+                      onChange([]);
+                    } else {
+                      handleToggleOption(opt.value);
+                    }
+                  }}
+                >
+                  {opt.label}
+                </Option>
+              );
+            })}
           </div>
         </div>
       )}
@@ -121,13 +135,36 @@ export const MultiSelectFilter = ({
 type OptionProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
+    isSelected: boolean;
     value: string;
   }
 >;
 
-const Option = ({ value, className, children, ...rest }: OptionProps) => {
+const Option = ({
+  value,
+  className,
+  children,
+  isSelected,
+  ...rest
+}: OptionProps) => {
   return (
-    <div role="button" key={value} className={cn("text-left", className)} {...rest}>
+    <div
+      role="button"
+      key={value}
+      className={cn("text-left flex items-center gap-1", className)}
+      {...rest}
+    >
+      <div
+        className={cn("text-[0.8em] p-0.5 aspect-square rounded-sm border", {
+          "bg-blue-500": isSelected,
+        })}
+      >
+        <CheckOutlined
+          className={cn("transition-all duration-300", {
+            "opacity-0": !isSelected,
+          })}
+        />
+      </div>
       {children}
     </div>
   );
