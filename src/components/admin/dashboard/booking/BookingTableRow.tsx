@@ -7,7 +7,7 @@ import { OverrideProps } from "fanyucomponents";
 import Link from "next/link";
 import { memo, useMemo } from "react";
 
-type TableRowProps = OverrideProps<
+type BookingTableRowProps = OverrideProps<
   React.HTMLAttributes<HTMLTableRowElement>,
   {
     item: SupabaseBooking;
@@ -28,7 +28,7 @@ type OperationItem<T extends React.ElementType = React.ElementType> = {
   Icon: React.ElementType;
 };
 
-export const TableRow = memo(
+export const BookingTableRow = memo(
   ({
     item,
     service,
@@ -37,7 +37,7 @@ export const TableRow = memo(
     onSelect,
     className,
     ...rest
-  }: TableRowProps) => {
+  }: BookingTableRowProps) => {
     const status = statusMap[item.status] ?? {
       label: item.status,
       className: "",
@@ -172,4 +172,4 @@ export const TableRow = memo(
   },
 );
 
-TableRow.displayName = "TableRow";
+BookingTableRow.displayName = "BookingTableRow";

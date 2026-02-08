@@ -22,7 +22,7 @@ import { DistributiveOmit } from "fanyucomponents";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import useSWR from "swr";
-import { TableRow } from "./BookingTableRow";
+import { BookingTableRow } from "./BookingTableRow";
 import { MultiSelect } from "../../../MultiSelect";
 import { AddBookingButton } from "./AddBookingButton";
 
@@ -554,7 +554,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 </tr>
               ) : (
                 filteredBookings.map((booking) => (
-                  <TableRow
+                  <BookingTableRow
                     key={booking.id}
                     item={booking}
                     service={servicesMap.get(booking.service_id)}

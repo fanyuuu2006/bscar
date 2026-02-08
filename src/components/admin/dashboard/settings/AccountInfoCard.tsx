@@ -114,6 +114,7 @@ export const AccountInfoCard = ({
               id: "account",
               label: "帳號",
               type: "text",
+              required: true,
             }}
             value={newAdmin["account"] as string}
             onChange={(e) => handleAdminChange("account", e.target.value)}

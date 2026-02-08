@@ -19,26 +19,43 @@ export const LocationInfoCard = ({
     null,
   );
 
-  const formFields: { label: string; fields: FieldInputProps["field"][] }[] = useMemo(
-    () => [
-      {
-        label: "基本資料",
-        fields: [
-          { id: "city", label: "城市", type: "text" },
-          { id: "branch", label: "分店名稱", type: "text", hint: "不用添加`店`" },
-          { id: "address", label: "地址", type: "text" },
-        ],
-      },
-      {
-        label: "營業時間",
-        fields: [
-          { id: "open_time", label: "開始時間", type: "time" },
-          { id: "close_time", label: "結束時間", type: "time" },
-        ],
-      },
-    ],
-    [],
-  );
+  const formFields: { label: string; fields: FieldInputProps["field"][] }[] =
+    useMemo(
+      () => [
+        {
+          label: "基本資料",
+          fields: [
+            { required: true, id: "city", label: "城市", type: "text" },
+            {
+              required: true,
+              id: "branch",
+              label: "分店名稱",
+              type: "text",
+              hint: "不用添加`店`",
+            },
+            { required: true, id: "address", label: "地址", type: "text" },
+          ],
+        },
+        {
+          label: "營業時間",
+          fields: [
+            {
+              required: true,
+              id: "open_time",
+              label: "開始時間",
+              type: "time",
+            },
+            {
+              required: true,
+              id: "close_time",
+              label: "結束時間",
+              type: "time",
+            },
+          ],
+        },
+      ],
+      [],
+    );
 
   const handleLocationChange = useCallback(
     <T extends keyof SupabaseLocation>(key: T, value: SupabaseLocation[T]) => {
@@ -48,10 +65,7 @@ export const LocationInfoCard = ({
   );
 
   const onLocationInputChange = useCallback(
-    (
-      key: string,
-      e: React.ChangeEvent<HTMLInputElement>,
-    ) => {
+    (key: string, e: React.ChangeEvent<HTMLInputElement>) => {
       handleLocationChange(
         key as keyof SupabaseLocation,
         e.target.value as unknown as SupabaseLocation[keyof SupabaseLocation],
@@ -112,7 +126,9 @@ export const LocationInfoCard = ({
         <div className="grid gap-3">
           <div>
             <div className="font-bold text-sm">ID</div>
-            <div className="text-sm text-(--muted) font-mono wrap-break-word ">{newLocation.id}</div>
+            <div className="text-sm text-(--muted) font-mono wrap-break-word ">
+              {newLocation.id}
+            </div>
           </div>
         </div>
 
@@ -128,7 +144,8 @@ export const LocationInfoCard = ({
                     f.id === "address" ? "sm:col-span-2" : undefined,
                   )}
                   value={
-                    (newLocation[f.id as keyof SupabaseLocation] as string) || ""
+                    (newLocation[f.id as keyof SupabaseLocation] as string) ||
+                    ""
                   }
                   onChange={(e) => onLocationInputChange(f.id, e)}
                 />
@@ -139,7 +156,10 @@ export const LocationInfoCard = ({
       </div>
 
       <div className="mt-6 flex justify-end">
-        <button onClick={handleSave} className="px-4 py-2 rounded-lg btn secondary">
+        <button
+          onClick={handleSave}
+          className="px-4 py-2 rounded-lg btn secondary"
+        >
           儲存變更
         </button>
       </div>
