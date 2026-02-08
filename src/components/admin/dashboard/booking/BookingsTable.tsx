@@ -15,16 +15,15 @@ import {
   ArrowDownOutlined,
   ReloadOutlined,
   SearchOutlined,
-  FilterOutlined,
   InboxOutlined,
   LoadingOutlined,
-  CaretDownOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit } from "fanyucomponents";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import useSWR from "swr";
 import { TableRow } from "./BookingTableRow";
+import { MultiSelectFilter } from "./MultiSelectFilter";
 
 type BookingsTableProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -338,65 +337,45 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
             {/* 服務篩選 */}
-            <div className="relative min-w-0">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
-                <FilterOutlined />
-              </div>
-              <select
-                value={query?.service_id?.[0] || "all"}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setQuery((prev) => ({
-                    ...prev,
-                    service_id: val === "all" ? undefined : [val],
-                    page: 1,
-                  }));
-                }}
-                className="w-full py-2 pl-9 pr-8 text-xs rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
-              >
-                <option value="all">所有服務</option>
-                {servicesRes?.data?.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
-                <CaretDownOutlined />
-              </div>
-            </div>
+            <MultiSelectFilter
+              label="服務"
+              options={
+                servicesRes?.data?.map((s) => ({
+                  label: s.name,
+                  value: s.id,
+                })) || []
+              }
+              selectedValues={query?.service_id || []}
+              onChange={(vals) => {
+                setQuery((prev) => ({
+                  ...prev,
+                  service_id: vals.length > 0 ? vals : undefined,
+                  page: 1,
+                }));
+              }}
+              className="flex-1"
+            />
 
             {/* 狀態篩選 */}
-            <div className="relative min-w-0">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-(--muted)">
-                <FilterOutlined />
-              </div>
-              <select
-                value={query?.status?.[0] || "all"}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setQuery((prev) => ({
-                    ...prev,
-                    status:
-                      val === "all"
-                        ? undefined
-                        : [(val as SupabaseBooking["status"])],
-                    page: 1,
-                  }));
-                }}
-                className="w-full py-2 pl-9 pr-8 text-xs rounded-lg border border-(--border) bg-gray-50/50 appearance-none outline-none cursor-pointer"
-              >
-                <option value="all">所有狀態</option>
-                {Object.entries(statusMap).map(([key, val]) => (
-                  <option key={key} value={key}>
-                    {val.label}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-(--muted) text-xs">
-                <CaretDownOutlined />
-              </div>
-            </div>
+            <MultiSelectFilter
+              label="狀態"
+              options={Object.entries(statusMap).map(([key, val]) => ({
+                label: val.label,
+                value: key,
+              }))}
+              selectedValues={query?.status || []}
+              onChange={(vals) => {
+                setQuery((prev) => ({
+                  ...prev,
+                  status:
+                    vals.length > 0
+                      ? (vals as SupabaseBooking["status"][])
+                      : undefined,
+                  page: 1,
+                }));
+              }}
+              className="flex-1"
+            />
 
             {/* 日期篩選 */}
             <div className="flex items-center justify-between p-1.5 bg-gray-50/50 rounded-lg border border-(--border) gap-1">
