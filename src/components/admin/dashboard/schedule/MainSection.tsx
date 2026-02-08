@@ -11,6 +11,7 @@ import { SupabaseBooking, SupabaseService } from "@/types";
 import { BookingBadge } from "./BookingBadge";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { ScheduleCard } from "../ScheduleCard";
+import { FormatDateNode } from "@/components/FormatDateNode";
 
 const MAX_VISIBLE = 2;
 
@@ -129,7 +130,7 @@ export const MainSection = () => {
         <div id="schedule-list" className="w-full flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-(--foreground) flex items-center gap-2">
-              <span>{formatDate("MM月DD日", viewDate)}</span>
+              <FormatDateNode date={[viewDate]}>MM月DD日</FormatDateNode>
               <span className="text-(--muted) font-normal text-sm">
                 行程列表
               </span>
