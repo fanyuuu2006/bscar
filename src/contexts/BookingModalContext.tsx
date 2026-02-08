@@ -36,10 +36,10 @@ export const BookingModalProvider = ({
       {children}
       <modal.Container
         data-theme={id}
-        className="flex items-center justify-center p-4 z-50"
+        className="animate-appear flex items-center justify-center p-4 z-50"
       >
         {id ? (
-          <div className="w-full max-w-xs sm:max-w-md md:max-w-lg card flex flex-col items-center p-4 sm:p-6 gap-4 animate-pop"></div>
+          <div className="card"></div>
         ) : null}
       </modal.Container>
     </bookingModalContext.Provider>

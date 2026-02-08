@@ -1,10 +1,11 @@
+"use client";
 import { FormatDateNode } from "@/components/FormatDateNode";
+import { useBookingModal } from "@/contexts/BookingModalContext";
 import { statusMap } from "@/libs/booking";
 import { SupabaseBooking, SupabaseService } from "@/types";
 import { cn } from "@/utils/className";
 import { EditOutlined, CheckOutlined, StarOutlined, CloseOutlined } from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
-import Link from "next/link";
 import { memo, useMemo } from "react";
 
 type BookingTableRowProps = OverrideProps<
@@ -38,6 +39,7 @@ export const BookingTableRow = memo(
     className,
     ...rest
   }: BookingTableRowProps) => {
+    const modal = useBookingModal();
     const status = statusMap[item.status] ?? {
       label: item.status,
       className: "",
@@ -47,10 +49,10 @@ export const BookingTableRow = memo(
       () => [
         {
           label: "編輯",
-          component: Link,
+          component: "button",
           props: {
             className: "text-violet-600 border-violet-600 bg-violet-100",
-            href: `/admin/dashboard/booking/${item.id}`,
+            onClick: () => modal.open(item.id),
           },
           Icon: EditOutlined,
         },
@@ -91,7 +93,7 @@ export const BookingTableRow = memo(
           Icon: CloseOutlined,
         },
       ],
-      [item, onUpdate],
+      [item, modal, onUpdate],
     );
 
     return (
