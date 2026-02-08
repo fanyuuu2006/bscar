@@ -1,31 +1,20 @@
-"use client";
+﻿"use client";
 import { DateCellProps } from "@/components/Calender";
-import { useAdminToken } from "@/hooks/useAdminToken";
-import useSWR from "swr";
 import { statusMap } from "@/libs/booking";
-import { bookingsByAdmin } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { FormatDateNode } from "@/components/FormatDateNode";
+import { SupabaseBooking } from "@/types";
 
 const MAX_VISIBLE = 3;
-export const DateCell = ({ date }: DateCellProps) => {
-  const { token } = useAdminToken();
-  const { data: resp } = useSWR(
-    token ? ["admin-booking-by-date", token, date] : null,
-    () => {
-      const strDate = formatDate("YYYY-MM-DD", date);
-      return bookingsByAdmin(token!, {
-        start_date: strDate,
-        end_date: strDate,
-      });
-    },
-  );
 
-  const bookings = resp?.data || [];
+interface DateCellPropsWithData extends DateCellProps {
+  bookings: SupabaseBooking[];
+}
 
-  // Sort bookings by time
-  const sortedBookings = [...bookings].sort((a, b) =>
+export const DateCell = ({ bookings }: DateCellPropsWithData) => {
+  const bookingsList = bookings || [];
+  const sortedBookings = [...bookingsList].sort((a, b) =>
     a.booking_time.localeCompare(b.booking_time),
   );
 
@@ -43,7 +32,7 @@ export const DateCell = ({ date }: DateCellProps) => {
               "flex items-center border gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 text-xs font-medium",
               status.className,
             )}
-            title={`${formatDate("HH:mm", booking.booking_time)} - ${booking.customer_name} (${status.label})`}
+            title={`${formatDate("HH:mm", booking.booking_time)} - ${booking.customer_name}`}
           >
             <FormatDateNode
               date={[booking.booking_time]}
