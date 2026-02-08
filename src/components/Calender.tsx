@@ -21,8 +21,8 @@ export type DateCellProps = {
 type CalenderProps = OverrideProps<
   DistributiveOmit<React.HTMLAttributes<HTMLDivElement>, "children">,
   {
-    value?: Date;
-    onChange?: (date: Date) => void;
+    value: Date;
+    onChange: (date: Date) => void;
     pastDateDisabled?: boolean;
     styles?: {
       weekday?: {
@@ -39,7 +39,7 @@ type CalenderProps = OverrideProps<
      * 自定義日期單元格內容渲染
      * 可以用來顯示當日的額外資訊（如：價格、狀態點等）
      */
-    renderDateCell?: (props: DateCellProps) => React.ReactNode;
+    DateCell?: (props: DateCellProps) => React.ReactNode;
   }
 >;
 
@@ -49,7 +49,7 @@ export const Calender = ({
   className,
   pastDateDisabled = true,
   styles,
-  renderDateCell,
+  DateCell,
   ...rest
 }: CalenderProps) => {
   const [viewDate, setViewDate] = useState<Date>(value ?? new Date());
@@ -190,12 +190,16 @@ export const Calender = ({
                   <span>{date.getDate()}</span>
                 </button>
               </div>
-              {renderDateCell?.({
-                date,
-                isSelected,
-                isToday,
-                isDisabled,
-              })}
+              {
+                DateCell ? (
+                    <DateCell
+                      date={date}
+                      isSelected={isSelected}
+                      isToday={isToday}
+                      isDisabled={isDisabled}
+                    />
+                ) : null
+              }
             </div>
           );
         })}
