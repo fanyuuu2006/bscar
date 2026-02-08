@@ -17,6 +17,7 @@ import {
   SearchOutlined,
   InboxOutlined,
   LoadingOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit } from "fanyucomponents";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -449,12 +450,20 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
       )}
 
       {/* 表格區塊 */}
-      <div className="card rounded-xl overflow-hidden flex-1 min-h-0 flex flex-col">
+      <div className="card rounded-xl flex-1 min-h-0 flex flex-col">
         <div className="flex items-center justify-between px-5 py-3">
-          <h3 className="font-semibold">預約列表</h3>
-          <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
-            共 {filteredBookings.length} 筆
-          </span>
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold">預約列表</h3>
+            <button className="btn flex items-center gap-1 p-1.5 text-xs rounded-md">
+              <PlusOutlined />
+              <span className="tooltip-text">新增預約</span>
+            </button>
+          </div>
+          <div>
+            <span className="text-xs text-(--muted) bg-gray-50/50 px-2 py-1 rounded-full">
+              共 {filteredBookings.length} 筆
+            </span>
+          </div>
         </div>
 
         <div className="flex-1 overflow-auto min-h-0">
