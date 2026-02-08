@@ -141,12 +141,12 @@ export const AddBookingButton = ({
       </button>
 
       <modal.Container className="animate-appear flex items-center justify-center p-4">
-        <div className="card p-4 md:p-6 w-full max-w-xl rounded-xl max-h-[90vh] overflow-y-auto flex flex-col gap-6">
-          <div className="flex justify-between items-center border-b border-(--border) pb-4">
-            <h3 className="text-2xl font-black">新增預約</h3>
+        <div className="card p-4 md:p-6 w-full max-w-xl max-h-full rounded-xl flex flex-col">
+          <div className="flex justify-between items-center border-b border-(--border) pb-2">
+            <h3 className="text-2xl font-black"><PlusOutlined className="mr-1"/>新增預約</h3>
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col py-4 max-h-full overflow-y-auto gap-4">
             {/* 預約資訊區塊 */}
             <div className="flex flex-col gap-4">
               <h4 className="text-xl font-extrabold">
@@ -170,11 +170,6 @@ export const AddBookingButton = ({
 
                 <div className="flex flex-col gap-1">
                   <label className="font-bold text-sm">預約時間</label>
-                  {booking.time && (
-                    <div className="mb-2 text-sm font-medium">
-                      已選擇：{formatDate("YYYY/MM/DD hh:mm A", booking.time)}
-                    </div>
-                  )}
                   {booking.location_id && booking.service_id ? (
                     <TimeSlotSelector
                       locationId={booking.location_id}
@@ -198,7 +193,7 @@ export const AddBookingButton = ({
               <h4 className="text-xl font-extrabold">
                 顧客資訊
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {infoFields.map((field) => (
                   <FieldInput
                     key={field.id}
@@ -213,7 +208,7 @@ export const AddBookingButton = ({
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-(--border)">
+          <div className="flex justify-end gap-3">
             <button
               onClick={modal.close}
               className="btn secondary px-6 py-2 rounded-xl font-medium min-w-25"
@@ -226,7 +221,7 @@ export const AddBookingButton = ({
               className="btn primary px-6 py-2 rounded-xl font-medium min-w-25"
               disabled={loading}
             >
-              {loading ? <LoadingOutlined /> : "建立預約"}
+              {loading ? <LoadingOutlined /> : "新增"}
             </button>
           </div>
         </div>
