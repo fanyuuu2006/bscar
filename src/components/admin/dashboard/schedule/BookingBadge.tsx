@@ -3,7 +3,6 @@ import { useBookingModal } from "@/contexts/BookingModalContext";
 import { statusMap } from "@/libs/booking";
 import { SupabaseBooking } from "@/types";
 import { cn } from "@/utils/className";
-import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
 import { useCallback } from "react";
 
@@ -38,8 +37,6 @@ export const BookingBadge = ({
         status.className,
         className,
       )}
-      title={`${formatDate("HH:mm", booking.booking_time)} - ${booking.customer_name}`}
-     
       {...rest}
     >
       <FormatDateNode
