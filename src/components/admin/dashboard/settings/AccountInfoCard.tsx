@@ -123,7 +123,7 @@ export const AccountInfoCard = ({
             <button
               type="button"
               onClick={modal.open}
-              className="btn mt-7 p-2 w-full rounded-lg font-medium"
+              className="btn mt-7.5 p-2 w-full rounded-lg font-medium"
             >
               變更密碼
             </button>

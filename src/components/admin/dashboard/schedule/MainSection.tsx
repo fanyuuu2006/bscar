@@ -78,7 +78,13 @@ export const MainSection = () => {
       return (
         <div className=" flex w-full h-20 flex-col gap-1 overflow-hidden p-1">
           {visibleBookings.map((booking) => {
-            return <BookingBadge className="text-xs" key={booking.id} booking={booking} />;
+            return (
+              <BookingBadge
+                className="text-xs"
+                key={booking.id}
+                booking={booking}
+              />
+            );
           })}
           {remainingCount > 0 && (
             <button
@@ -121,17 +127,14 @@ export const MainSection = () => {
           />
         </div>
         {/* ===== 行程列表 ===== */}
-        <div id="schedule-list" className="w-full">
-          <div className="card flex flex-col gap-4 rounded-2xl p-5 shadow-sm">
+        <div id="schedule-list" className="w-full h-full">
+          <div className="card min-h-full flex flex-col gap-4 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between pb-3 border-b border-(--border)">
-              <div className="flex flex-col gap-0.5">
-                <h2 className="text-lg font-bold text-(--foreground) flex items-center gap-2">
-                  <FormatDateNode date={[viewDate]}>MM月DD日</FormatDateNode>
-                </h2>
-                <span className="text-(--muted) text-xs">行程列表</span>
-              </div>
+              <h2 className="text-lg font-bold text-(--foreground) flex items-center gap-2">
+                <FormatDateNode date={[viewDate]}>MM月DD日</FormatDateNode>
+              </h2>
               <span className="text-xs font-medium text-(--muted) bg-(--background) px-2.5 py-1 rounded-full border border-(--border)">
-                共 {selectedBookings.length} 筆預約
+                共 {selectedBookings.length} 筆
               </span>
             </div>
 
