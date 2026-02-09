@@ -10,6 +10,7 @@ import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FieldInput, FieldInputProps } from "../../../FieldInput";
+import { FormatDateNode } from "@/components/FormatDateNode";
 
 type AddBookingButtonProps = OverrideProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -34,7 +35,7 @@ export const AddBookingButton = ({
       return {
         location_id: admin?.location_id,
         service_id: services.length > 0 ? services[0].id : undefined,
-        time: undefined,
+        time: formatDate("YYYY-MM-DD HH:mm:ss", new Date()),
         info: {
           name: "",
           phone: "",
@@ -76,7 +77,7 @@ export const AddBookingButton = ({
     }));
   }, []);
 
-  const handleCreate = async () => {
+  const handleCreate = useCallback(async () => {
     if (
       !booking.location_id ||
       !booking.service_id ||
@@ -118,7 +119,12 @@ export const AddBookingButton = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [booking, modal, mutate, defaultValue]);
+
+  const handleClose = useCallback(() => {
+    setBooking(defaultValue);
+    modal.close();
+  }, [defaultValue, modal]);
 
   const infoFields: FieldInputProps["field"][] = useMemo(
     () => [
@@ -177,9 +183,18 @@ export const AddBookingButton = ({
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="font-bold text-sm">預約時間</label>
+                  <label htmlFor="time" className="font-bold text-sm">
+                    預約時間
+                  </label>
+                  <FormatDateNode
+                    date={[booking.time ?? ""]}
+                    className="font-light text-sm"
+                  >
+                    YYYY/MM/DD hh:mm A
+                  </FormatDateNode>
                   {booking.location_id && booking.service_id ? (
                     <TimeSlotSelector
+                      id="time"
                       locationId={booking.location_id}
                       serviceId={booking.service_id}
                       value={booking.time ? new Date(booking.time) : null}
@@ -215,7 +230,7 @@ export const AddBookingButton = ({
 
           <div className="flex justify-end gap-3">
             <button
-              onClick={modal.close}
+              onClick={handleClose}
               className="btn secondary px-6 py-2 rounded-xl font-medium min-w-25"
               disabled={loading}
             >
