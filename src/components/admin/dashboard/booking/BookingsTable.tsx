@@ -263,7 +263,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
   }, []);
 
   const handleBulkAction = async (
-    action: (typeof bulkOperations)[number]["key"],
+    key: (typeof bulkOperations)[number]["key"],
   ) => {
     if (!token || selectedIds.size === 0) return;
 
@@ -273,11 +273,11 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         if (!booking) return;
 
         // 如果狀態已經一樣則跳過
-        if (booking.status === action) return;
+        if (booking.status === key) return;
 
         return updateBookingByAdmin(token, {
           ...booking,
-          status: action as SupabaseBooking["status"],
+          status: key as SupabaseBooking["status"],
         });
       });
 
