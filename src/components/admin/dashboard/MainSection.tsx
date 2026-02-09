@@ -17,10 +17,13 @@ import { SupabaseService } from "@/types";
 import { FormatDateNode } from "@/components/FormatDateNode";
 import { cn } from "@/utils/className";
 import { ScheduleCard } from "./ScheduleCard";
+import Link from "next/link";
+import { useBookingModal } from "@/contexts/BookingModalContext";
 
 export const MainSection = () => {
   const { token } = useAdminToken();
   const [now, setNow] = useState(new Date());
+  const modal = useBookingModal();
 
   useEffect(() => {
     const interval = 1000; // 每分鐘更新一次
@@ -41,16 +44,16 @@ export const MainSection = () => {
   );
   const strToday = useMemo(() => formatDate("YYYY-MM-DD", new Date()), []);
 
-  const { data: todayRes, isLoading: todayIsLoading, mutate: todayMutate} = useSWR(
-    token ? ["admin-booking-today", token] : null,
-    () => {
-      return bookingsByAdmin(token!, {
-        start_date: strToday,
-        end_date: strToday,
-        status: ["confirmed", "completed"],
-      });
-    },
-  );
+  const {
+    data: todayRes,
+    isLoading: todayIsLoading,
+  } = useSWR(token ? ["admin-booking-today", token] : null, () => {
+    return bookingsByAdmin(token!, {
+      start_date: strToday,
+      end_date: strToday,
+      status: ["confirmed", "completed"],
+    });
+  });
 
   // Next Booking Logic
   const { data: bookingsRequest, isLoading: nextBookingIsLoading } = useSWR(
@@ -108,7 +111,10 @@ export const MainSection = () => {
       {
         label: "待處理預約",
         Icon: AlertOutlined,
-        href: `/admin/dashboard/booking?status=pending`,
+        DetailComponent: Link,
+        detailProps: {
+          href: `/admin/dashboard/booking?status=pending`,
+        },
         children: pendingIsLoading ? (
           <div className="flex-1 flex flex-col justify-center">
             <div className="h-12 w-16 animate-pulse rounded-md bg-gray-200" />
@@ -127,7 +133,10 @@ export const MainSection = () => {
       {
         label: "今日預約總數",
         Icon: CalendarOutlined,
-        href: `/admin/dashboard/booking?start_date=${strToday}&end_date=${strToday}&status=confirmed&status=completed`,
+        DetailComponent: Link,
+        detailProps: {
+          href: `/admin/dashboard/booking?start_date=${strToday}&end_date=${strToday}&status=confirmed&status=completed`,
+        },
         children: todayIsLoading ? (
           <div className="flex-1 flex flex-col justify-center">
             <div className="h-12 w-16 animate-pulse rounded-md bg-gray-200" />
@@ -146,9 +155,15 @@ export const MainSection = () => {
       {
         label: "下一筆預約",
         Icon: ClockCircleOutlined,
-        href: nextBooking
-          ? `/admin/dashboard/booking/${nextBooking.id}`
-          : "/admin/dashboard/booking",
+        DetailComponent: "button",
+        detailProps: {
+          onClick: () => {
+            if (nextBooking) {
+              modal.open(nextBooking);
+            }
+          },
+        },
+
         children: nextBookingIsLoading ? (
           <div className="flex-1 animate-pulse flex flex-col justify-center space-y-3">
             <div className="h-8 w-24 bg-gray-100 rounded-md" />
@@ -221,10 +236,11 @@ export const MainSection = () => {
     pendingIsLoading,
     strToday,
     todayIsLoading,
-    nextBooking,
     nextBookingIsLoading,
+    nextBooking,
     timeDisplay,
     service,
+    modal,
   ]);
 
   const todaySchedule = useMemo(() => {
@@ -261,7 +277,6 @@ export const MainSection = () => {
                 key={booking.id}
                 booking={booking}
                 service={servicesMap.get(booking.service_id)}
-                mutate={todayMutate}
               />
             ))
           ) : (

@@ -29,7 +29,7 @@ export const MainSection = () => {
     return { start, end };
   }, [year, month]);
 
-  const { data: resp, mutate } = useSWR(
+  const { data: resp } = useSWR(
     token ? ["admin-bookings-month", token, range.start, range.end] : null,
     () =>
       bookingsByAdmin(token!, { start_date: range.start, end_date: range.end }),
@@ -78,13 +78,7 @@ export const MainSection = () => {
       return (
         <div className="text-xs flex w-full h-20 flex-col gap-1 overflow-hidden p-1">
           {visibleBookings.map((booking) => {
-            return (
-              <BookingBadge
-                key={booking.id}
-                booking={booking}
-                mutate={mutate}
-              />
-            );
+            return <BookingBadge key={booking.id} booking={booking} />;
           })}
           {remainingCount > 0 && (
             <button
@@ -97,7 +91,7 @@ export const MainSection = () => {
         </div>
       );
     },
-    [bookingsMap, mutate],
+    [bookingsMap],
   );
 
   return (
@@ -147,7 +141,6 @@ export const MainSection = () => {
                   key={b.id}
                   booking={b}
                   service={servicesMap.get(b.service_id)}
-                  mutate={mutate}
                 />
               ))
             ) : (

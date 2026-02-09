@@ -11,7 +11,6 @@ type ScheduleCardProps = OverrideProps<
   {
     booking: SupabaseBooking;
     service?: SupabaseService;
-    mutate: () => void;
   }
 >;
 
@@ -19,7 +18,6 @@ export const ScheduleCard = ({
   booking,
   service,
   className,
-  mutate,
   ...props
 }: ScheduleCardProps) => {
   const statusInfo = statusMap[booking.status];
@@ -32,7 +30,7 @@ export const ScheduleCard = ({
         className,
       )}
       {...props}
-      onClick={() => modal.open(booking, { onSuccess: mutate })}
+      onClick={() => modal.open(booking)}
     >
       {/* 1. 時間區塊 - 取消邊框，加大字體與間距 */}
       <div className="shrink-0 flex flex-col justify-center items-center">

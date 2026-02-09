@@ -10,14 +10,12 @@ type BookingBadgeProps = OverrideProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   {
     booking: SupabaseBooking;
-    mutate: () => void;
   }
 >;
 export const BookingBadge = ({
   booking,
   className,
   onClick,
-  mutate,
   ...rest
 }: BookingBadgeProps) => {
   const status = statusMap[booking.status] ?? {
@@ -25,18 +23,19 @@ export const BookingBadge = ({
     className: "",
   };
   const modal = useBookingModal();
-  const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    modal.open(booking, {
-        onSuccess: mutate,
-    });
-    if (onClick) {
-      onClick(e);
-    }
-  }, [modal, booking, onClick, mutate]);
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      modal.open(booking);
+      if (onClick) {
+        onClick(e);
+      }
+    },
+    [modal, booking, onClick],
+  );
   return (
     <button
-    onClick={handleClick}
-    className={cn(
+      onClick={handleClick}
+      className={cn(
         "flex items-center border gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium",
         status.className,
         className,

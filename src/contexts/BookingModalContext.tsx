@@ -19,13 +19,13 @@ import { formatDate } from "@/utils/date";
 import { useRouter } from "next/navigation";
 import { FieldInput, FieldInputProps } from "@/components/FieldInput";
 import { FormatDateNode } from "@/components/FormatDateNode";
+import { useSWRConfig } from "swr";
 
 type BookingModalContextType = OverrideProps<
   ReturnType<typeof useModal>,
   {
     open: (
       booking: SupabaseBooking,
-      options?: { onSuccess?: () => void }
     ) => void;
   }
 >;
@@ -37,7 +37,6 @@ export type OperationItem<T extends React.ElementType = React.ElementType> = {
   component: T;
   props: React.ComponentProps<T>;
 };
-
 
 export const BookingModalProvider = ({
   children,
@@ -51,7 +50,7 @@ export const BookingModalProvider = ({
   const { token } = useAdminToken();
   const router = useRouter();
   const modal = useModal({});
-  const [onSuccess, setOnSuccess] = useState<(() => void) | undefined>();
+  const { mutate } = useSWRConfig();
 
   // 常用表單欄位定義
   const customerFields: FieldInputProps["field"][] = useMemo(
@@ -60,7 +59,7 @@ export const BookingModalProvider = ({
       { required: true, id: "customer_phone", label: "電話", type: "tel" },
       { required: true, id: "customer_line", label: "Line ID", type: "text" },
     ],
-    []
+    [],
   );
 
   /** 一次性取得服務列表 */
@@ -80,7 +79,7 @@ export const BookingModalProvider = ({
     <T extends keyof SupabaseBooking>(key: T, value: SupabaseBooking[T]) => {
       setNewBooking((prev) => (prev ? { ...prev, [key]: value } : prev));
     },
-    []
+    [],
   );
 
   const handleSave = useCallback(async () => {
@@ -94,46 +93,46 @@ export const BookingModalProvider = ({
     try {
       const res = await updateBookingByAdmin(token, newBooking);
       if (res.success) {
-        if (onSuccess) onSuccess();
         router.refresh();
         modal.close();
+        mutate(() => true); // 讓 SWR 重新驗證所有資料
       } else {
         alert(`保存失敗${res.message ? `：${res.message}` : ""}`);
       }
     } finally {
       setSaving(false);
     }
-  }, [newBooking, router, token, booking, modal, onSuccess]);
+  }, [token, newBooking, booking, router, modal, mutate]);
 
   const onServiceChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       handleChange("service_id", e.target.value);
     },
-    [handleChange]
+    [handleChange],
   );
 
   const onStatusChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       handleChange("status", e.target.value as SupabaseBooking["status"]);
     },
-    [handleChange]
+    [handleChange],
   );
 
   const onInputChange = useCallback(
     (key: string, e: React.ChangeEvent<HTMLInputElement>) => {
       handleChange(
         key as keyof SupabaseBooking,
-        e.target.value as unknown as SupabaseBooking[keyof SupabaseBooking]
+        e.target.value as unknown as SupabaseBooking[keyof SupabaseBooking],
       );
     },
-    [handleChange]
+    [handleChange],
   );
 
   const onDateChange = useCallback(
     (date: Date) => {
       handleChange("booking_time", formatDate("YYYY-MM-DD HH:mm:ss", date));
     },
-    [handleChange]
+    [handleChange],
   );
 
   const buttons: OperationItem[] = useMemo(() => {
@@ -164,15 +163,13 @@ export const BookingModalProvider = ({
       ...modal,
       open: (
         booking: SupabaseBooking,
-        options?: { onSuccess?: () => void }
       ) => {
         setBooking(booking);
         setNewBooking(booking);
-        setOnSuccess(() => options?.onSuccess);
         modal.open();
       },
     }),
-    [modal]
+    [modal],
   );
 
   return (
@@ -273,7 +270,7 @@ export const BookingModalProvider = ({
                     key={item.label}
                     className={cn(
                       "px-6 py-2 rounded-xl font-medium min-w-25 transition-colors",
-                      itemClassName
+                      itemClassName,
                     )}
                     {...itemProps}
                   >
