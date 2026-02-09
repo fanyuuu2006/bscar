@@ -1,7 +1,7 @@
 "use client";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { statusMap } from "@/libs/booking";
-import { SupabaseBooking, SupabaseService } from "@/types";
+import { MyResponse, SupabaseBooking, SupabaseService } from "@/types";
 import {
   bookingsByAdmin,
   getServices,
@@ -18,6 +18,7 @@ import {
   SearchOutlined,
   InboxOutlined,
   LoadingOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit } from "fanyucomponents";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -234,6 +235,37 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     });
   }, []);
 
+  /**
+   * 執行批次操作的通用處理函式
+   * 將迴圈、錯誤處理與重置狀態的邏輯統一
+   */
+  const processBulkAction = useCallback(
+    async (
+      action: (booking: SupabaseBooking) => Promise<MyResponse<unknown> | void>,
+      confirmMsg?: string,
+    ) => {
+      if (!token || selectedIds.size === 0) return;
+
+      if (confirmMsg && !window.confirm(confirmMsg)) return;
+
+      try {
+        const promises = Array.from(selectedIds).map(async (id) => {
+          const booking = filteredBookings.find((b) => b.id === id);
+          if (!booking) return;
+          return action(booking);
+        });
+
+        await Promise.all(promises);
+        mutate();
+        setSelectedIds(new Set());
+      } catch (error) {
+        console.error(error);
+        alert("操作過程中發生錯誤");
+      }
+    },
+    [token, selectedIds, filteredBookings, mutate],
+  );
+
   const bulkOperations = useMemo(() => {
     return [
       {
@@ -241,54 +273,56 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         label: "確認",
         icon: CheckOutlined,
         className: "text-blue-600 bg-blue-50 border-blue-200",
+        onClick: () =>
+          processBulkAction(async (booking) => {
+            if (booking.status === "confirmed") return;
+            return updateBookingByAdmin(token!, {
+              ...booking,
+              status: "confirmed",
+            });
+          }),
       },
       {
         key: "cancelled",
         label: "取消",
         icon: CloseOutlined,
         className: "text-slate-600 bg-slate-50 border-slate-200",
+        onClick: () =>
+          processBulkAction(async (booking) => {
+            if (booking.status === "cancelled") return;
+            return updateBookingByAdmin(token!, {
+              ...booking,
+              status: "cancelled",
+            });
+          }),
       },
       {
         key: "completed",
         label: "完成",
         icon: StarOutlined,
         className: "text-green-600 bg-green-50 border-green-200",
+        onClick: () =>
+          processBulkAction(async (booking) => {
+            if (booking.status === "completed") return;
+            return updateBookingByAdmin(token!, {
+              ...booking,
+              status: "completed",
+            });
+          }),
       },
-    ] as const satisfies {
-      key: SupabaseBooking["status"];
-      label: string;
-      icon: React.ElementType;
-      className: string;
-    }[];
-  }, []);
-
-  const handleBulkAction = async (
-    key: (typeof bulkOperations)[number]["key"],
-  ) => {
-    if (!token || selectedIds.size === 0) return;
-
-    try {
-      const promises = Array.from(selectedIds).map(async (id) => {
-        const booking = filteredBookings.find((b) => b.id === id);
-        if (!booking) return;
-
-        // 如果狀態已經一樣則跳過
-        if (booking.status === key) return;
-
-        return updateBookingByAdmin(token, {
-          ...booking,
-          status: key as SupabaseBooking["status"],
-        });
-      });
-
-      await Promise.all(promises);
-      mutate();
-      setSelectedIds(new Set());
-    } catch (error) {
-      console.error(error);
-      alert("操作過程中發生錯誤");
-    }
-  };
+      {
+        key: "delete",
+        label: "刪除",
+        icon: DeleteOutlined,
+        className: "text-red-600 bg-red-50 border-red-200",
+        onClick: () =>
+          processBulkAction(
+            (booking) => deleteBookingByAdmin(token!, booking.id),
+            `確定要刪除選取的 ${selectedIds.size} 筆預約嗎？此操作無法復原。`,
+          ),
+      },
+    ];
+  }, [processBulkAction, token, selectedIds.size]);
 
   /**
    * 處理預約狀態更新的操作。
@@ -467,7 +501,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             {bulkOperations.map((op) => (
               <button
                 key={op.key}
-                onClick={() => handleBulkAction(op.key)}
+                onClick={op.onClick}
                 className={cn(
                   "flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs",
                   op.className,
