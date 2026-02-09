@@ -416,7 +416,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         {/* 重置按鈕 */}
         <button
           onClick={handleReset}
-          className="tooltip col-span-2 md:col-span-1 lg:col-span-1 p-2 flex items-center justify-center text-(--muted) rounded-lg border border-(--border) bg-gray-50/50"
+          className="btn tooltip col-span-2 md:col-span-1 lg:col-span-1 p-2 flex items-center justify-center rounded-lg"
           data-tooltip="清除篩選"
         >
           <ReloadOutlined />
@@ -425,7 +425,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
 
       {/* 批次操作工具列 */}
       {selectedIds.size > 0 && (
-        <div className="card p-3 rounded-xl flex items-center justify-between border border-(--border) animate-fade-in">
+        <div className="card p-3 rounded-xl flex items-center justify-between border border-(--border)">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">
               已選取 {selectedIds.size} 筆預約
