@@ -142,7 +142,7 @@ export const MainSection = () => {
               </span>
             </div>
 
-            <div className="flex flex-col gap-3 overflow-y-auto pr-1">
+            <div className="flex flex-col gap-3 flex-1">
               {selectedBookings.length > 0 ? (
                 selectedBookings.map((b) => (
                   <ScheduleCard
@@ -152,7 +152,7 @@ export const MainSection = () => {
                   />
                 ))
               ) : (
-                <div className="flex flex-col items-center justify-center flex-1 h-full py-12 text-(--muted)/60">
+                <div className="flex flex-col items-center justify-center flex-1 text-(--muted)">
                   <div className="w-16 h-16 rounded-full bg-(--background) flex items-center justify-center mb-3 border border-(--border) border-dashed">
                     <CalendarOutlined className="text-2xl" />
                   </div>

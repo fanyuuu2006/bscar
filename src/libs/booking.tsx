@@ -7,25 +7,34 @@ export const bookingSteps = [
   { value: "info", label: "填寫資料" },
 ] as const;
 
-
 export const statusMap: Record<
   SupabaseBooking["status"],
   { label: string; className: string }
 > = {
   pending: {
     label: "待處理",
-    className: "bg-orange-50 text-orange-700 border-orange-200",
+    className: "bg-amber-100 text-amber-800 border-amber-300",
   },
   confirmed: {
-    className: "bg-blue-50 text-blue-700 border-blue-200",
     label: "已確認",
+    className: "bg-blue-100 text-blue-800 border-blue-300",
   },
   cancelled: {
     label: "已取消",
-    className: "bg-slate-100 text-slate-600 border-slate-300",
+    className: "bg-rose-100 text-rose-800 border-rose-300",
   },
   completed: {
     label: "已完成",
-    className: "bg-green-100 text-green-800 border-green-300",
+    className: "bg-emerald-100 text-emerald-800 border-emerald-300",
+  },
+};
+export const actionMap = {
+  edit: {
+    label: "編輯",
+    className: "bg-violet-100 text-violet-800 border-violet-300",
+  },
+  delete: {
+    label: "刪除",
+    className: "bg-rose-200 text-rose-900 border-rose-400",
   },
 };
