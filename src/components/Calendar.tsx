@@ -7,7 +7,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
@@ -55,6 +55,11 @@ export const Calendar = ({
   const [viewDate, setViewDate] = useState<Date>(value ?? new Date());
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const handleChange = useCallback((date: Date) => {
+    setViewDate(date);
+    onChange?.(date);
+  }, [onChange]);
+
   const today = useMemo(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -71,8 +76,7 @@ export const Calendar = ({
       viewDate.getMonth() + offset,
       1,
     );
-    setViewDate(newDate);
-    onChange?.(newDate);
+    handleChange(newDate);
   };
 
   useEffect(() => {
@@ -114,7 +118,8 @@ export const Calendar = ({
             onChange={(e) => {
               const value = e.target.value || today.toISOString().slice(0, 7);
               const [year, month] = value.split("-").map(Number);
-              setViewDate(new Date(year, month - 1, 1));
+              const newDate = new Date(year, month - 1, 1);
+              handleChange(newDate);
             }}
           />
           <h2 className="text-[1.5em] font-bold tracking-tight">
@@ -171,8 +176,7 @@ export const Calendar = ({
               data-disabled={isDisabled}
               onClick={() => {
                 if (isDisabled) return;
-                setViewDate(date);
-                onChange?.(date);
+                handleChange(date);
               }}
               key={date.toISOString()}
               className="w-full grid grid-cols-1 items-center justify-center"

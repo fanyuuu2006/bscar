@@ -92,7 +92,7 @@ export const MainSection = () => {
             />
           ))}
           {remainingCount > 0 && (
-            <span className="w-full rounded-md bg-(--background) border border-(--border) p-px text-center text-[10px]">
+            <span className="w-full rounded-md bg-(--background) border border-(--border)/10 p-px text-center text-[10px]">
               +{remainingCount} 筆
             </span>
           )}
@@ -121,7 +121,7 @@ export const MainSection = () => {
         {/* ===== 日曆 ===== */}
         <div className="w-full">
           <Calendar
-            className="sticky top-0 text-md"
+            className="sticky top-0 text-base"
             pastDateDisabled={false}
             value={viewDate}
             onChange={handleChange}
