@@ -48,15 +48,25 @@ export const AddBookingButton = ({
   const [booking, setBooking] =
     useState<Partial<Parameters<typeof postBooking>[0]>>(getDefaultValue);
 
-  // 當 admin 資料載入完成後，確保 location_id 正確寫入
+  // 當 admin 或 services 資料更新時，確保 booking 狀態有正確的預設值
   useEffect(() => {
-    if (admin?.location_id) {
-      setBooking((prev) => ({
-        ...prev,
-        location_id: admin.location_id,
-      }));
-    }
-  }, [admin?.location_id]);
+    setBooking((prev) => {
+      const next = { ...prev };
+      let changed = false;
+
+      if (admin?.location_id && next.location_id !== admin.location_id) {
+        next.location_id = admin.location_id;
+        changed = true;
+      }
+
+      if (!next.service_id && services.length > 0) {
+        next.service_id = services[0].id;
+        changed = true;
+      }
+
+      return changed ? next : prev;
+    });
+  }, [admin?.location_id, services]);
 
   const handleChange = useCallback(
     <T extends keyof typeof booking>(key: T, value: (typeof booking)[T]) => {
