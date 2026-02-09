@@ -2,8 +2,9 @@
 import { Calendar, DateCellProps } from "@/components/Calendar";
 import { statusMap } from "@/libs/booking";
 import { cn } from "@/utils/className";
-import { useState, useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useAdminToken } from "@/hooks/useAdminToken";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import { bookingsByAdmin, getServices } from "@/utils/backend";
 import { formatDate, getDaysInMonth } from "@/utils/date";
@@ -17,7 +18,17 @@ const MAX_VISIBLE = 2;
 
 export const MainSection = () => {
   const { token } = useAdminToken();
-  const [viewDate, setViewDate] = useState(new Date());
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const viewDate = useMemo(() => {
+    const dateStr = searchParams.get("date");
+    if (dateStr && !isNaN(Date.parse(dateStr))) {
+      return new Date(dateStr);
+    }
+    return new Date();
+  }, [searchParams]);
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -67,9 +78,11 @@ export const MainSection = () => {
 
   const handleChange = useCallback(
     (date: Date) => {
-      setViewDate(date);
+      const params = new URLSearchParams(searchParams);
+      params.set("date", formatDate("YYYY-MM-DD", date));
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
-    [setViewDate],
+    [router, pathname, searchParams],
   );
 
   const DateCell = useCallback(

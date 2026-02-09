@@ -135,7 +135,7 @@ export const MainSection = () => {
         Icon: CalendarOutlined,
         DetailComponent: Link,
         detailProps: {
-          href: `/admin/dashboard/booking?start_date=${strToday}&end_date=${strToday}&status=confirmed&status=completed`,
+          href: `/admin/dashboard/schedule?date=${strToday}`,
         },
         children: todayIsLoading ? (
           <div className="flex-1 flex flex-col justify-center">
