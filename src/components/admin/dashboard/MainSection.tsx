@@ -44,16 +44,16 @@ export const MainSection = () => {
   );
   const strToday = useMemo(() => formatDate("YYYY-MM-DD", new Date()), []);
 
-  const {
-    data: todayRes,
-    isLoading: todayIsLoading,
-  } = useSWR(token ? ["admin-booking-today", token] : null, () => {
-    return bookingsByAdmin(token!, {
-      start_date: strToday,
-      end_date: strToday,
-      status: ["confirmed", "completed"],
-    });
-  });
+  const { data: todayRes, isLoading: todayIsLoading } = useSWR(
+    token ? ["admin-booking-today", token] : null,
+    () => {
+      return bookingsByAdmin(token!, {
+        start_date: strToday,
+        end_date: strToday,
+        status: ["confirmed", "completed", "pending"],
+      });
+    },
+  );
 
   // Next Booking Logic
   const { data: bookingsRequest, isLoading: nextBookingIsLoading } = useSWR(
