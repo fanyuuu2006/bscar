@@ -136,7 +136,7 @@ export const Calendar = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-7 border-b border-(--border) pb-2">
+      <div className="grid grid-cols-7 gap-1 border-b border-(--border) pb-2">
         {WEEKDAYS.map((day) => {
           const isWeekend = day === "日" || day === "六";
           return (
@@ -159,7 +159,7 @@ export const Calendar = ({
         })}
       </div>
 
-      <div className="grid grid-cols-7 gap-1 sm:gap-2">
+      <div className="grid grid-cols-7 gap-1">
         {days.map((date, i) => {
           if (!date) return <div key={`empty-${i}`} />;
 
