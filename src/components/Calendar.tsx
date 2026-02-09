@@ -167,8 +167,10 @@ export const Calendar = ({
 
           return (
             <div
+              role="button"
               data-disabled={isDisabled}
               onClick={() => {
+                if (isDisabled) return;
                 setViewDate(date);
                 onChange?.(date);
               }}

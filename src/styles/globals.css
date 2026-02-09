@@ -66,15 +66,9 @@
     width: 100%;
   }
 
-  @media (max-width: 768px) {
-    .container {
-      padding: 1rem;
-    }
-  }
-}
-
-@layer components {
+  
   /* === 按鈕樣式 === */
+  [role="button"],
   button,
   .btn {
     display: block;
@@ -109,6 +103,15 @@
     transform: none;
     box-shadow: none;
   }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+  }
+}
+
+@layer components {
 
   /* 基本按鈕樣式 */
   .btn {
