@@ -30,23 +30,25 @@ export const AddBookingButton = ({
   const { admin } = useAdmin();
   const [loading, setLoading] = useState(false);
 
-  const defaultValue: Partial<Parameters<typeof postBooking>[0]> =
-    useMemo(() => {
-      return {
-        location_id: admin?.location_id,
-        service_id: services.length > 0 ? services[0].id : undefined,
-        time: formatDate("YYYY-MM-DD HH:mm:ss", new Date()),
-        info: {
-          name: "",
-          phone: "",
-          line: "",
-        },
-      };
-    }, [admin?.location_id, services]);
+  // 使用 useCallback 確保每次獲取最新的預設值，解決時間 stale 問題
+  const getDefaultValue = useCallback(
+    () => ({
+      location_id: admin?.location_id,
+      service_id: services.length > 0 ? services[0].id : undefined,
+      time: formatDate("YYYY-MM-DD HH:mm:ss", new Date()),
+      info: {
+        name: "",
+        phone: "",
+        line: "",
+      },
+    }),
+    [admin?.location_id, services]
+  );
 
   const [booking, setBooking] =
-    useState<Partial<Parameters<typeof postBooking>[0]>>(defaultValue);
+    useState<Partial<Parameters<typeof postBooking>[0]>>(getDefaultValue);
 
+  // 當 admin 資料載入完成後，確保 location_id 正確寫入
   useEffect(() => {
     if (admin?.location_id) {
       setBooking((prev) => ({
@@ -60,7 +62,7 @@ export const AddBookingButton = ({
     <T extends keyof typeof booking>(key: T, value: (typeof booking)[T]) => {
       setBooking((prev) => ({ ...prev, [key]: value }));
     },
-    [],
+    []
   );
 
   const handleInfoChange = useCallback((key: keyof Info, value: string) => {
@@ -78,16 +80,13 @@ export const AddBookingButton = ({
   }, []);
 
   const handleCreate = useCallback(async () => {
-    if (
-      !booking.location_id ||
-      !booking.service_id ||
-      !booking.time ||
-      !booking.info
-    ) {
+    const { location_id, service_id, time, info } = booking;
+    
+    if (!location_id || !service_id || !time || !info) {
       alert("請填寫所有欄位");
       return;
     }
-    if (!booking.info.name || !booking.info.phone) {
+    if (!info.name || !info.phone) {
       alert("請填寫姓名與電話");
       return;
     }
@@ -95,16 +94,16 @@ export const AddBookingButton = ({
     setLoading(true);
     try {
       const res = await postBooking({
-        location_id: booking.location_id,
-        service_id: booking.service_id,
-        time: booking.time,
-        info: booking.info as Info,
+        location_id,
+        service_id,
+        time,
+        info: info as Info,
       });
       if (res.success) {
         modal.close();
         alert("預約建立成功");
         mutate();
-        setBooking(defaultValue);
+        setBooking(getDefaultValue()); // 重置為最新狀態
         if (res.data?.id) {
           setTimeout(() => {
             window.location.hash = `#${res.data!.id}`;
@@ -119,12 +118,12 @@ export const AddBookingButton = ({
     } finally {
       setLoading(false);
     }
-  }, [booking, modal, mutate, defaultValue]);
+  }, [booking, modal, mutate, getDefaultValue]);
 
   const handleClose = useCallback(() => {
-    setBooking(defaultValue);
+    setBooking(getDefaultValue());
     modal.close();
-  }, [defaultValue, modal]);
+  }, [getDefaultValue, modal]);
 
   const infoFields: FieldInputProps["field"][] = useMemo(
     () => [
@@ -132,7 +131,7 @@ export const AddBookingButton = ({
       { required: true, id: "phone", label: "電話", type: "tel" },
       { required: true, id: "line", label: "Line ID", type: "text" },
     ],
-    [],
+    []
   );
 
   if (!admin || services.length <= 0) return null;
@@ -143,7 +142,7 @@ export const AddBookingButton = ({
         onClick={modal.open}
         className={cn(
           "btn flex items-center gap-1 p-1.5 text-xs rounded-md",
-          className,
+          className
         )}
         {...rest}
       >
@@ -152,99 +151,108 @@ export const AddBookingButton = ({
       </button>
 
       <modal.Container className="animate-appear flex items-center justify-center p-4">
-        <div className="card p-4 md:p-6 w-full max-w-xl max-h-full rounded-xl flex flex-col">
-          <div className="flex justify-between items-center border-b border-(--border) pb-2">
-            <h3 className="text-2xl font-black">
-              <PlusOutlined className="mr-1" />
-              新增預約
-            </h3>
-          </div>
+        {modal.isOpen && (
+          <div className="card p-4 md:p-6 w-full max-w-xl max-h-full rounded-xl flex flex-col">
+            <div className="flex justify-between items-center border-b border-(--border) pb-2">
+              <h3 className="text-2xl font-black">
+                <PlusOutlined className="mr-1" />
+                新增預約
+              </h3>
+            </div>
 
-          <div className="flex flex-col py-4 max-h-full overflow-y-auto gap-4">
-            {/* 預約資訊區塊 */}
-            <div className="flex flex-col gap-4">
-              <h4 className="text-xl font-extrabold">預約資訊</h4>
-              <div className="flex flex-col gap-4 pl-1">
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-sm">服務項目</label>
-                  <select
-                    id="service-select"
-                    name="service_id"
-                    value={booking.service_id}
-                    onChange={(e) => handleChange("service_id", e.target.value)}
-                    className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
-                  >
-                    {services.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
+            <div className="flex flex-col py-4 max-h-full overflow-y-auto gap-4">
+              {/* 預約資訊區塊 */}
+              <div className="flex flex-col gap-4">
+                <h4 className="text-xl font-extrabold">預約資訊</h4>
+                <div className="flex flex-col gap-4 pl-1">
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-sm">服務項目</label>
+                    <select
+                      id="service-select"
+                      name="service_id"
+                      value={booking.service_id}
+                      onChange={(e) =>
+                        handleChange("service_id", e.target.value)
+                      }
+                      className="p-2.5 border-(--border) border rounded-lg bg-gray-50/50 outline-none focus:border-(--primary) transition-colors"
+                    >
+                      {services.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="time" className="font-bold text-sm">
+                      預約時間
+                    </label>
+                    <FormatDateNode
+                      date={[booking.time ?? ""]}
+                      className="font-light text-sm"
+                    >
+                      YYYY/MM/DD hh:mm A
+                    </FormatDateNode>
+                    {booking.location_id && booking.service_id ? (
+                      <TimeSlotSelector
+                        id="time"
+                        locationId={booking.location_id}
+                        serviceId={booking.service_id}
+                        value={booking.time ? new Date(booking.time) : null}
+                        onChange={handleDateChange}
+                        className="text-sm mt-2"
+                      />
+                    ) : (
+                      <div className="bg-gray-50 p-4 rounded-lg text-center">
+                        <p className="text-gray-500 text-sm">
+                          請先選擇服務項目
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
+              </div>
 
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="time" className="font-bold text-sm">
-                    預約時間
-                  </label>
-                  <FormatDateNode
-                    date={[booking.time ?? ""]}
-                    className="font-light text-sm"
-                  >
-                    YYYY/MM/DD hh:mm A
-                  </FormatDateNode>
-                  {booking.location_id && booking.service_id ? (
-                    <TimeSlotSelector
-                      id="time"
-                      locationId={booking.location_id}
-                      serviceId={booking.service_id}
-                      value={booking.time ? new Date(booking.time) : null}
-                      onChange={handleDateChange}
-                      className="text-sm mt-2"
+              {/* 顧客資訊區塊 */}
+              <div className="flex flex-col gap-4">
+                <h4 className="text-xl font-extrabold">顧客資訊</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {infoFields.map((field) => (
+                    <FieldInput
+                      key={field.id}
+                      field={field}
+                      value={booking.info?.[field.id as keyof Info] || ""}
+                      onChange={(e) =>
+                        handleInfoChange(
+                          field.id as keyof Info,
+                          e.target.value
+                        )
+                      }
                     />
-                  ) : (
-                    <div className="bg-gray-50 p-4 rounded-lg text-center">
-                      <p className="text-gray-500 text-sm">請先選擇服務項目</p>
-                    </div>
-                  )}
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* 顧客資訊區塊 */}
-            <div className="flex flex-col gap-4">
-              <h4 className="text-xl font-extrabold">顧客資訊</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {infoFields.map((field) => (
-                  <FieldInput
-                    key={field.id}
-                    field={field}
-                    value={booking.info?.[field.id as keyof Info] || ""}
-                    onChange={(e) =>
-                      handleInfoChange(field.id as keyof Info, e.target.value)
-                    }
-                  />
-                ))}
-              </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleClose}
+                className="btn secondary px-6 py-2 rounded-xl font-medium min-w-25"
+                disabled={loading}
+              >
+                取消
+              </button>
+              <button
+                onClick={handleCreate}
+                className="btn primary px-6 py-2 rounded-xl font-medium min-w-25"
+                disabled={loading}
+              >
+                {loading ? <LoadingOutlined /> : "新增"}
+              </button>
             </div>
           </div>
-
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={handleClose}
-              className="btn secondary px-6 py-2 rounded-xl font-medium min-w-25"
-              disabled={loading}
-            >
-              取消
-            </button>
-            <button
-              onClick={handleCreate}
-              className="btn primary px-6 py-2 rounded-xl font-medium min-w-25"
-              disabled={loading}
-            >
-              {loading ? <LoadingOutlined /> : "新增"}
-            </button>
-          </div>
-        </div>
+        )}
       </modal.Container>
     </>
   );
