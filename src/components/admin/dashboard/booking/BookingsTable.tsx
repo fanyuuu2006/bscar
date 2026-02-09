@@ -6,6 +6,7 @@ import {
   bookingsByAdmin,
   getServices,
   updateBookingByAdmin,
+  deleteBookingByAdmin,
 } from "@/utils/backend";
 import { cn } from "@/utils/className";
 import {
@@ -317,6 +318,31 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
     [token, mutate],
   );
 
+  /**
+   * 處理預約刪除的操作。
+   *
+   * @param booking - 目標預約物件
+   */
+  const handleDelete = useCallback(
+    async (booking: SupabaseBooking) => {
+      if (!token) return;
+      if (!window.confirm("確定要刪除此筆預約嗎？此操作無法復原。")) return;
+
+      try {
+        const res = await deleteBookingByAdmin(token, booking.id);
+        if (res.success) {
+          mutate();
+        } else {
+          alert("刪除失敗");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("刪除發生錯誤");
+      }
+    },
+    [token, mutate],
+  );
+
   return (
     <div className={cn("flex flex-col gap-4", className)} {...rest}>
       {/* 篩選工具列 */}
@@ -555,6 +581,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               ) : (
                 filteredBookings.map((booking) => (
                   <BookingTableRow
+                    onDelete={handleDelete}
                     key={booking.id}
                     item={booking}
                     service={servicesMap.get(booking.service_id)}

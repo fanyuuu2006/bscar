@@ -4,7 +4,13 @@ import { useBookingModal } from "@/contexts/BookingModalContext";
 import { statusMap } from "@/libs/booking";
 import { SupabaseBooking, SupabaseService } from "@/types";
 import { cn } from "@/utils/className";
-import { EditOutlined, CheckOutlined, StarOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  CheckOutlined,
+  StarOutlined,
+  CloseOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
 import { memo, useMemo } from "react";
 
@@ -17,6 +23,7 @@ type BookingTableRowProps = OverrideProps<
       booking: SupabaseBooking,
       status: SupabaseBooking["status"],
     ) => void;
+    onDelete: (booking: SupabaseBooking) => void;
     selected: boolean;
     onSelect: (id: string, checked: boolean) => void;
   }
@@ -34,6 +41,7 @@ export const BookingTableRow = memo(
     item,
     service,
     onUpdate,
+    onDelete,
     selected,
     onSelect,
     className,
@@ -64,7 +72,7 @@ export const BookingTableRow = memo(
             onClick: () => onUpdate(item, "confirmed"),
             disabled: item.status === "confirmed",
             className:
-              "text-blue-600 border-blue-600 bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed",
+              "text-blue-600 border-blue-600 bg-blue-100",
           },
           Icon: CheckOutlined,
         },
@@ -74,7 +82,7 @@ export const BookingTableRow = memo(
           props: {
             type: "button",
             className:
-              "text-emerald-600 border-emerald-600 bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed",
+              "text-emerald-600 border-emerald-600 bg-emerald-100",
             onClick: () => onUpdate(item, "completed"),
             disabled: item.status === "completed",
           },
@@ -88,12 +96,22 @@ export const BookingTableRow = memo(
             onClick: () => onUpdate(item, "cancelled"),
             disabled: item.status === "cancelled",
             className:
-              "text-red-600 border-red-600 bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed",
+              "text-red-600 border-red-600 bg-red-100",
           },
           Icon: CloseOutlined,
         },
+        {
+          label: "刪除",
+          component: "button",
+          props: {
+            onClick: () => onDelete(item),
+            className:
+              "text-gray-600 border-gray-600 bg-gray-100",
+          },
+          Icon: DeleteOutlined,
+        },
       ],
-      [item, modal, onUpdate],
+      [item, modal, onDelete, onUpdate],
     );
 
     return (
@@ -108,7 +126,10 @@ export const BookingTableRow = memo(
             onChange={(e) => onSelect(item.id, e.target.checked)}
           />
         </td>
-        <td className="px-5 py-3 text-xs font-mono text-(--muted)" title={item.id}>
+        <td
+          className="px-5 py-3 text-xs font-mono text-(--muted)"
+          title={item.id}
+        >
           #{item.id.slice(0, 8)}...
         </td>
         <td className="px-5 py-3">
@@ -128,13 +149,12 @@ export const BookingTableRow = memo(
           </div>
         </td>
         <td className="px-5 py-3">
-          <FormatDateNode date={[item.booking_time]} className="flex flex-col text-sm">
-            <span className="text-(--foreground)">
-              YYYY/MM/DD
-            </span>
-            <span className="text-xs text-(--muted)">
-              hh:mm A
-            </span>
+          <FormatDateNode
+            date={[item.booking_time]}
+            className="flex flex-col text-sm"
+          >
+            <span className="text-(--foreground)">YYYY/MM/DD</span>
+            <span className="text-xs text-(--muted)">hh:mm A</span>
           </FormatDateNode>
         </td>
         <td className="px-5 py-3 text-center">
