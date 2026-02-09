@@ -65,6 +65,13 @@ export const MainSection = () => {
     );
   }, [bookingsMap, viewDate]);
 
+  const handleChange = useCallback(
+    (date: Date) => {
+      setViewDate(date);
+    },
+    [setViewDate],
+  );
+
   const DateCell = useCallback(
     ({ date }: DateCellProps) => {
       const dateStr = formatDate("YYYY-MM-DD", date);
@@ -87,9 +94,7 @@ export const MainSection = () => {
             );
           })}
           {remainingCount > 0 && (
-            <span
-              className="text-(--muted) text-[10px] flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium"
-            >
+            <span className="text-(--muted) text-[10px] flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium">
               (+{remainingCount} 筆預約)
             </span>
           )}
@@ -121,7 +126,7 @@ export const MainSection = () => {
             className="sticky top-0 text-md"
             pastDateDisabled={false}
             value={viewDate}
-            onChange={setViewDate}
+            onChange={handleChange}
             DateCell={DateCell}
           />
         </div>
