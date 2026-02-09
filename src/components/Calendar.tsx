@@ -173,10 +173,14 @@ export const Calendar = ({
               key={date.toISOString()}
               className="w-full grid grid-cols-1 items-center justify-center"
             >
-              <div className="flex justify-center items-center">
-                <button
-                  type="button"
+              <button
                   disabled={isDisabled}
+               className="flex justify-center items-center"
+                  onClick={() => {
+                    setViewDate(date);
+                    onChange?.(date);
+                  }}>
+                <span
                   className={cn(
                     "tabular-nums font-mono relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
                     "text-[1em] font-medium",
@@ -185,10 +189,6 @@ export const Calendar = ({
                       "font-black text-(--primary)": isToday,
                     },
                   )}
-                  onClick={() => {
-                    setViewDate(date);
-                    onChange?.(date);
-                  }}
                   style={{
                     ...styles?.day?.default,
                     ...(isSelected ? styles?.day?.selected : {}),
@@ -196,8 +196,8 @@ export const Calendar = ({
                   }}
                 >
                   <span>{date.getDate()}</span>
-                </button>
-              </div>
+                </span>
+              </button>
               {DateCell ? (
                 <DateCell
                   date={date}
