@@ -2,7 +2,7 @@ import { Route } from "@/types";
 
 export const routes: Route[] = [
   {
-    label: "主頁",
+    label: "儀表板",
     url: "/",
     isActive: (pathname: string) => pathname === "/admin/dashboard",
   },
@@ -11,7 +11,7 @@ export const routes: Route[] = [
     url: "/booking",
   },
   {
-    label: "日程表",
+    label: "行事曆",
     url: "/schedule"
   },
   {
