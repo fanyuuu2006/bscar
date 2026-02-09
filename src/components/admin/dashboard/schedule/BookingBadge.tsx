@@ -37,7 +37,7 @@ export const BookingBadge = ({
     <button
       onClick={handleClick}
       className={cn(
-        "flex items-center border gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium",
+        "flex items-center border gap-1 truncate rounded-md p-1 font-medium",
         status.className,
         className,
       )}

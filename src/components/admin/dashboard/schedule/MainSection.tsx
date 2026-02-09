@@ -86,14 +86,14 @@ export const MainSection = () => {
         <div className="flex h-20 w-full flex-col gap-1 overflow-hidden py-1 px-0.5">
           {visibleBookings.map((booking) => (
             <BookingBadge
-              className="w-full truncate rounded px-1 py-0.5 text-[10px]"
+              className="w-full text-[10px]"
               key={booking.id}
               booking={booking}
             />
           ))}
           {remainingCount > 0 && (
-            <span className="w-full px-1 text-[10px] text-(--muted)">
-              + {remainingCount} 筆
+            <span className="w-full rounded-md bg-(--background) border border-(--border) p-px text-center text-[10px]">
+              +{remainingCount} 筆
             </span>
           )}
         </div>
