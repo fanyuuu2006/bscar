@@ -43,7 +43,11 @@ export const MainSection = () => {
   const { data: resp } = useSWR(
     token ? ["admin-bookings-month", token, range.start, range.end] : null,
     () =>
-      bookingsByAdmin(token!, { start_date: range.start, end_date: range.end }),
+      bookingsByAdmin(token!, {
+        start_date: range.start,
+        end_date: range.end,
+        status: ["pending", "confirmed", "completed"],
+      }),
   );
 
   const { data: servicesResp } = useSWR("services", getServices);
@@ -120,14 +124,16 @@ export const MainSection = () => {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">行事曆</h1>
         <div className="card px-4 py-2 rounded-full flex items-center justify-between gap-2">
-          {Object.values(statusMap).map((status) => (
+          {Object.values(statusMap).map((status) => {
+            if (status.label === '已取消') return null;
+            return (
             <div key={status.label} className="flex items-center gap-1">
               <span
                 className={cn("h-3 w-3 rounded-full border", status.className)}
               />
               <span className="text-sm">{status.label}</span>
             </div>
-          ))}
+          )})}
         </div>
       </div>
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
