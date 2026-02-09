@@ -1,7 +1,7 @@
 "use client";
 import { FormatDateNode } from "@/components/FormatDateNode";
 import { useBookingModal } from "@/contexts/BookingModalContext";
-import { statusMap } from "@/libs/booking";
+import { actionMap, statusMap } from "@/libs/booking";
 import { SupabaseBooking, SupabaseService } from "@/types";
 import { cn } from "@/utils/className";
 import {
@@ -59,7 +59,7 @@ export const BookingTableRow = memo(
           label: "編輯",
           component: "button",
           props: {
-            className: "text-violet-600 border-violet-600 bg-violet-100",
+            className: actionMap.edit.className,
             onClick: () => modal.open(item),
           },
           Icon: EditOutlined,
@@ -71,8 +71,7 @@ export const BookingTableRow = memo(
             type: "button",
             onClick: () => onUpdate(item, "confirmed"),
             disabled: item.status === "confirmed",
-            className:
-              "text-blue-600 border-blue-600 bg-blue-100",
+            className: statusMap.confirmed.className,
           },
           Icon: CheckOutlined,
         },
@@ -81,8 +80,7 @@ export const BookingTableRow = memo(
           component: "button",
           props: {
             type: "button",
-            className:
-              "text-emerald-600 border-emerald-600 bg-emerald-100",
+            className: statusMap.completed.className,
             onClick: () => onUpdate(item, "completed"),
             disabled: item.status === "completed",
           },
@@ -95,7 +93,7 @@ export const BookingTableRow = memo(
             type: "button",
             onClick: () => onUpdate(item, "cancelled"),
             disabled: item.status === "cancelled",
-            className: "text-slate-600 border-slate-600 bg-slate-100",
+            className: statusMap.cancelled.className,
           },
           Icon: CloseOutlined,
         },
@@ -104,7 +102,7 @@ export const BookingTableRow = memo(
           component: "button",
           props: {
             onClick: () => onDelete(item),
-            className: "text-red-600 border-red-600 bg-red-100",
+            className: actionMap.delete.className,
           },
           Icon: DeleteOutlined,
         },

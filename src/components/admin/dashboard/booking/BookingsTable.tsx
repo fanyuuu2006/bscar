@@ -1,6 +1,6 @@
 "use client";
 import { useAdminToken } from "@/hooks/useAdminToken";
-import { statusMap } from "@/libs/booking";
+import { actionMap, statusMap } from "@/libs/booking";
 import { MyResponse, SupabaseBooking, SupabaseService } from "@/types";
 import {
   bookingsByAdmin,
@@ -272,7 +272,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         key: "confirmed",
         label: "確認",
         icon: CheckOutlined,
-        className: "text-blue-600 bg-blue-50 border-blue-200",
+        className: statusMap.confirmed.className,
         onClick: () =>
           processBulkAction(async (booking) => {
             if (booking.status === "confirmed") return;
@@ -286,7 +286,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         key: "cancelled",
         label: "取消",
         icon: CloseOutlined,
-        className: "text-slate-600 bg-slate-50 border-slate-200",
+        className: statusMap.cancelled.className,
         onClick: () =>
           processBulkAction(async (booking) => {
             if (booking.status === "cancelled") return;
@@ -300,7 +300,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         key: "completed",
         label: "完成",
         icon: StarOutlined,
-        className: "text-green-600 bg-green-50 border-green-200",
+        className: statusMap.completed.className,
         onClick: () =>
           processBulkAction(async (booking) => {
             if (booking.status === "completed") return;
@@ -314,7 +314,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         key: "delete",
         label: "刪除",
         icon: DeleteOutlined,
-        className: "text-red-600 bg-red-50 border-red-200",
+        className: actionMap.delete.className,
         onClick: () =>
           processBulkAction(
             (booking) => deleteBookingByAdmin(token!, booking.id),
