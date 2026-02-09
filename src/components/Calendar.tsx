@@ -84,10 +84,7 @@ export const Calendar = ({
 
   return (
     <div
-      className={cn(
-        "card flex flex-col gap-2 p-4 rounded-xl",
-        className,
-      )}
+      className={cn("card flex flex-col gap-2 p-4 rounded-xl", className)}
       {...rest}
     >
       <div className="flex items-center justify-between px-1 mb-2">
@@ -170,16 +167,15 @@ export const Calendar = ({
 
           return (
             <div
+              data-disabled={isDisabled}
+              onClick={() => {
+                setViewDate(date);
+                onChange?.(date);
+              }}
               key={date.toISOString()}
               className="w-full grid grid-cols-1 items-center justify-center"
             >
-              <button
-                  disabled={isDisabled}
-               className="flex justify-center items-center"
-                  onClick={() => {
-                    setViewDate(date);
-                    onChange?.(date);
-                  }}>
+              <span className="flex justify-center items-center">
                 <span
                   className={cn(
                     "tabular-nums font-mono relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
@@ -197,7 +193,7 @@ export const Calendar = ({
                 >
                   <span>{date.getDate()}</span>
                 </span>
-              </button>
+              </span>
               {DateCell ? (
                 <DateCell
                   date={date}

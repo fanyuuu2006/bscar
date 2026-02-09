@@ -100,6 +100,7 @@
   }
 
   /* 禁用樣式 */
+  [data-disabled="true"],
   button:disabled,
   .btn:disabled {
     opacity: 0.5;
