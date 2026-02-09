@@ -76,14 +76,14 @@ export const MainSection = () => {
       const remainingCount = sortedBookings.length - MAX_VISIBLE;
 
       return (
-        <div className="text-xs flex w-full h-20 flex-col gap-1 overflow-hidden p-1">
+        <div className=" flex w-full h-20 flex-col gap-1 overflow-hidden p-1">
           {visibleBookings.map((booking) => {
-            return <BookingBadge key={booking.id} booking={booking} />;
+            return <BookingBadge className="text-xs" key={booking.id} booking={booking} />;
           })}
           {remainingCount > 0 && (
             <button
               onClick={() => setViewDate(date)}
-              className="text-(--muted) flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium"
+              className="text-(--muted) text-[10px] flex items-center justify-center gap-1 overflow-hidden truncate rounded-md px-1.5 py-1 font-medium"
             >
               (+{remainingCount} 筆預約)
             </button>
