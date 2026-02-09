@@ -95,8 +95,7 @@ export const BookingTableRow = memo(
             type: "button",
             onClick: () => onUpdate(item, "cancelled"),
             disabled: item.status === "cancelled",
-            className:
-              "text-red-600 border-red-600 bg-red-100",
+            className: "text-slate-600 border-slate-600 bg-slate-100",
           },
           Icon: CloseOutlined,
         },
@@ -105,8 +104,7 @@ export const BookingTableRow = memo(
           component: "button",
           props: {
             onClick: () => onDelete(item),
-            className:
-              "text-gray-600 border-gray-600 bg-gray-100",
+            className: "text-red-600 border-red-600 bg-red-100",
           },
           Icon: DeleteOutlined,
         },

@@ -246,7 +246,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         key: "cancelled",
         label: "取消",
         icon: CloseOutlined,
-        className: "text-red-600 bg-red-50 border-red-200",
+        className: "text-slate-600 bg-slate-50 border-slate-200",
       },
       {
         key: "completed",

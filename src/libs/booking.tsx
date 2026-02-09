@@ -22,7 +22,7 @@ export const statusMap: Record<
   },
   cancelled: {
     label: "已取消",
-    className: "bg-rose-100 text-rose-800 border-rose-300",
+    className: "bg-slate-100 text-slate-600 border-slate-300",
   },
   completed: {
     label: "已完成",
