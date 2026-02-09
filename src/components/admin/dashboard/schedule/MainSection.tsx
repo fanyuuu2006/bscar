@@ -92,8 +92,8 @@ export const MainSection = () => {
             />
           ))}
           {remainingCount > 0 && (
-            <span className="w-full rounded-md bg-(--background) border border-(--border)/10 p-px text-center text-[10px]">
-              +{remainingCount} 筆
+            <span className="w-full rounded-md truncate bg-(--background) border border-(--border)/20 py-0.5 text-center text-[10px] text-(--muted) font-medium">
+              還有 {remainingCount} 筆
             </span>
           )}
         </div>
