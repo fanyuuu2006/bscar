@@ -1,14 +1,12 @@
 import { FormatDateNode } from "@/components/FormatDateNode";
-import { useBookingModal } from "@/contexts/BookingModalContext";
 import { statusMap } from "@/libs/booking";
 import { SupabaseBooking } from "@/types";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
-import { useCallback } from "react";
 
 type BookingBadgeProps = OverrideProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  React.HTMLAttributes<HTMLSpanElement>,
   {
     booking: SupabaseBooking;
   }
@@ -16,26 +14,14 @@ type BookingBadgeProps = OverrideProps<
 export const BookingBadge = ({
   booking,
   className,
-  onClick,
   ...rest
 }: BookingBadgeProps) => {
   const status = statusMap[booking.status] ?? {
     label: booking.status,
     className: "",
   };
-  const modal = useBookingModal();
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      modal.open(booking);
-      if (onClick) {
-        onClick(e);
-      }
-    },
-    [modal, booking, onClick],
-  );
   return (
-    <button
-      onClick={handleClick}
+    <span
       className={cn(
         "flex items-center border gap-1 truncate rounded-md p-px font-medium",
         status.className,
@@ -51,6 +37,6 @@ export const BookingBadge = ({
         HH:mm
       </FormatDateNode>
       <span className="truncate">{booking.customer_name}</span>
-    </button>
+    </span>
   );
 };
