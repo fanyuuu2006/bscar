@@ -83,7 +83,7 @@ export const MainSection = () => {
       const remainingCount = sortedBookings.length - MAX_VISIBLE;
 
       return (
-        <div className="flex h-20 w-full flex-col gap-1 overflow-hidden p-0.5">
+        <div className="flex h-20 w-full flex-col gap-1 overflow-hidden py-1 px-0.5">
           {visibleBookings.map((booking) => (
             <BookingBadge
               className="w-full truncate rounded px-1 py-0.5 text-[10px]"
@@ -92,8 +92,8 @@ export const MainSection = () => {
             />
           ))}
           {remainingCount > 0 && (
-            <span className="text-(--muted) flex items-center justify-center text-[10px] font-medium">
-              +{remainingCount} 筆
+            <span className="w-full px-1 text-[10px] text-(--muted)">
+              + {remainingCount} 筆
             </span>
           )}
         </div>
