@@ -265,7 +265,7 @@ export const BookingModalProvider = ({
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-auto pt-2 border-t border-(--border)">
+            <div className="flex justify-end gap-3 mt-auto pt-2">
               {buttons.map((item) => {
                 const { className: itemClassName, ...itemProps } = item.props;
                 return (

@@ -432,7 +432,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             </span>
             <button
               onClick={() => setSelectedIds(new Set())}
-              className="text-xs text-(--muted) hover:text-(--foreground) underline transition-colors"
+              className="btn px-2.5 py-1 text-xs font-medium rounded-lg"
             >
               取消全選
             </button>
