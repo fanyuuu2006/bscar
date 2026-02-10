@@ -16,9 +16,9 @@ import { formatDate, formatRelativeTime } from "@/utils/date";
 import { SupabaseService } from "@/types";
 import { FormatDateNode } from "@/components/FormatDateNode";
 import { cn } from "@/utils/className";
-import { ScheduleCard } from "./ScheduleCard";
 import Link from "next/link";
 import { useBookingModal } from "@/contexts/BookingModalContext";
+import { ScheduleListCard } from "./schedule/ScheduleListCard";
 
 export const MainSection = () => {
   const { token } = useAdminToken();
@@ -263,29 +263,15 @@ export const MainSection = () => {
       </div>
       {/* ===== 今日行程 ===== */}
       <div className="w-full flex flex-col gap-4">
-        <h2 className="text-xl font-bold">今日行程</h2>
-        <div className="flex flex-col gap-2">
-          {todayIsLoading ? (
-            <div className="w-full animate-pulse space-y-3">
-              <div className="h-8 w-1/3 bg-gray-100 rounded-md" />
-              <div className="h-8 w-1/2 bg-gray-100 rounded-md" />
-              <div className="h-8 w-1/4 bg-gray-100 rounded-md" />
-            </div>
-          ) : todaySchedule.length ? (
-            todaySchedule.map((booking) => (
-              <ScheduleCard
-                key={booking.id}
-                booking={booking}
-                service={servicesMap.get(booking.service_id)}
-              />
-            ))
-          ) : (
-            <div className="w-full flex flex-col items-center justify-center py-8 text-(--muted)">
-              <CalendarOutlined className="text-4xl mb-2 opacity-20" />
-              <span className="text-sm">今日無預約</span>
-            </div>
-          )}
-        </div>
+        {todayIsLoading ? (
+          <div className="w-full animate-pulse space-y-3">
+            <div className="h-8 w-1/3 bg-gray-100 rounded-md" />
+            <div className="h-8 w-1/2 bg-gray-100 rounded-md" />
+            <div className="h-8 w-1/4 bg-gray-100 rounded-md" />
+          </div>
+        ) : (
+          <ScheduleListCard title="今日行程" bookings={todaySchedule} />
+        )}
       </div>
     </section>
   );

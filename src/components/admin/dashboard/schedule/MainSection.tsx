@@ -6,16 +6,18 @@ import { useMemo, useCallback } from "react";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import { bookingsByAdmin, getServices } from "@/utils/backend";
+import { bookingsByAdmin } from "@/utils/backend";
 import { formatDate, getDaysInMonth } from "@/utils/date";
-import { SupabaseBooking, SupabaseService } from "@/types";
+import { SupabaseBooking } from "@/types";
 import { BookingBadge } from "./BookingBadge";
-import { CalendarOutlined } from "@ant-design/icons";
-import { ScheduleCard } from "../ScheduleCard";
-import { FormatDateNode } from "@/components/FormatDateNode";
+import { ScheduleListCard } from "./ScheduleListCard";
 
 const MAX_VISIBLE = 2;
-const VALID_STATUS: SupabaseBooking['status'][] = ["pending", "confirmed", "completed"];
+const VALID_STATUS: SupabaseBooking["status"][] = [
+  "pending",
+  "confirmed",
+  "completed",
+];
 
 export const MainSection = () => {
   const { token } = useAdminToken();
@@ -50,16 +52,6 @@ export const MainSection = () => {
         status: VALID_STATUS,
       }),
   );
-
-  const { data: servicesResp } = useSWR("services", getServices);
-
-  const servicesMap = useMemo(() => {
-    const map = new Map<string, SupabaseService>();
-    if (servicesResp?.data) {
-      servicesResp.data.forEach((s) => map.set(s.id, s));
-    }
-    return map;
-  }, [servicesResp]);
 
   const bookings = useMemo(() => resp?.data || [], [resp]);
 
@@ -128,13 +120,17 @@ export const MainSection = () => {
           {VALID_STATUS.map((status) => {
             const statusInfo = statusMap[status];
             return (
-            <div key={statusInfo.label} className="flex items-center gap-1">
-              <span
-                className={cn("h-3 w-3 rounded-full border", statusInfo.className)}
-              />
-              <span className="text-sm">{statusInfo.label}</span>
-            </div>
-          )})}
+              <div key={statusInfo.label} className="flex items-center gap-1">
+                <span
+                  className={cn(
+                    "h-3 w-3 rounded-full border",
+                    statusInfo.className,
+                  )}
+                />
+                <span className="text-sm">{statusInfo.label}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -149,37 +145,12 @@ export const MainSection = () => {
           />
         </div>
         {/* ===== 行程列表 ===== */}
-        <div id="schedule-list" className="w-full h-full">
-          <div className="card min-h-full flex flex-col gap-4 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between pb-3 border-b border-(--border)">
-              <h2 className="text-lg font-bold text-(--foreground) flex items-center gap-2">
-                <FormatDateNode date={[viewDate]}>MM月DD日</FormatDateNode>
-              </h2>
-              <span className="text-xs font-medium text-(--muted) bg-(--background) px-2.5 py-1 rounded-full border border-(--border)">
-                共 {selectedBookings.length} 筆
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-3 flex-1">
-              {selectedBookings.length > 0 ? (
-                selectedBookings.map((b) => (
-                  <ScheduleCard
-                    key={b.id}
-                    booking={b}
-                    service={servicesMap.get(b.service_id)}
-                  />
-                ))
-              ) : (
-                <div className="flex flex-col items-center justify-center flex-1 text-(--muted)">
-                  <div className="w-16 h-16 rounded-full bg-(--background) flex items-center justify-center mb-3 border border-(--border) border-dashed">
-                    <CalendarOutlined className="text-2xl" />
-                  </div>
-                  <span className="text-sm font-medium">本日暫無預約</span>
-                  <span className="text-xs mt-1">請選擇其他日期查看</span>
-                </div>
-              )}
-            </div>
-          </div>
+        <div className="w-full h-full">
+          <ScheduleListCard
+            className="min-h-full"
+            bookings={selectedBookings}
+            title={formatDate("YYYY年MM月DD日", viewDate)}
+          />
         </div>
       </div>
     </section>
