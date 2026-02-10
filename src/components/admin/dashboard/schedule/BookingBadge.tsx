@@ -23,7 +23,7 @@ export const BookingBadge = ({
   return (
     <span
       className={cn(
-        "flex items-center border gap-1 truncate rounded-md p-px font-medium",
+        "flex items-center border gap-1 truncate rounded-md p-px px-0.5 font-medium",
         status.className,
         className,
       )}

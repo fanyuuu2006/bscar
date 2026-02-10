@@ -7,7 +7,7 @@ import { useAdminToken } from "@/hooks/useAdminToken";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import { bookingsByAdmin } from "@/utils/backend";
-import { formatDate, getDaysInMonth } from "@/utils/date";
+import { formatDate, getDaysInMonth, isSameDate } from "@/utils/date";
 import { SupabaseBooking } from "@/types";
 import { BookingBadge } from "./BookingBadge";
 import { ScheduleListCard } from "./ScheduleListCard";
@@ -78,11 +78,12 @@ export const MainSection = () => {
 
   const handleChange = useCallback(
     (date: Date) => {
+      if (isSameDate(date, viewDate)) return;
       const params = new URLSearchParams(searchParams?.toString());
       params.set("date", formatDate("YYYY-MM-DD", date));
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
-    [router, pathname, searchParams],
+    [viewDate, searchParams, router, pathname],
   );
 
   const DateCell = useCallback(
