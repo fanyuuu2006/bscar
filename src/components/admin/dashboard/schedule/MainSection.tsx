@@ -15,6 +15,7 @@ import { ScheduleCard } from "../ScheduleCard";
 import { FormatDateNode } from "@/components/FormatDateNode";
 
 const MAX_VISIBLE = 2;
+const VALID_STATUS: SupabaseBooking['status'][] = ["pending", "confirmed", "completed"];
 
 export const MainSection = () => {
   const { token } = useAdminToken();
@@ -46,7 +47,7 @@ export const MainSection = () => {
       bookingsByAdmin(token!, {
         start_date: range.start,
         end_date: range.end,
-        status: ["pending", "confirmed", "completed"],
+        status: VALID_STATUS,
       }),
   );
 
@@ -124,14 +125,14 @@ export const MainSection = () => {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">行事曆</h1>
         <div className="card px-4 py-2 rounded-full flex items-center justify-between gap-2">
-          {Object.values(statusMap).map((status) => {
-            if (status.label === '已取消') return null;
+          {VALID_STATUS.map((status) => {
+            const statusInfo = statusMap[status];
             return (
-            <div key={status.label} className="flex items-center gap-1">
+            <div key={statusInfo.label} className="flex items-center gap-1">
               <span
-                className={cn("h-3 w-3 rounded-full border", status.className)}
+                className={cn("h-3 w-3 rounded-full border", statusInfo.className)}
               />
-              <span className="text-sm">{status.label}</span>
+              <span className="text-sm">{statusInfo.label}</span>
             </div>
           )})}
         </div>
