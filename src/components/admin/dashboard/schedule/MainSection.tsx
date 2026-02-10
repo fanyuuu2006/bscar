@@ -62,20 +62,23 @@ export const MainSection = () => {
       if (!map[dateStr]) map[dateStr] = [];
       map[dateStr].push(b);
     });
+
+    // 預先排序，避免在 DateCell 或 selectedBookings 中重複運算
+    Object.values(map).forEach((list) => {
+      list.sort((a, b) => a.booking_time.localeCompare(b.booking_time));
+    });
+
     return map;
   }, [bookings]);
 
   const selectedBookings = useMemo(() => {
     const dateStr = formatDate("YYYY-MM-DD", viewDate);
-    if (!bookingsMap[dateStr]) return [];
-    return bookingsMap[dateStr].sort((a, b) =>
-      a.booking_time.localeCompare(b.booking_time),
-    );
+    return bookingsMap[dateStr] || [];
   }, [bookingsMap, viewDate]);
 
   const handleChange = useCallback(
     (date: Date) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams?.toString());
       params.set("date", formatDate("YYYY-MM-DD", date));
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
@@ -85,9 +88,8 @@ export const MainSection = () => {
   const DateCell = useCallback(
     ({ date }: DateCellProps) => {
       const dateStr = formatDate("YYYY-MM-DD", date);
-      const sortedBookings = [...(bookingsMap[dateStr] || [])].sort((a, b) =>
-        a.booking_time.localeCompare(b.booking_time),
-      );
+      // 使用已預先排序的資料
+      const sortedBookings = bookingsMap[dateStr] || [];
 
       const visibleBookings = sortedBookings.slice(0, MAX_VISIBLE);
       const remainingCount = sortedBookings.length - MAX_VISIBLE;
