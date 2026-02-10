@@ -1,6 +1,6 @@
 "use client";
 import { CalendarOutlined } from "@ant-design/icons";
-import { ScheduleCard } from "../ScheduleCard";
+import { ScheduleCard } from "./ScheduleCard";
 import { SupabaseBooking, SupabaseService } from "@/types";
 import { getServices } from "@/utils/backend";
 import { useMemo } from "react";
