@@ -41,6 +41,10 @@ type CalendarProps = OverrideProps<
      * 可以用來顯示當日的額外資訊（如：價格、狀態點等）
      */
     DateCell?: (props: DateCellProps) => React.ReactNode;
+    /**
+     * 當日曆切換顯示月份時觸發
+     */
+    onViewDateChange?: (date: Date) => void;
   }
 >;
 
@@ -51,6 +55,7 @@ export const Calendar = ({
   pastDateDisabled = true,
   styles,
   DateCell,
+  onViewDateChange,
   ...rest
 }: CalendarProps) => {
   const [viewDate, setViewDate] = useState<Date>(value ?? new Date());
@@ -82,6 +87,7 @@ export const Calendar = ({
       1,
     );
     setViewDate(newDate);
+    onViewDateChange?.(newDate);
   };
 
   useEffect(() => {
@@ -124,6 +130,7 @@ export const Calendar = ({
               const value = e.target.value || formatDate("YYYY-MM", today);
               const [year, month] = value.split("-").map(Number);
               const newDate = new Date(year, month - 1, 1);
+              onViewDateChange?.(newDate);
               setViewDate(newDate);
             }}
           />

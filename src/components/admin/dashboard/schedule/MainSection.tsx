@@ -2,7 +2,7 @@
 import { Calendar, DateCellProps } from "@/components/Calendar";
 import { statusMap } from "@/libs/booking";
 import { cn } from "@/utils/className";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { useAdminToken } from "@/hooks/useAdminToken";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import useSWR from "swr";
@@ -33,8 +33,14 @@ export const MainSection = () => {
     return new Date();
   }, [searchParams]);
 
-  const year = viewDate.getFullYear();
-  const month = viewDate.getMonth();
+  const [currentMonth, setCurrentMonth] = useState<Date>(viewDate);
+
+  useEffect(() => {
+    setCurrentMonth(viewDate);
+  }, [viewDate]);
+
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
 
   const range = useMemo(() => {
     const lastDay = getDaysInMonth(year, month);
@@ -52,12 +58,11 @@ export const MainSection = () => {
         status: VALID_STATUS,
       }),
   );
-
-  const bookings = useMemo(() => resp?.data || [], [resp]);
-
   const bookingsMap = useMemo(() => {
     const map: Record<string, SupabaseBooking[]> = {};
-    bookings.forEach((b) => {
+    if (!resp?.data) return map;
+
+    resp.data.forEach((b) => {
       const dateStr = formatDate("YYYY-MM-DD", b.booking_time);
       if (!map[dateStr]) map[dateStr] = [];
       map[dateStr].push(b);
@@ -69,7 +74,7 @@ export const MainSection = () => {
     });
 
     return map;
-  }, [bookings]);
+  }, [resp]);
 
   const selectedBookings = useMemo(() => {
     const dateStr = formatDate("YYYY-MM-DD", viewDate);
@@ -145,6 +150,7 @@ export const MainSection = () => {
             value={viewDate}
             onChange={handleChange}
             DateCell={DateCell}
+            onViewDateChange={setCurrentMonth}
           />
         </div>
         {/* ===== 行程列表 ===== */}
