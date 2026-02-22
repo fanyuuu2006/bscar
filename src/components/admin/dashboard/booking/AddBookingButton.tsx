@@ -208,7 +208,6 @@ export const AddBookingButton = ({
                       <TimeSlotSelector
                         id="time"
                         locationId={booking.location_id}
-                        serviceId={booking.service_id}
                         value={booking.time ? new Date(booking.time) : null}
                         onChange={handleDateChange}
                         className="text-sm mt-2"

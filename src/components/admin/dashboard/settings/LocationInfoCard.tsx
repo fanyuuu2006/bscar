@@ -51,6 +51,13 @@ export const LocationInfoCard = ({
               label: "結束時間",
               type: "time",
             },
+            {
+              required: true,
+              id: "duration",
+              label: "時段間隔",
+              type: "number",
+              hint: "單位: 分鐘"
+            },
           ],
         },
       ],

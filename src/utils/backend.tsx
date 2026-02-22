@@ -26,12 +26,10 @@ export const getServiceById = async (id: SupabaseService["id"]) =>
 export const getAvailableSlots = async (
   date: string,
   location_id: SupabaseLocation["id"],
-  service_id: SupabaseService["id"],
 ) => {
   const queryParams = new URLSearchParams({
     date,
     location_id,
-    service_id,
   });
   return fetcher<MyResponse<TimeSlot[]>>(
     `${NEXT_PUBLIC_BACKEND_URL}/v1/data/booking/available-slots?${queryParams.toString()}`,

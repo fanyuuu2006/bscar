@@ -28,7 +28,6 @@ export const TimeDiv = ({
       <TimeSlotSelector
         className="w-full"
         locationId={locationId}
-        serviceId={serviceId}
         value={selectedTime}
         onChange={setSelectedTime}
       />

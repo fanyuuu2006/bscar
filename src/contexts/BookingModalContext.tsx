@@ -24,9 +24,7 @@ import { useSWRConfig } from "swr";
 type BookingModalContextType = OverrideProps<
   ReturnType<typeof useModal>,
   {
-    open: (
-      booking: SupabaseBooking,
-    ) => void;
+    open: (booking: SupabaseBooking) => void;
   }
 >;
 
@@ -161,9 +159,7 @@ export const BookingModalProvider = ({
   const value = useMemo(
     () => ({
       ...modal,
-      open: (
-        booking: SupabaseBooking,
-      ) => {
+      open: (booking: SupabaseBooking) => {
         setBooking(booking);
         setNewBooking(booking);
         modal.open();
@@ -219,7 +215,6 @@ export const BookingModalProvider = ({
                     <TimeSlotSelector
                       className="mt-2 text-sm"
                       locationId={newBooking.location_id}
-                      serviceId={newBooking.service_id}
                       value={new Date(newBooking.booking_time)}
                       onChange={onDateChange}
                     />

@@ -22,12 +22,12 @@ export type SupabaseLocation = {
   open_time: string;
   close_time: string;
   image_url: string | undefined;
+  duration: number;
 };
 
 export type SupabaseService = {
   id: string;
   name: string;
-  duration: number;
   description: string | undefined;
   image_url: string | undefined;
 };

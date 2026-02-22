@@ -1,5 +1,5 @@
 "use client";
-import { SupabaseLocation, SupabaseService } from "@/types";
+import { SupabaseLocation } from "@/types";
 import { cn } from "@/utils/className";
 import { formatDate } from "@/utils/date";
 import { OverrideProps } from "fanyucomponents";
@@ -14,7 +14,6 @@ type TimeSlotSelectorProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
     locationId: SupabaseLocation["id"];
-    serviceId: SupabaseService["id"];
     value?: Date | null;
     onChange?: (date: Date) => void;
   }
@@ -22,7 +21,6 @@ type TimeSlotSelectorProps = OverrideProps<
 export const TimeSlotSelector = ({
   className,
   locationId,
-  serviceId,
   value,
   onChange,
   ...rest
@@ -31,9 +29,9 @@ export const TimeSlotSelector = ({
   const [selectedTime, setSelectedTime] = useState<Date | null>(value || null);
 
   const { data: response, isLoading } = useSWR(
-    [formatDate("YYYY-MM-DD", viewDate), locationId, serviceId],
-    ([date, locationId, serviceId]) =>
-      getAvailableSlots(date, locationId, serviceId),
+    [formatDate("YYYY-MM-DD", viewDate), locationId],
+    ([date, locationId]) =>
+      getAvailableSlots(date, locationId),
   );
   const timeSlots = response?.data || [];
 
