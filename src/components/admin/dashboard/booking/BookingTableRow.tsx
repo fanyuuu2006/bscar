@@ -1,4 +1,5 @@
 "use client";
+import { CopyButton } from "@/components/CopyBuuton";
 import { FormatDateNode } from "@/components/FormatDateNode";
 import { useBookingModal } from "@/contexts/BookingModalContext";
 import { actionMap, statusMap } from "@/libs/booking";
@@ -126,7 +127,7 @@ export const BookingTableRow = memo(
           className="px-5 py-3 text-xs font-mono text-(--muted)"
           title={item.id}
         >
-          #{item.id.slice(0, 8)}...
+          <CopyButton content={item.id}>{item.id.slice(0, 8)}...</CopyButton>
         </td>
         <td className="px-5 py-3">
           <div className="flex flex-col gap-0.5">

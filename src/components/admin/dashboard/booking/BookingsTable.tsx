@@ -342,7 +342,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
         if (res.success) {
           mutate(); // 更新成功後重新抓取資料
         } else {
-          alert("更新失敗");
+          alert(`更新失敗: ${res.message || "未知錯誤"}`);
         }
       } catch (error) {
         console.error(error);
@@ -492,7 +492,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
             </span>
             <button
               onClick={() => setSelectedIds(new Set())}
-              className="btn px-2.5 py-1 text-xs font-medium rounded-lg"
+              className="btn px-2 py-0.5 text-xs font-medium rounded-lg"
             >
               取消全選
             </button>
@@ -503,12 +503,12 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                 key={op.key}
                 onClick={op.onClick}
                 className={cn(
-                  "flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs",
+                  "flex shrink-0 items-center gap-1 p-1.5 rounded-lg border text-xs",
                   op.className,
                 )}
               >
                 <op.icon />
-                <span>{op.label}</span>
+                <span className="hidden md:block">{op.label}</span>
               </button>
             ))}
           </div>
