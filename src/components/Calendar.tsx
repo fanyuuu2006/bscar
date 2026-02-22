@@ -1,6 +1,6 @@
 ﻿"use client";
 import { cn } from "@/utils/className";
-import { getDaysArray, isSameDate } from "@/utils/date";
+import { formatDate, getDaysArray, isSameDate } from "@/utils/date";
 import {
   CaretDownOutlined,
   LeftOutlined,
@@ -121,7 +121,7 @@ export const Calendar = ({
               viewDate.getMonth() + 1,
             ).padStart(2, "0")}`}
             onChange={(e) => {
-              const value = e.target.value || today.toISOString().slice(0, 7);
+              const value = e.target.value || formatDate("YYYY-MM", today);
               const [year, month] = value.split("-").map(Number);
               const newDate = new Date(year, month - 1, 1);
               setViewDate(newDate);
