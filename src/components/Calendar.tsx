@@ -53,12 +53,16 @@ export const Calendar = ({
   ...rest
 }: CalendarProps) => {
   const [viewDate, setViewDate] = useState<Date>(value ?? new Date());
+  const [selectDate, setSelectDate] = useState<Date | null>(value ?? null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleChange = useCallback((date: Date) => {
-    setViewDate(date);
-    onChange?.(date);
-  }, [onChange]);
+  const handleChange = useCallback(
+    (date: Date) => {
+      setSelectDate(date);
+      onChange?.(date);
+    },
+    [onChange],
+  );
 
   const today = useMemo(() => {
     const d = new Date();
@@ -76,15 +80,15 @@ export const Calendar = ({
       viewDate.getMonth() + offset,
       1,
     );
-    handleChange(newDate);
+    setViewDate(newDate);
   };
 
   useEffect(() => {
-    if (value && !isSameDate(value, viewDate)) {
-      const timer = setTimeout(() => setViewDate(value), 0);
+    if (value && selectDate && !isSameDate(value, selectDate)) {
+      const timer = setTimeout(() => setSelectDate(value), 0);
       return () => clearTimeout(timer);
     }
-  }, [value, viewDate]);
+  }, [value, selectDate]);
 
   return (
     <div
@@ -119,7 +123,7 @@ export const Calendar = ({
               const value = e.target.value || today.toISOString().slice(0, 7);
               const [year, month] = value.split("-").map(Number);
               const newDate = new Date(year, month - 1, 1);
-              handleChange(newDate);
+              setViewDate(newDate);
             }}
           />
           <h2 className="text-[1.5em] font-bold tracking-tight">
@@ -165,7 +169,7 @@ export const Calendar = ({
         {days.map((date, i) => {
           if (!date) return <div key={`empty-${i}`} />;
 
-          const isSelected = isSameDate(date, viewDate);
+          const isSelected = selectDate ? isSameDate(date, selectDate) : false;
           const isToday = isSameDate(date, today);
           const isDisabled =
             pastDateDisabled && date.getTime() < today.getTime();
