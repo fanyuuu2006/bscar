@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { DistributiveOmit, OverrideProps } from "fanyucomponents";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import { FormatDateNode } from "./FormatDateNode";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"] as const;
 
@@ -186,7 +187,8 @@ export const Calendar = ({
               className="w-full grid grid-cols-1 items-center justify-center"
             >
               <span className="flex justify-center items-center">
-                <span
+                <FormatDateNode
+                  date={[date]}
                   className={cn(
                     "tabular-nums font-mono relative h-[2em] aspect-square rounded-full flex flex-col items-center justify-center",
                     "text-[1em] font-medium",
@@ -201,8 +203,8 @@ export const Calendar = ({
                     ...(isToday ? styles?.day?.today : {}),
                   }}
                 >
-                  <span>{date.getDate()}</span>
-                </span>
+                  <span>DD</span>
+                </FormatDateNode>
               </span>
               {DateCell ? (
                 <DateCell
