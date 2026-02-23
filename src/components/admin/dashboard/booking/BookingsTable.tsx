@@ -27,7 +27,6 @@ import useSWR from "swr";
 import { BookingTableRow } from "./BookingTableRow";
 import { MultiSelect } from "../../../MultiSelect";
 import { AddBookingButton } from "./AddBookingButton";
-import { KeywordEmphasize } from "./KeywordEmphasize";
 
 type BookingsTableProps = DistributiveOmit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -614,19 +613,18 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
                   </td>
                 </tr>
               ) : (
-                <KeywordEmphasize keyword={query?.keyword} className="text-red-500">
-                  {filteredBookings.map((booking) => (
-                    <BookingTableRow
-                      onDelete={handleDelete}
-                      key={booking.id}
-                      item={booking}
-                      service={servicesMap.get(booking.service_id)}
-                      onUpdate={handleStatusUpdate}
-                      selected={selectedIds.has(booking.id)}
-                      onSelect={handleSelectRow}
-                    />
-                  ))}
-                </KeywordEmphasize>
+                filteredBookings.map((booking) => (
+                  <BookingTableRow
+                    onDelete={handleDelete}
+                    key={booking.id}
+                    item={booking}
+                    service={servicesMap.get(booking.service_id)}
+                    onUpdate={handleStatusUpdate}
+                    selected={selectedIds.has(booking.id)}
+                    onSelect={handleSelectRow}
+                    keyword={query.keyword}
+                  />
+                ))
               )}
             </tbody>
           </table>

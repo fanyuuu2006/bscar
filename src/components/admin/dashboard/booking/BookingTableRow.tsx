@@ -14,6 +14,7 @@ import {
 } from "@ant-design/icons";
 import { OverrideProps } from "fanyucomponents";
 import { memo, useMemo } from "react";
+import { KeywordEmphasize } from "./KeywordEmphasize";
 
 type BookingTableRowProps = OverrideProps<
   React.HTMLAttributes<HTMLTableRowElement>,
@@ -27,6 +28,7 @@ type BookingTableRowProps = OverrideProps<
     onDelete: (booking: SupabaseBooking) => void;
     selected: boolean;
     onSelect: (id: string, checked: boolean) => void;
+    keyword: React.ComponentProps<typeof KeywordEmphasize>["keyword"];
   }
 >;
 
@@ -46,6 +48,7 @@ export const BookingTableRow = memo(
     selected,
     onSelect,
     className,
+    keyword,
     ...rest
   }: BookingTableRowProps) => {
     const modal = useBookingModal();
@@ -112,81 +115,85 @@ export const BookingTableRow = memo(
     );
 
     return (
-      <tr id={item.id} className={cn("group", className)} {...rest}>
-        <td className="pl-5 py-3">
-          <input
-            id={`select-row-${item.id}`}
-            name={`select_row_${item.id}`}
-            type="checkbox"
-            className="cursor-pointer align-middle"
-            checked={selected}
-            onChange={(e) => onSelect(item.id, e.target.checked)}
-          />
-        </td>
-        <td
-          className="px-5 py-3 text-xs font-mono text-(--muted)"
-          title={item.id}
-        >
-          <CopyButton content={item.id}>{item.id.slice(0, 8)}...</CopyButton>
-        </td>
-        <td className="px-5 py-3">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-medium">{item.customer_name}</span>
-            <span className="text-xs text-(--muted)">
-              {item.customer_phone}
-            </span>
-            <span className="text-xs text-(--muted)">{item.customer_line}</span>
-          </div>
-        </td>
-        <td className="px-5 py-3 text-sm">
-          <div className="flex items-center justify-center">
-            <span className="flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max border-(--border) bg-gray-50/50">
-              {service?.name || "-"}
-            </span>
-          </div>
-        </td>
-        <td className="px-5 py-3">
-          <FormatDateNode
-            date={[item.booking_time]}
-            className="flex flex-col text-sm"
+      <KeywordEmphasize keyword={keyword} className="text-red-500">
+        <tr id={item.id} className={cn("group", className)} {...rest}>
+          <td className="pl-5 py-3">
+            <input
+              id={`select-row-${item.id}`}
+              name={`select_row_${item.id}`}
+              type="checkbox"
+              className="cursor-pointer align-middle"
+              checked={selected}
+              onChange={(e) => onSelect(item.id, e.target.checked)}
+            />
+          </td>
+          <td
+            className="px-5 py-3 text-xs font-mono text-(--muted)"
+            title={item.id}
           >
-            <span className="text-(--foreground)">YYYY/MM/DD</span>
-            <span className="text-xs text-(--muted)">hh:mm A</span>
-          </FormatDateNode>
-        </td>
-        <td className="px-5 py-3 text-center">
-          <span
-            className={cn(
-              "flex items-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max",
-              status.className,
-            )}
-          >
-            {status.label}
-          </span>
-        </td>
-        <td className="px-5 py-3 text-sm text-center whitespace-nowrap">
-          {/* 操作按鈕群組 */}
-          <div className="flex items-center justify-center gap-1.5">
-            {operations.map((oper) => {
-              const { className: operClassName, ...operRest } = oper.props;
-              const Component = oper.component;
-              return (
-                <Component
-                  key={oper.label}
-                  className={cn(
-                    "flex items-center p-2 rounded-md text-sm font-medium border tooltip",
-                    operClassName,
-                  )}
-                  data-tooltip={oper.label}
-                  {...operRest}
-                >
-                  <oper.Icon />
-                </Component>
-              );
-            })}
-          </div>
-        </td>
-      </tr>
+            <CopyButton content={item.id}>{item.id.slice(0, 8)}...</CopyButton>
+          </td>
+          <td className="px-5 py-3">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-sm font-medium">{item.customer_name}</span>
+              <span className="text-xs text-(--muted)">
+                {item.customer_phone}
+              </span>
+              <span className="text-xs text-(--muted)">
+                {item.customer_line}
+              </span>
+            </div>
+          </td>
+          <td className="px-5 py-3 text-sm">
+            <div className="flex items-center justify-center">
+              <span className="flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max border-(--border) bg-gray-50/50">
+                {service?.name || "-"}
+              </span>
+            </div>
+          </td>
+          <td className="px-5 py-3">
+            <FormatDateNode
+              date={[item.booking_time]}
+              className="flex flex-col text-sm"
+            >
+              <span className="text-(--foreground)">YYYY/MM/DD</span>
+              <span className="text-xs text-(--muted)">hh:mm A</span>
+            </FormatDateNode>
+          </td>
+          <td className="px-5 py-3 text-center">
+            <span
+              className={cn(
+                "flex items-center px-2 py-1 rounded-full text-xs font-medium border shrink-0 w-max",
+                status.className,
+              )}
+            >
+              {status.label}
+            </span>
+          </td>
+          <td className="px-5 py-3 text-sm text-center whitespace-nowrap">
+            {/* 操作按鈕群組 */}
+            <div className="flex items-center justify-center gap-1.5">
+              {operations.map((oper) => {
+                const { className: operClassName, ...operRest } = oper.props;
+                const Component = oper.component;
+                return (
+                  <Component
+                    key={oper.label}
+                    className={cn(
+                      "flex items-center p-2 rounded-md text-sm font-medium border tooltip",
+                      operClassName,
+                    )}
+                    data-tooltip={oper.label}
+                    {...operRest}
+                  >
+                    <oper.Icon />
+                  </Component>
+                );
+              })}
+            </div>
+          </td>
+        </tr>
+      </KeywordEmphasize>
     );
   },
 );
