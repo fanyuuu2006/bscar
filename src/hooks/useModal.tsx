@@ -31,7 +31,9 @@ export const useModal = ({
     if (dialog?.open) {
       dialog.close();
     }
-  }, []);
+    setIsModalOpen(false);
+    onClose?.(dialog!);
+  }, [onClose]);
 
   const Container = useCallback(
     ({ className, ...rest }: ModalContainerProps) => {

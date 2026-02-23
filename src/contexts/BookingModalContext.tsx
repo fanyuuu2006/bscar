@@ -47,7 +47,12 @@ export const BookingModalProvider = ({
   const [services, setServices] = useState<SupabaseService[]>([]);
   const { token } = useAdminToken();
   const router = useRouter();
-  const modal = useModal({});
+  const modal = useModal({
+    onClose: () => {
+      setBooking(null);
+      setNewBooking(null);
+    },
+  });
   const { mutate } = useSWRConfig();
 
   // 常用表單欄位定義
