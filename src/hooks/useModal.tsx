@@ -32,10 +32,8 @@ export const useModal = ({
     if (!dialog) return;
     if (dialog.open) {
       dialog.close();
-      setIsModalOpen(false);
-      onClose?.(dialog);
     }
-  }, [onClose]);
+  }, []);
 
   const Container = useCallback(
     ({ className, ...rest }: ModalContainerProps) => {
@@ -45,11 +43,9 @@ export const useModal = ({
           className={cn(
             "w-full h-full bg-transparent max-w-none max-h-none text-inherit backdrop:bg-black/50",
           )}
-          onClose={() => {
+          onClose={(e) => {
             setIsModalOpen(false);
-            if (dialogRef.current) {
-              onClose?.(dialogRef.current);
-            }
+            onClose?.(e.currentTarget);
           }}
         >
           <div
