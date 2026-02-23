@@ -47,11 +47,13 @@ export const BookingModalProvider = ({
   const [services, setServices] = useState<SupabaseService[]>([]);
   const { token } = useAdminToken();
   const router = useRouter();
+  const handleModalClose = useCallback(() => {
+    setBooking(null);
+    setNewBooking(null);
+  }, []);
+
   const modal = useModal({
-    onClose: () => {
-      setBooking(null);
-      setNewBooking(null);
-    },
+    onClose: handleModalClose,
   });
   const { mutate } = useSWRConfig();
 
