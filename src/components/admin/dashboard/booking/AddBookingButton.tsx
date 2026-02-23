@@ -42,7 +42,7 @@ export const AddBookingButton = ({
         line: "",
       },
     }),
-    [admin?.location_id, services]
+    [admin?.location_id, services],
   );
 
   const [booking, setBooking] =
@@ -72,7 +72,7 @@ export const AddBookingButton = ({
     <T extends keyof typeof booking>(key: T, value: (typeof booking)[T]) => {
       setBooking((prev) => ({ ...prev, [key]: value }));
     },
-    []
+    [],
   );
 
   const handleInfoChange = useCallback((key: keyof Info, value: string) => {
@@ -91,7 +91,7 @@ export const AddBookingButton = ({
 
   const handleCreate = useCallback(async () => {
     const { location_id, service_id, time, info } = booking;
-    
+
     if (!location_id || !service_id || !time || !info) {
       alert("請填寫所有欄位");
       return;
@@ -141,7 +141,7 @@ export const AddBookingButton = ({
       { required: true, id: "phone", label: "電話", type: "tel" },
       { required: true, id: "line", label: "Line ID", type: "text" },
     ],
-    []
+    [],
   );
 
   if (!admin || services.length <= 0) return null;
@@ -152,7 +152,7 @@ export const AddBookingButton = ({
         onClick={modal.open}
         className={cn(
           "btn flex items-center gap-1 p-1.5 text-xs rounded-md",
-          className
+          className,
         )}
         {...rest}
       >
@@ -208,7 +208,9 @@ export const AddBookingButton = ({
                       <TimeSlotSelector
                         id="time"
                         locationId={booking.location_id}
-                        value={booking.time ? new Date(booking.time) : null}
+                        value={
+                          booking.time ? new Date(booking.time) : undefined
+                        }
                         onChange={handleDateChange}
                         className="text-sm mt-2"
                       />
@@ -233,10 +235,7 @@ export const AddBookingButton = ({
                       field={field}
                       value={booking.info?.[field.id as keyof Info] || ""}
                       onChange={(e) =>
-                        handleInfoChange(
-                          field.id as keyof Info,
-                          e.target.value
-                        )
+                        handleInfoChange(field.id as keyof Info, e.target.value)
                       }
                     />
                   ))}
