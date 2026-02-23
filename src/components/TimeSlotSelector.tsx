@@ -14,7 +14,7 @@ type TimeSlotSelectorProps = OverrideProps<
   React.HTMLAttributes<HTMLDivElement>,
   {
     locationId: SupabaseLocation["id"];
-    value?: Date | null;
+    value?: Date;
     onChange?: (date: Date) => void;
   }
 >;

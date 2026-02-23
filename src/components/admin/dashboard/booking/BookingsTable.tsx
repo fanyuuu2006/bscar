@@ -414,7 +414,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               page: 1,
             }));
           }}
-          className="col-span-1 md:col-span-2 lg:col-span-2 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
+          className="col-span-1 md:col-span-2 lg:col-span-2 p-2 text-xs rounded-lg border border-(--border) bg-gray-50/50"
         />
 
         {/* 狀態篩選 */}
@@ -435,7 +435,7 @@ export const BookingsTable = ({ className, ...rest }: BookingsTableProps) => {
               page: 1,
             }));
           }}
-          className="col-span-1 md:col-span-2 lg:col-span-2 py-2 px-4 text-xs rounded-lg border border-(--border) bg-gray-50/50"
+          className="col-span-1 md:col-span-2 lg:col-span-2 p-2 text-xs rounded-lg border border-(--border) bg-gray-50/50"
         />
 
         {/* 日期篩選 */}
