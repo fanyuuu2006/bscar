@@ -33,7 +33,7 @@ export const useModal = ({
     if (dialog.open) {
       dialog.close();
       setIsModalOpen(false);
-      onClose?.(dialog!);
+      onClose?.(dialog);
     }
   }, [onClose]);
 
