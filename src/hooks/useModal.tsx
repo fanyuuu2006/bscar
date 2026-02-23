@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/utils/className";
-import { useCallback,  useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 export type ModalContainerProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -19,7 +19,8 @@ export const useModal = ({
 
   const handleOpen = useCallback(() => {
     const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
+    if (!dialog) return;
+    if (!dialog.open) {
       dialog.showModal();
       setIsModalOpen(true);
       onOpen?.(dialog);
@@ -28,11 +29,12 @@ export const useModal = ({
 
   const handleClose = useCallback(() => {
     const dialog = dialogRef.current;
-    if (dialog?.open) {
+    if (!dialog) return;
+    if (dialog.open) {
       dialog.close();
+      setIsModalOpen(false);
+      onClose?.(dialog!);
     }
-    setIsModalOpen(false);
-    onClose?.(dialog!);
   }, [onClose]);
 
   const Container = useCallback(
@@ -41,7 +43,7 @@ export const useModal = ({
         <dialog
           ref={dialogRef}
           className={cn(
-            "w-full h-full bg-transparent max-w-none max-h-none text-inherit backdrop:bg-black/50"
+            "w-full h-full bg-transparent max-w-none max-h-none text-inherit backdrop:bg-black/50",
           )}
           onClose={() => {
             setIsModalOpen(false);
@@ -63,7 +65,7 @@ export const useModal = ({
         </dialog>
       );
     },
-    [clickOutsideToClose, handleClose, onClose]
+    [clickOutsideToClose, handleClose, onClose],
   );
 
   // useEffect(() => {
