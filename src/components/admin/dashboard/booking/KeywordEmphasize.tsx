@@ -93,6 +93,11 @@ export const KeywordEmphasize = ({
 
       // 情況 B: React 元素
       if (React.isValidElement<React.HTMLAttributes<HTMLElement>>(node)) {
+        // 如果該元素有標記為 data-no-emphasize，則跳過其內部的處理
+        if ("data-no-emphasize" in node.props) {
+          return node;
+        }
+
         // 重要：如果是一個我們無法"鑽進去"的自定義組件（例如 <BookingTableRow>），
         // 我們無法修改它的內部渲染結果。我們只能原樣返回。
         //
@@ -100,16 +105,16 @@ export const KeywordEmphasize = ({
         // 但如果它的內容是從內部 state 或其他 props (ex: item prop) 渲染出來的，
         // 外部是完全無能為力的。
         const { children: elementChildren, ...props } = node.props;
-        
+
         // 如果這個元素有 children，我們嘗試處理 children
         if (elementChildren !== undefined && elementChildren !== null) {
-             return React.cloneElement(
-                node,
-                { ...props, key: node.key },
-                processNode(elementChildren)
-            );
+          return React.cloneElement(
+            node,
+            { ...props, key: node.key },
+            processNode(elementChildren),
+          );
         }
-        
+
         // 如果沒有 children (或是自定義組件內部渲染)，直接返回
         return node;
       }

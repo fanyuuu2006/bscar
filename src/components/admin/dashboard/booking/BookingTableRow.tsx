@@ -155,6 +155,7 @@ export const BookingTableRow = memo(
             <FormatDateNode
               date={[item.booking_time]}
               className="flex flex-col text-sm"
+              data-no-emphasize
             >
               <span className="text-(--foreground)">YYYY/MM/DD</span>
               <span className="text-xs text-(--muted)">hh:mm A</span>

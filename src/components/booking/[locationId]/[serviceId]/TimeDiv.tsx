@@ -20,7 +20,7 @@ export const TimeDiv = ({
   serviceId,
   ...rest
 }: TimeDivProps) => {
-  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<Date | undefined>(undefined);
   const router = useRouter();
 
   return (
